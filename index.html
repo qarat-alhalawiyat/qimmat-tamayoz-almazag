@@ -51,7 +51,7 @@
 
         <!-- محدد التاريخ اليومي -->
         <div id="dailyDatePickerContainer" class="flex items-center gap-2">
-          <label class="text-slate-400 font-bold">اختر تاريخ اليومية:</label>
+          <label class="text-slate-400 font-bold">اختر تاريخ اليومية للعرض:</label>
           <input type="date" id="selectedDate" onchange="onDateChange()" class="bg-slate-800 border border-slate-700 rounded-lg p-1.5 text-emerald-300 text-xs">
           <button onclick="setTodayDate()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-slate-300">اليوم</button>
         </div>
@@ -257,8 +257,8 @@
     <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-3 gap-3">
         <div>
-          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل اليومية الحالية)</h2>
-          <p class="text-xs text-slate-400" id="adminActiveDateNotice">أنت الآن تقوم بالتعديل على يومية: ...</p>
+          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل اليوميات السابقة والحالية)</h2>
+          <p class="text-xs text-slate-400">يمكنك اختيار أي تاريخ سابق وتعديل أو إضافة بياناته بأثر رجعي فوراً</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="changeAdminPassword()" class="bg-slate-700 hover:bg-slate-600 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/30">
@@ -266,6 +266,16 @@
           </button>
           <button onclick="toggleAdmin()" class="text-slate-400 hover:text-white text-xs bg-slate-700 px-3 py-1.5 rounded-lg">إغلاق ✕</button>
         </div>
+      </div>
+
+      <!-- شريط تحديد تاريخ الإدخال والتعديل الخاص بالمحاسب -->
+      <div class="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-emerald-300">📅 تاريخ اليومية المراد إدخالها أو تعديلها:</span>
+          <input type="date" id="adminTargetDate" onchange="onAdminDateChange()" class="bg-slate-900 border border-emerald-500/50 rounded-lg p-2 text-xs font-bold text-emerald-300">
+          <button onclick="setAdminTargetToday()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-2.5 py-2 rounded-lg text-slate-200">تاريخ اليوم</button>
+        </div>
+        <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
       <!-- 1. إدخال وتعديل عهدة كاشير -->
@@ -458,6 +468,7 @@
 
     // إدارة التواريخ والحالة
     let currentDateStr = new Date().toISOString().split('T')[0];
+    let adminTargetDateStr = currentDateStr; // تاريخ الإدخال المستهدف للمحاسب
     let viewMode = 'daily'; // 'daily' أو 'period'
     let currentData = {
       drawers: {},
@@ -474,8 +485,9 @@
       if (snap.val()) adminPin = snap.val().toString();
     });
 
-    // ضبط القيمة الافتراضية لحقل التاريخ
+    // ضبط القيمة الافتراضية لحقول التاريخ
     document.getElementById('selectedDate').value = currentDateStr;
+    document.getElementById('adminTargetDate').value = adminTargetDateStr;
 
     // تشغيل الاستماع لتاريخ اليومية المحددة
     let activeListener = null;
@@ -485,7 +497,6 @@
       }
       activeListener = dateStr;
       document.getElementById('activeViewTitle').innerText = "عرض يومية تاريخ: " + dateStr;
-      document.getElementById('adminActiveDateNotice').innerText = "أنت الآن تقوم بالإدخال والتعديل على يومية: " + dateStr;
 
       db.ref('daily_reports/' + dateStr).on('value', (snapshot) => {
         const data = snapshot.val();
@@ -502,13 +513,14 @@
         }
         if (viewMode === 'daily') {
           renderDashboard();
-          renderAdminLists();
         }
+        renderAdminLists();
       });
     }
 
     // بدء التشغيل
     bindDateListener(currentDateStr);
+    updateAdminTargetNotice();
 
     function onDateChange() {
       const val = document.getElementById('selectedDate').value;
@@ -522,6 +534,33 @@
       currentDateStr = new Date().toISOString().split('T')[0];
       document.getElementById('selectedDate').value = currentDateStr;
       bindDateListener(currentDateStr);
+    }
+
+    // إدارة تاريخ الإدخال والتعديل للمحاسب
+    function onAdminDateChange() {
+      const val = document.getElementById('adminTargetDate').value;
+      if (val) {
+        adminTargetDateStr = val;
+        updateAdminTargetNotice();
+        // مزامنة العرض إذا رغب
+        currentDateStr = val;
+        document.getElementById('selectedDate').value = val;
+        bindDateListener(val);
+      }
+    }
+
+    function setAdminTargetToday() {
+      const today = new Date().toISOString().split('T')[0];
+      adminTargetDateStr = today;
+      document.getElementById('adminTargetDate').value = today;
+      updateAdminTargetNotice();
+      currentDateStr = today;
+      document.getElementById('selectedDate').value = today;
+      bindDateListener(today);
+    }
+
+    function updateAdminTargetNotice() {
+      document.getElementById('adminActiveDateNotice').innerText = "أنت الآن تقوم بالإدخال والتعديل على يومية تاريخ: [ " + adminTargetDateStr + " ]";
     }
 
     // التبديل بين العرض اليومي وعرض الفترات
@@ -553,7 +592,6 @@
         periodDaysSec.classList.remove('hidden');
         document.getElementById('cardTitleSales').innerText = "إجمالي مبيعات الفترة";
         document.getElementById('cardTitleCash').innerText = "مجموع الكاش المحقق بالفترة";
-        // تعيين فترة الشهر افتراضياً
         setQuickPeriod(30);
       }
     }
@@ -567,7 +605,7 @@
       loadPeriodReport();
     }
 
-    // استخراج تقرير الفترة المجمعة (شهري / أسبوعي / مخصص)
+    // استخراج تقرير الفترة المجمعة
     function loadPeriodReport() {
       const fromStr = document.getElementById('periodFrom').value;
       const toStr = document.getElementById('periodTo').value;
@@ -578,7 +616,6 @@
       db.ref('daily_reports').once('value').then((snapshot) => {
         const allData = snapshot.val() || {};
         
-        let periodZ = 0;
         let periodCashSales = 0;
         let periodCardSales = 0;
         let periodActualCash = 0;
@@ -592,7 +629,6 @@
         let combinedBankTrans = [];
         let daysRows = [];
 
-        // فرز الأيام حسب الفترة
         const sortedDates = Object.keys(allData).filter(d => d >= fromStr && d <= toStr).sort();
 
         sortedDates.forEach(dKey => {
@@ -630,7 +666,7 @@
           periodActualCash += dayActualCash;
           periodExpenses += dayExpAmount;
           periodSupplierPaid += daySuppPaid;
-          periodSupplierDue = daySuppDue; // أحدث متبقي موردين
+          periodSupplierDue = daySuppDue;
           periodVariance += dayVariance;
 
           combinedExpenses = combinedExpenses.concat(eList.map(e => ({ ...e, date: dKey })));
@@ -653,14 +689,12 @@
           `);
         });
 
-        // تحديث جدول أيام الفترة
         const pBody = document.getElementById('periodDaysTableBody');
         pBody.innerHTML = daysRows.length === 0 
           ? `<tr><td colspan="8" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة في هذا النطاق الزمني</td></tr>` 
           : daysRows.join('');
         document.getElementById('periodDaysCount').innerText = `${daysRows.length} يوم مسجل`;
 
-        // تحديث البطاقات الرئيسية الـ 6 بأرقام الفترة التجميعية
         const totalSalesPeriod = periodCashSales + periodCardSales;
         document.getElementById('totalSystemSales').innerHTML = `${totalSalesPeriod.toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('totalCashSales').innerText = periodCashSales.toFixed(2);
@@ -672,14 +706,12 @@
         document.getElementById('supplierPaid').innerText = periodSupplierPaid.toFixed(2);
         document.getElementById('totalSupplierDue').innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // بطاقة رصيد البنك خلال الفترة
         const totalBankOut = combinedExpenses.filter(e => e.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
                              combinedSuppliers.filter(s => s.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
         const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
         const netPeriodBank = (periodCardSales + totalBankIn) - totalBankOut;
         document.getElementById('bankBalance').innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // الفروقات الكلية للفترة
         const varEl = document.getElementById('totalVariance');
         const varStat = document.getElementById('varianceStatus');
         if (periodVariance < 0) {
@@ -699,7 +731,6 @@
           varStat.className = "text-[9px] text-emerald-400 mt-1";
         }
 
-        // عرض تفاصيل المصاريف والموردين وحركات البنك للفترة
         document.getElementById('expensesTableBody').innerHTML = combinedExpenses.map(e => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2">${e.name} <span class="text-[9px] text-slate-500">(${e.date})</span></td>
@@ -820,7 +851,6 @@
       }
       document.getElementById('drawersCount').innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // حساب رصيد البنك الذكي
       const bankExpOut = expList.filter(e => e.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => s.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
       const bankTransIn = bankTransList.filter(t => t.type === 'in').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
@@ -829,7 +859,6 @@
       const netBank = (currentData.bankOpening + totalActualCard + bankTransIn) - (bankExpOut + bankSuppOut + bankTransOut);
       document.getElementById('bankBalance').innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      // تحديث البطاقات
       document.getElementById('totalSystemSales').innerHTML = `${(totalCashReport + totalCardReport).toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('totalCashSales').innerText = totalCashReport.toFixed(2);
       document.getElementById('totalCardSales').innerText = totalCardReport.toFixed(2);
@@ -858,7 +887,6 @@
         varStat.className = "text-[9px] text-emerald-400 mt-1";
       }
 
-      // الجداول
       const expBody = document.getElementById('expensesTableBody');
       expBody.innerHTML = expList.length === 0 
         ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`
@@ -958,7 +986,7 @@
       `).join('');
     }
 
-    // دوال الكاشير
+    // دوال الكاشير (تحفظ بالتاريخ المستهدف المحدد من المحاسب)
     function saveDrawer() {
       const editId = document.getElementById('editDrawerId').value;
       const name = document.getElementById('drawerName').value.trim();
@@ -972,10 +1000,10 @@
       if (!name) return alert('يرجى كتابة اسم الكاشير');
 
       const id = editId ? editId : name.replace(/\s+/g, '_');
-      db.ref('daily_reports/' + currentDateStr + '/drawers/' + id).set({
+      db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).set({
         name, totalZ, opening, cashReport, actualCash, cardReport, actualCard
       }).then(() => {
-        alert('تم الحفظ بنجاح ليومية: ' + currentDateStr);
+        alert('تم الحفظ بنجاح ليومية: ' + adminTargetDateStr);
         resetDrawerForm();
       });
     }
@@ -995,8 +1023,8 @@
     }
 
     function deleteDrawer(id) {
-      if (confirm('هل أنت متأكد من حذف هذا الكاشير من يومية ' + currentDateStr + '؟')) {
-        db.ref('daily_reports/' + currentDateStr + '/drawers/' + id).remove();
+      if (confirm('هل أنت متأكد من حذف هذا الكاشير من يومية ' + adminTargetDateStr + '؟')) {
+        db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).remove();
       }
     }
 
@@ -1015,8 +1043,8 @@
     // دوال البنك
     function saveBankOpening() {
       const val = parseFloat(document.getElementById('bankOpening').value) || 0;
-      db.ref('daily_reports/' + currentDateStr + '/bankOpening').set(val).then(() => {
-        alert('تم حفظ رصيد البنك الافتتاحي ليومية ' + currentDateStr);
+      db.ref('daily_reports/' + adminTargetDateStr + '/bankOpening').set(val).then(() => {
+        alert('تم حفظ رصيد البنك الافتتاحي ليومية ' + adminTargetDateStr);
       });
     }
 
@@ -1026,15 +1054,15 @@
       const type = document.getElementById('bankTransType').value;
       if (!desc || isNaN(amount)) return alert('يرجى إدخال بيان الحركة البنكية والمبلغ');
 
-      db.ref('daily_reports/' + currentDateStr + '/bankTransactions').push({ desc, amount, type }).then(() => {
+      db.ref('daily_reports/' + adminTargetDateStr + '/bankTransactions').push({ desc, amount, type }).then(() => {
         document.getElementById('bankTransDesc').value = '';
         document.getElementById('bankTransAmount').value = '';
       });
     }
 
     function deleteBankTrans(id) {
-      if (confirm('هل أنت متأكد من حذف هذه الحركة؟')) {
-        db.ref('daily_reports/' + currentDateStr + '/bankTransactions/' + id).remove();
+      if (confirm('هل أنت متأكد من حذف هذه الحركة من يومية ' + adminTargetDateStr + '؟')) {
+        db.ref('daily_reports/' + adminTargetDateStr + '/bankTransactions/' + id).remove();
       }
     }
 
@@ -1047,10 +1075,10 @@
       if (!name || isNaN(amount)) return alert('يرجى إدخال بيان المصروف والمبلغ');
 
       if (editId) {
-        db.ref('daily_reports/' + currentDateStr + '/expenses/' + editId).update({ name, amount, source })
-          .then(() => { alert('تم تعديل المصروف بنجاح!'); resetExpenseForm(); });
+        db.ref('daily_reports/' + adminTargetDateStr + '/expenses/' + editId).update({ name, amount, source })
+          .then(() => { alert('تم تعديل المصروف بنجاح ليومية: ' + adminTargetDateStr); resetExpenseForm(); });
       } else {
-        db.ref('daily_reports/' + currentDateStr + '/expenses').push({ name, amount, source })
+        db.ref('daily_reports/' + adminTargetDateStr + '/expenses').push({ name, amount, source })
           .then(() => { resetExpenseForm(); });
       }
     }
@@ -1066,8 +1094,8 @@
     }
 
     function deleteExpense(id) {
-      if (confirm('هل أنت متأكد من حذف هذا المصروف؟')) {
-        db.ref('daily_reports/' + currentDateStr + '/expenses/' + id).remove();
+      if (confirm('هل أنت متأكد من حذف هذا المصروف من يومية ' + adminTargetDateStr + '؟')) {
+        db.ref('daily_reports/' + adminTargetDateStr + '/expenses/' + id).remove();
       }
     }
 
@@ -1088,10 +1116,10 @@
       if (!name) return alert('يرجى إدخال اسم المورد');
 
       if (editId) {
-        db.ref('daily_reports/' + currentDateStr + '/suppliers/' + editId).update({ name, paid, source, remaining })
-          .then(() => { alert('تم تعديل المورد بنجاح!'); resetSuppForm(); });
+        db.ref('daily_reports/' + adminTargetDateStr + '/suppliers/' + editId).update({ name, paid, source, remaining })
+          .then(() => { alert('تم تعديل المورد بنجاح ليومية: ' + adminTargetDateStr); resetSuppForm(); });
       } else {
-        db.ref('daily_reports/' + currentDateStr + '/suppliers').push({ name, paid, source, remaining })
+        db.ref('daily_reports/' + adminTargetDateStr + '/suppliers').push({ name, paid, source, remaining })
           .then(() => { resetSuppForm(); });
       }
     }
@@ -1108,8 +1136,8 @@
     }
 
     function deleteSupplier(id) {
-      if (confirm('هل أنت متأكد من حذف هذا المورد؟')) {
-        db.ref('daily_reports/' + currentDateStr + '/suppliers/' + id).remove();
+      if (confirm('هل أنت متأكد من حذف هذا المورد من يومية ' + adminTargetDateStr + '؟')) {
+        db.ref('daily_reports/' + adminTargetDateStr + '/suppliers/' + id).remove();
       }
     }
 
