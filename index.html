@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام الإغلاق اليومي المالي والعهد - قمة تميز المذاق</title>
+  <title>نظام الإغلاق المالي والرقابة على العهد - قمة تميز المذاق</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- خط تجوال الأنيق -->
@@ -15,95 +15,98 @@
     body { font-family: 'Tajawal', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-6">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-3 md:p-6">
 
   <div class="max-w-6xl mx-auto space-y-6">
     
     <!-- الهيدر -->
     <header class="flex flex-col sm:flex-row justify-between items-center bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-lg gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-emerald-400">لوحة الإغلاق المالي والرقابة على العهد</h1>
+        <h1 class="text-2xl font-bold text-emerald-400">لوحة الإغلاق المالي والرقابة على الكاشيرات والعهد</h1>
         <p class="text-sm text-slate-400" id="liveDate">جاري تحميل التاريخ...</p>
       </div>
       <div class="flex items-center gap-2">
         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-2"></span>
-          مباشر ومحدث لحظياً
+          مباشر وسحابي
         </span>
-        <button onclick="toggleAdmin()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded-lg border border-slate-600 transition">
-          🔐 وضع المحاسب والإدخال
+        <button onclick="toggleAdmin()" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs px-4 py-2 rounded-lg transition shadow">
+          🔐 شاشة الإدخال والتعديل (المحاسب)
         </button>
       </div>
     </header>
 
     <!-- البطاقات الرئيسية -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- إجمالي المبيعات الكلية -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <div class="text-xs text-slate-400 mb-1">إجمالي المبيعات (حسب تقارير الأجهزة)</div>
+        <div class="text-2xl font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[11px] text-slate-400 mt-1">كاش: <span id="totalCashSales" class="text-slate-200">0</span> | شبكة: <span id="totalCardSales" class="text-slate-200">0</span></div>
+      </div>
+
       <!-- إجمالي الكاش الفعلي بالصناديق -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-        <div class="text-xs text-slate-400 mb-1">إجمالي الكاش الفعلي (جميع العهد)</div>
+        <div class="text-xs text-slate-400 mb-1">إجمالي الكاش الفعلي (المعدود باليد)</div>
         <div class="text-2xl font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1">مجموع الكاش الموجود حالياً</div>
+        <div class="text-[10px] text-slate-500 mt-1">مجموع الكاش الموجود بالدرج فعلياً</div>
       </div>
 
-      <!-- إجمالي المبيعات -->
-      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-        <div class="text-xs text-slate-400 mb-1">إجمالي مبيعات اليوم</div>
-        <div class="text-2xl font-bold text-blue-400" id="totalSales">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[11px] text-slate-400 mt-1">كاش: <span id="salesCash" class="text-slate-200">0</span> | شبكة: <span id="salesCard" class="text-slate-200">0</span></div>
-      </div>
-
-      <!-- إجمالي المنصرف -->
+      <!-- إجمالي المنصرف والمدفوعات -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <div class="text-xs text-slate-400 mb-1">إجمالي المنصرف والمدفوعات</div>
         <div class="text-2xl font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[11px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses" class="text-slate-200">0</span> | موردين: <span id="supplierPaid" class="text-slate-200">0</span></div>
       </div>
 
-      <!-- حالة المطابقة الإجمالية (عجز / زيادة) -->
+      <!-- صافي الفروقات الإجمالية -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-        <div class="text-xs text-slate-400 mb-1">صافي الفروقات (عجز / زيادة)</div>
+        <div class="text-xs text-slate-400 mb-1">صافي الفروقات الكلية (كاش + شبكة)</div>
         <div class="text-2xl font-bold" id="totalVariance">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-500 mt-1" id="varianceStatus">مطابق تماماً</div>
       </div>
     </div>
 
-    <!-- جدول تتبع العهد والكاشيرات بالتفصيل -->
+    <!-- جدول تتبع ومطابقة الكاشيرات والعهد -->
     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-      <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
-        <span>👤 تفصيل عهد الصناديق والكاشيرات ومطابقة الدرج</span>
+      <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
+        <span>👤 كشف مطابقة الكاشيرات (كاش + شبكة) وتحديد العجز</span>
         <span class="text-xs font-normal text-slate-400" id="drawersCount">0 عهدة</span>
       </h2>
       <div class="overflow-x-auto">
         <table class="w-full text-right text-xs">
           <thead class="text-slate-400 bg-slate-900/50">
             <tr>
-              <th class="p-2.5">المسؤول / الصندوق</th>
+              <th class="p-2.5">الكاشير / الصندوق</th>
+              <th class="p-2.5">مبيعات الجهاز</th>
               <th class="p-2.5">رصيد البداية</th>
-              <th class="p-2.5">مبيعات الكاش</th>
               <th class="p-2.5">المنصرف</th>
-              <th class="p-2.5">المفترض بالدرج</th>
-              <th class="p-2.5">الفعلي بالعد</th>
-              <th class="p-2.5">الفارق (عجز / زيادة)</th>
+              <th class="p-2.5">مفترض الكاش</th>
+              <th class="p-2.5">فعلي الكاش</th>
+              <th class="p-2.5">فارق الكاش</th>
+              <th class="p-2.5">مفترض الشبكة</th>
+              <th class="p-2.5">فعلي الشبكة</th>
+              <th class="p-2.5">فارق الشبكة</th>
+              <th class="p-2.5">الحالة الإجمالية</th>
             </tr>
           </thead>
           <tbody id="drawersTableBody" class="divide-y divide-slate-700/50">
-            <tr><td colspan="7" class="p-3 text-center text-slate-500">لا توجد عهد مسجلة اليوم</td></tr>
+            <tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة اليوم</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- زر توليد رسالة واتساب سريعة -->
+    <!-- زر واتساب -->
     <div class="flex justify-end">
-      <button onclick="sendWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2 shadow-md transition">
-        <span>📲 نسخ وإرسال ملخص تقفيل العهد اليوم عبر واتساب</span>
+      <button onclick="sendWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 shadow-md transition">
+        <span>📲 نسخ وإرسال تقرير الإغلاق ومطابقة الكاشيرات عبر واتساب</span>
       </button>
     </div>
 
-    <!-- تفاصيل المصاريف والموردين -->
+    <!-- تفاصيل المصاريف والموردين في لوحة العرض -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      
-      <!-- جدول المصاريف اليومية -->
+      <!-- بيان المصاريف -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>📋 بيان المصاريف النثرية</span>
@@ -125,7 +128,7 @@
         </div>
       </div>
 
-      <!-- جدول سداد ومديونيات الموردين -->
+      <!-- سجل الموردين -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>🚚 سجل الموردين</span>
@@ -148,57 +151,133 @@
       </div>
     </div>
 
-    <!-- لوحة إدخال البيانات الخاصة بالمحاسب -->
-    <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-5">
+    <!-- لوحة المحاسب الشاملة للإدخال والتعديل والحذف -->
+    <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-6">
       <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-        <h2 class="text-lg font-bold text-emerald-400">📝 شاشة إدارة العهد والإقفال اليومي</h2>
-        <span class="text-xs text-slate-400">حفظ فوري في Firebase</span>
+        <div>
+          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل وحذف)</h2>
+          <p class="text-xs text-slate-400">يمكنك تعديل أي بيان أو حذفه مباشرة وستتحدث الحسابات فوراً</p>
+        </div>
+        <button onclick="toggleAdmin()" class="text-slate-400 hover:text-white text-xs bg-slate-700 px-3 py-1.5 rounded-lg">إغلاق اللوحة ✕</button>
       </div>
 
-      <!-- 1. إدارة عهد الكاشيرات والمحاسب -->
-      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-3">
-        <h3 class="text-xs font-bold text-emerald-300">➕ إضافة / تحديث عهدة (كاشير 1، كاشير 2، عهدة المحاسب...)</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-          <input type="text" id="drawerName" placeholder="الاسم (مثال: كاشير 1)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <input type="number" id="drawerOpening" placeholder="رصيد البداية" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <input type="number" id="drawerSalesCash" placeholder="مبيعات كاش" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <input type="number" id="drawerActual" placeholder="الفعلي بالعد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <button onclick="saveDrawer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs py-2">حفظ العهدة</button>
+      <!-- 1. إدخال وتعديل عهدة كاشير -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
+        <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ إضافة / تعديل إغلاق كاشير</h3>
+        <input type="hidden" id="editDrawerId" value="">
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          <div>
+            <label class="text-[10px] text-slate-400">اسم الكاشير / الصندوق</label>
+            <input type="text" id="drawerName" placeholder="مثال: كاشير 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">إجمالي مبيعات الجهاز (Z Report)</label>
+            <input type="number" id="drawerTotalZ" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">رصيد البداية (العهدة)</label>
+            <input type="number" id="drawerOpening" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">مبيعات الكاش بالجهاز</label>
+            <input type="number" id="drawerCashReport" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-emerald-300">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">الكاش الفعلي بالدرج (العد)</label>
+            <input type="number" id="drawerActualCash" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-emerald-300 font-bold">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">مبيعات الشبكة بالجهاز</label>
+            <input type="number" id="drawerCardReport" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
+          </div>
+          <div>
+            <label class="text-[10px] text-slate-400">الفعلي بالشبكة (إيصالات مدى)</label>
+            <input type="number" id="drawerActualCard" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
+          </div>
+          <div class="sm:col-span-2 flex items-end gap-2">
+            <button onclick="saveDrawer()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs py-2.5">💾 حفظ بيانات الكاشير</button>
+            <button onclick="resetDrawerForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-3 py-2.5 rounded-lg">إلغاء</button>
+          </div>
+        </div>
+
+        <!-- جدول تعديل وحذف الكاشيرات المسجلة -->
+        <div class="mt-3 overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-950">
+              <tr>
+                <th class="p-2">الكاشير</th>
+                <th class="p-2">مبيعات الجهاز</th>
+                <th class="p-2">فعلي كاش</th>
+                <th class="p-2">فعلي شبكة</th>
+                <th class="p-2 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminDrawersList" class="divide-y divide-slate-800"></tbody>
+          </table>
         </div>
       </div>
 
-      <!-- 2. مبيعات الشبكة الإجمالية للمحل -->
-      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-2">
-        <h3 class="text-xs font-bold text-blue-300">💳 إجمالي مبيعات نقاط البيع (شبكة / مدى)</h3>
-        <div class="flex gap-2 max-w-sm">
-          <input type="number" id="inputSalesCard" placeholder="إجمالي الشبكة" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
-          <button onclick="saveCardSales()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 rounded-lg text-xs">تحديث الشبكة</button>
-        </div>
-      </div>
-
-      <!-- 3. إضافة مصروف وتحديد مصدره -->
-      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-2">
-        <h3 class="text-xs font-bold text-rose-300">➕ إضافة مصروف نثري</h3>
+      <!-- 2. إدارة المصاريف مع التعديل والحذف -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
+        <h3 class="text-xs font-bold text-rose-300" id="expenseFormTitle">➕ إضافة / تعديل مصروف نثري</h3>
+        <input type="hidden" id="editExpenseId" value="">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-          <input type="text" id="expenseName" placeholder="البيان (أكياس، نظافة...)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="text" id="expenseName" placeholder="البيان (مثال: نظافة، أدوات)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" id="expenseAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300">
+          <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
             <option value="عهدة المحاسب">عهدة المحاسب</option>
             <option value="كاشير 1">كاشير 1</option>
             <option value="كاشير 2">كاشير 2</option>
           </select>
-          <button onclick="addExpense()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs py-2">إضافة المصروف</button>
+          <div class="flex gap-2">
+            <button onclick="saveExpense()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs py-2">حفظ المصروف</button>
+            <button onclick="resetExpenseForm()" class="bg-slate-700 text-slate-300 text-xs px-2 rounded-lg">إلغاء</button>
+          </div>
+        </div>
+
+        <!-- جدول تعديل وحذف المصاريف -->
+        <div class="mt-2 overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-950">
+              <tr>
+                <th class="p-2">البيان</th>
+                <th class="p-2">المبلغ</th>
+                <th class="p-2">المصدر</th>
+                <th class="p-2 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminExpensesList" class="divide-y divide-slate-800"></tbody>
+          </table>
         </div>
       </div>
 
-      <!-- 4. إضافة سداد مورد -->
-      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-2">
-        <h3 class="text-xs font-bold text-amber-300">➕ تسجيل دفعة أو مديونية مورد</h3>
+      <!-- 3. إدارة الموردين مع التعديل والحذف -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
+        <h3 class="text-xs font-bold text-amber-300" id="suppFormTitle">➕ إضافة / تعديل مورد</h3>
+        <input type="hidden" id="editSuppId" value="">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
           <input type="text" id="suppName" placeholder="اسم المورد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" id="suppPaid" placeholder="المسدد كاش" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" id="suppRemaining" placeholder="المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <button onclick="addSupplier()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs py-2">حفظ المورد</button>
+          <div class="flex gap-2">
+            <button onclick="saveSupplier()" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs py-2">حفظ المورد</button>
+            <button onclick="resetSuppForm()" class="bg-slate-700 text-slate-300 text-xs px-2 rounded-lg">إلغاء</button>
+          </div>
+        </div>
+
+        <!-- جدول تعديل وحذف الموردين -->
+        <div class="mt-2 overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-950">
+              <tr>
+                <th class="p-2">المورد</th>
+                <th class="p-2">المسدد كاش</th>
+                <th class="p-2">المتبقي له</th>
+                <th class="p-2 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminSuppliersList" class="divide-y divide-slate-800"></tbody>
+          </table>
         </div>
       </div>
 
@@ -207,7 +286,7 @@
   </div>
 
   <script>
-    // Firebase Config
+    // إعدادات Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD53an3IKwwjom9iIuHSwbrFNB8CglVvF4",
       authDomain: "market-pos-470ad.firebaseapp.com",
@@ -229,118 +308,142 @@
 
     let currentData = {
       drawers: {},
-      salesCard: 0,
-      expenses: [],
-      suppliers: []
+      expenses: {},
+      suppliers: {}
     };
 
-    // الاستماع المباشر
+    // الاستماع المباشر للتغييرات
     db.ref('daily_reports/' + todayStr).on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
         currentData = {
           drawers: data.drawers || {},
-          salesCard: data.salesCard || 0,
-          expenses: data.expenses ? Object.values(data.expenses) : [],
-          suppliers: data.suppliers ? Object.values(data.suppliers) : []
+          expenses: data.expenses || {},
+          suppliers: data.suppliers || {}
         };
+      } else {
+        currentData = { drawers: {}, expenses: {}, suppliers: {} };
       }
       renderDashboard();
+      renderAdminLists();
     });
 
     function renderDashboard() {
       const drawersList = Object.entries(currentData.drawers).map(([key, val]) => ({ id: key, ...val }));
-      
-      let totalSalesCash = 0;
+      const expList = Object.entries(currentData.expenses).map(([key, val]) => ({ id: key, ...val }));
+      const suppList = Object.entries(currentData.suppliers).map(([key, val]) => ({ id: key, ...val }));
+
+      let totalZ = 0;
+      let totalCashReport = 0;
+      let totalCardReport = 0;
       let totalActualCash = 0;
+      let totalActualCard = 0;
       let totalExpectedCash = 0;
+      let grandVariance = 0;
 
-      // حساب المصاريف وسداد الموردين
-      const totalExpensesList = currentData.expenses.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const totalSupplierPaid = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-      const grandExpenses = totalExpensesList + totalSupplierPaid;
+      const totalExpensesAmount = expList.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const totalSuppPaidAmount = suppList.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
 
-      // جدول العهد
-      const drawersBody = document.getElementById('drawersTableBody');
+      // جدول العهد ومطابقة الكاشيرات
+      const body = document.getElementById('drawersTableBody');
       if (drawersList.length === 0) {
-        drawersBody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-slate-500">لا توجد عهد مسجلة اليوم</td></tr>`;
+        body.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة اليوم</td></tr>`;
       } else {
-        drawersBody.innerHTML = drawersList.map(d => {
+        body.innerHTML = drawersList.map(d => {
+          const zReport = parseFloat(d.totalZ || 0);
           const opening = parseFloat(d.opening || 0);
-          const salesCash = parseFloat(d.salesCash || 0);
-          const actual = parseFloat(d.actual || 0);
-          
-          // حساب المنصرف الخاص بهذه العهدة إن وجد
-          const drawerExpenses = currentData.expenses
+          const cashReport = parseFloat(d.cashReport || 0);
+          const actualCash = parseFloat(d.actualCash || 0);
+          const cardReport = parseFloat(d.cardReport || 0);
+          const actualCard = parseFloat(d.actualCard || 0);
+
+          // المصاريف الخارجة من هذا الدرج
+          const drawerExp = expList
             .filter(e => e.source === d.name)
             .reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
-          const expected = (opening + salesCash) - drawerExpenses;
-          const diff = actual - expected;
+          const expectedCash = (opening + cashReport) - drawerExp;
+          const cashDiff = actualCash - expectedCash;
+          const cardDiff = actualCard - cardReport;
+          const netDrawerDiff = cashDiff + cardDiff;
 
-          totalSalesCash += salesCash;
-          totalActualCash += actual;
-          totalExpectedCash += expected;
+          totalZ += zReport;
+          totalCashReport += cashReport;
+          totalCardReport += cardReport;
+          totalActualCash += actualCash;
+          totalActualCard += actualCard;
+          totalExpectedCash += expectedCash;
+          grandVariance += netDrawerDiff;
 
-          let diffBadge = `<span class="text-emerald-400 font-bold">مطابق (0.00)</span>`;
-          if (diff < 0) {
-            diffBadge = `<span class="text-rose-400 font-bold">عجز (${Math.abs(diff).toFixed(2)} ر.س)</span>`;
-          } else if (diff > 0) {
-            diffBadge = `<span class="text-blue-400 font-bold">زيادة (+${diff.toFixed(2)} ر.س)</span>`;
+          const cashBadge = cashDiff === 0 
+            ? `<span class="text-emerald-400">مطابق</span>` 
+            : (cashDiff < 0 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
+
+          const cardBadge = cardDiff === 0 
+            ? `<span class="text-emerald-400">مطابق</span>` 
+            : (cardDiff < 0 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
+
+          let totalStatusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">مطابق تماماً</span>`;
+          if (netDrawerDiff < 0) {
+            totalStatusBadge = `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">عجز ${Math.abs(netDrawerDiff).toFixed(2)}</span>`;
+          } else if (netDrawerDiff > 0) {
+            totalStatusBadge = `<span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold">زيادة +${netDrawerDiff.toFixed(2)}</span>`;
           }
 
           return `
             <tr class="hover:bg-slate-700/30">
-              <td class="p-2.5 font-bold text-slate-200">${d.name}</td>
+              <td class="p-2.5 font-bold text-slate-100">${d.name}</td>
+              <td class="p-2.5 text-blue-300 font-semibold">${zReport.toFixed(2)}</td>
               <td class="p-2.5 text-slate-300">${opening.toFixed(2)}</td>
-              <td class="p-2.5 text-emerald-400">${salesCash.toFixed(2)}</td>
-              <td class="p-2.5 text-rose-400">${drawerExpenses.toFixed(2)}</td>
-              <td class="p-2.5 font-semibold text-slate-100">${expected.toFixed(2)}</td>
-              <td class="p-2.5 font-bold text-emerald-300">${actual.toFixed(2)}</td>
-              <td class="p-2.5">${diffBadge}</td>
+              <td class="p-2.5 text-rose-400">${drawerExp.toFixed(2)}</td>
+              <td class="p-2.5 text-slate-300">${expectedCash.toFixed(2)}</td>
+              <td class="p-2.5 text-emerald-400 font-bold">${actualCash.toFixed(2)}</td>
+              <td class="p-2.5">${cashBadge}</td>
+              <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
+              <td class="p-2.5 text-blue-400 font-bold">${actualCard.toFixed(2)}</td>
+              <td class="p-2.5">${cardBadge}</td>
+              <td class="p-2.5">${totalStatusBadge}</td>
             </tr>
           `;
         }).join('');
       }
-      document.getElementById('drawersCount').innerText = `${drawersList.length} عهدة`;
+      document.getElementById('drawersCount').innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // تحديث البطاقات
-      const totalSales = totalSalesCash + currentData.salesCard;
-      const grandVariance = totalActualCash - totalExpectedCash;
+      // البطاقات الإجمالية
+      document.getElementById('totalSystemSales').innerHTML = `${(totalCashReport + totalCardReport).toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('totalCashSales').innerText = totalCashReport.toFixed(2);
+      document.getElementById('totalCardSales').innerText = totalCardReport.toFixed(2);
 
       document.getElementById('totalActualCash').innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('totalSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('salesCash').innerText = totalSalesCash.toFixed(2);
-      document.getElementById('salesCard').innerText = currentData.salesCard.toFixed(2);
-      document.getElementById('totalExpenses').innerHTML = `${grandExpenses.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('pettyExpenses').innerText = totalExpensesList.toFixed(2);
-      document.getElementById('supplierPaid').innerText = totalSupplierPaid.toFixed(2);
+      document.getElementById('totalExpenses').innerHTML = `${(totalExpensesAmount + totalSuppPaidAmount).toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('pettyExpenses').innerText = totalExpensesAmount.toFixed(2);
+      document.getElementById('supplierPaid').innerText = totalSuppPaidAmount.toFixed(2);
 
       const varEl = document.getElementById('totalVariance');
-      const varStatusEl = document.getElementById('varianceStatus');
+      const varStat = document.getElementById('varianceStatus');
       if (grandVariance < 0) {
         varEl.className = "text-2xl font-bold text-rose-400";
         varEl.innerHTML = `-${Math.abs(grandVariance).toFixed(2)} <span class="text-xs">ر.س</span>`;
-        varStatusEl.innerText = "يوجد عجز إجمالي في الصناديق";
-        varStatusEl.className = "text-[10px] text-rose-400 mt-1";
+        varStat.innerText = "يوجد عجز إجمالي في إغلاق اليوم";
+        varStat.className = "text-[10px] text-rose-400 mt-1";
       } else if (grandVariance > 0) {
         varEl.className = "text-2xl font-bold text-blue-400";
         varEl.innerHTML = `+${grandVariance.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        varStatusEl.innerText = "توجد زيادة إجمالية في الصناديق";
-        varStatusEl.className = "text-[10px] text-blue-400 mt-1";
+        varStat.innerText = "توجد زيادة إجمالية في إغلاق اليوم";
+        varStat.className = "text-[10px] text-blue-400 mt-1";
       } else {
         varEl.className = "text-2xl font-bold text-emerald-400";
         varEl.innerHTML = `0.00 <span class="text-xs">ر.س</span>`;
-        varStatusEl.innerText = "مطابق تماماً بدون عجز أو زيادة";
-        varStatusEl.className = "text-[10px] text-emerald-400 mt-1";
+        varStat.innerText = "مطابق تماماً بدون أي عجز أو زيادة";
+        varStat.className = "text-[10px] text-emerald-400 mt-1";
       }
 
       // جدول المصاريف
       const expBody = document.getElementById('expensesTableBody');
-      if (currentData.expenses.length === 0) {
+      if (expList.length === 0) {
         expBody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`;
       } else {
-        expBody.innerHTML = currentData.expenses.map(e => `
+        expBody.innerHTML = expList.map(e => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2">${e.name}</td>
             <td class="p-2 text-slate-400">${e.source || 'عهدة المحاسب'}</td>
@@ -348,14 +451,14 @@
           </tr>
         `).join('');
       }
-      document.getElementById('expensesCount').innerText = `${currentData.expenses.length} بند`;
+      document.getElementById('expensesCount').innerText = `${expList.length} بند`;
 
       // جدول الموردين
       const suppBody = document.getElementById('suppliersTableBody');
-      if (currentData.suppliers.length === 0) {
+      if (suppList.length === 0) {
         suppBody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات موردين اليوم</td></tr>`;
       } else {
-        suppBody.innerHTML = currentData.suppliers.map(s => `
+        suppBody.innerHTML = suppList.map(s => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2 font-medium">${s.name}</td>
             <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)} ر.س</td>
@@ -363,64 +466,191 @@
           </tr>
         `).join('');
       }
-      document.getElementById('suppliersCount').innerText = `${currentData.suppliers.length} مورد`;
+      document.getElementById('suppliersCount').innerText = `${suppList.length} مورد`;
     }
 
-    // دوال الإدخال
+    // جداول الإدارة للمحاسب (تعديل وحذف)
+    function renderAdminLists() {
+      // 1. الكاشيرات
+      const dList = Object.entries(currentData.drawers).map(([k, v]) => ({ id: k, ...v }));
+      document.getElementById('adminDrawersList').innerHTML = dList.map(d => `
+        <tr>
+          <td class="p-2 font-bold">${d.name}</td>
+          <td class="p-2">${parseFloat(d.totalZ || 0).toFixed(2)}</td>
+          <td class="p-2 text-emerald-400">${parseFloat(d.actualCash || 0).toFixed(2)}</td>
+          <td class="p-2 text-blue-400">${parseFloat(d.actualCard || 0).toFixed(2)}</td>
+          <td class="p-2 text-center space-x-1">
+            <button onclick="editDrawer('${d.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
+            <button onclick="deleteDrawer('${d.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+
+      // 2. المصاريف
+      const eList = Object.entries(currentData.expenses).map(([k, v]) => ({ id: k, ...v }));
+      document.getElementById('adminExpensesList').innerHTML = eList.map(e => `
+        <tr>
+          <td class="p-2">${e.name}</td>
+          <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)}</td>
+          <td class="p-2 text-slate-400">${e.source}</td>
+          <td class="p-2 text-center space-x-1">
+            <button onclick="editExpense('${e.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
+            <button onclick="deleteExpense('${e.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+
+      // 3. الموردين
+      const sList = Object.entries(currentData.suppliers).map(([k, v]) => ({ id: k, ...v }));
+      document.getElementById('adminSuppliersList').innerHTML = sList.map(s => `
+        <tr>
+          <td class="p-2 font-medium">${s.name}</td>
+          <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
+          <td class="p-2 text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
+          <td class="p-2 text-center space-x-1">
+            <button onclick="editSupplier('${s.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
+            <button onclick="deleteSupplier('${s.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // دوال الكاشير (حفظ / تعديل / حذف)
     function saveDrawer() {
+      const editId = document.getElementById('editDrawerId').value;
       const name = document.getElementById('drawerName').value.trim();
+      const totalZ = parseFloat(document.getElementById('drawerTotalZ').value) || 0;
       const opening = parseFloat(document.getElementById('drawerOpening').value) || 0;
-      const salesCash = parseFloat(document.getElementById('drawerSalesCash').value) || 0;
-      const actual = parseFloat(document.getElementById('drawerActual').value) || 0;
+      const cashReport = parseFloat(document.getElementById('drawerCashReport').value) || 0;
+      const actualCash = parseFloat(document.getElementById('drawerActualCash').value) || 0;
+      const cardReport = parseFloat(document.getElementById('drawerCardReport').value) || 0;
+      const actualCard = parseFloat(document.getElementById('drawerActualCard').value) || 0;
 
-      if (!name) return alert('يرجى تحديد اسم الكاشير أو الصندوق');
+      if (!name) return alert('يرجى كتابة اسم الكاشير');
 
-      const drawerId = name.replace(/\s+/g, '_');
-      db.ref('daily_reports/' + todayStr + '/drawers/' + drawerId).set({
-        name,
-        opening,
-        salesCash,
-        actual
+      const id = editId ? editId : name.replace(/\s+/g, '_');
+      db.ref('daily_reports/' + todayStr + '/drawers/' + id).set({
+        name, totalZ, opening, cashReport, actualCash, cardReport, actualCard
       }).then(() => {
-        alert('تم حفظ عهدة ' + name + ' بنجاح!');
-        document.getElementById('drawerName').value = '';
-        document.getElementById('drawerOpening').value = '';
-        document.getElementById('drawerSalesCash').value = '';
-        document.getElementById('drawerActual').value = '';
+        alert('تم الحفظ بنجاح!');
+        resetDrawerForm();
       });
     }
 
-    function saveCardSales() {
-      const val = parseFloat(document.getElementById('inputSalesCard').value) || 0;
-      db.ref('daily_reports/' + todayStr).update({ salesCard: val })
-        .then(() => alert('تم تحديث مبيعات الشبكة بنجاح!'));
+    function editDrawer(id) {
+      const d = currentData.drawers[id];
+      if (!d) return;
+      document.getElementById('editDrawerId').value = id;
+      document.getElementById('drawerName').value = d.name || '';
+      document.getElementById('drawerTotalZ').value = d.totalZ || '';
+      document.getElementById('drawerOpening').value = d.opening || '';
+      document.getElementById('drawerCashReport').value = d.cashReport || '';
+      document.getElementById('drawerActualCash').value = d.actualCash || '';
+      document.getElementById('drawerCardReport').value = d.cardReport || '';
+      document.getElementById('drawerActualCard').value = d.actualCard || '';
+      document.getElementById('drawerFormTitle').innerText = '✏️ تعديل بيانات الكاشير: ' + d.name;
     }
 
-    function addExpense() {
+    function deleteDrawer(id) {
+      if (confirm('هل أنت متأكد من رغبتك في حذف هذا الكاشير نهائياً؟')) {
+        db.ref('daily_reports/' + todayStr + '/drawers/' + id).remove();
+      }
+    }
+
+    function resetDrawerForm() {
+      document.getElementById('editDrawerId').value = '';
+      document.getElementById('drawerName').value = '';
+      document.getElementById('drawerTotalZ').value = '';
+      document.getElementById('drawerOpening').value = '';
+      document.getElementById('drawerCashReport').value = '';
+      document.getElementById('drawerActualCash').value = '';
+      document.getElementById('drawerCardReport').value = '';
+      document.getElementById('drawerActualCard').value = '';
+      document.getElementById('drawerFormTitle').innerText = '➕ إضافة / تعديل إغلاق كاشير';
+    }
+
+    // دوال المصاريف (حفظ / تعديل / حذف)
+    function saveExpense() {
+      const editId = document.getElementById('editExpenseId').value;
       const name = document.getElementById('expenseName').value.trim();
       const amount = parseFloat(document.getElementById('expenseAmount').value);
       const source = document.getElementById('expenseSource').value;
-      if (!name || isNaN(amount)) return alert('يرجى كتابة بيان المصروف والمبلغ');
+      if (!name || isNaN(amount)) return alert('يرجى إدخال بيان المصروف والمبلغ');
 
-      db.ref('daily_reports/' + todayStr + '/expenses').push({ name, amount, source }).then(() => {
-        document.getElementById('expenseName').value = '';
-        document.getElementById('expenseAmount').value = '';
-      });
+      if (editId) {
+        db.ref('daily_reports/' + todayStr + '/expenses/' + editId).update({ name, amount, source })
+          .then(() => { alert('تم تعديل المصروف بنجاح!'); resetExpenseForm(); });
+      } else {
+        db.ref('daily_reports/' + todayStr + '/expenses').push({ name, amount, source })
+          .then(() => { resetExpenseForm(); });
+      }
     }
 
-    function addSupplier() {
+    function editExpense(id) {
+      const e = currentData.expenses[id];
+      if (!e) return;
+      document.getElementById('editExpenseId').value = id;
+      document.getElementById('expenseName').value = e.name;
+      document.getElementById('expenseAmount').value = e.amount;
+      document.getElementById('expenseSource').value = e.source;
+      document.getElementById('expenseFormTitle').innerText = '✏️ تعديل المصروف: ' + e.name;
+    }
+
+    function deleteExpense(id) {
+      if (confirm('هل أنت متأكد من حذف هذا المصروف؟')) {
+        db.ref('daily_reports/' + todayStr + '/expenses/' + id).remove();
+      }
+    }
+
+    function resetExpenseForm() {
+      document.getElementById('editExpenseId').value = '';
+      document.getElementById('expenseName').value = '';
+      document.getElementById('expenseAmount').value = '';
+      document.getElementById('expenseFormTitle').innerText = '➕ إضافة / تعديل مصروف نثري';
+    }
+
+    // دوال الموردين (حفظ / تعديل / حذف)
+    function saveSupplier() {
+      const editId = document.getElementById('editSuppId').value;
       const name = document.getElementById('suppName').value.trim();
       const paid = parseFloat(document.getElementById('suppPaid').value) || 0;
       const remaining = parseFloat(document.getElementById('suppRemaining').value) || 0;
       if (!name) return alert('يرجى إدخال اسم المورد');
 
-      db.ref('daily_reports/' + todayStr + '/suppliers').push({ name, paid, remaining }).then(() => {
-        document.getElementById('suppName').value = '';
-        document.getElementById('suppPaid').value = '';
-        document.getElementById('suppRemaining').value = '';
-      });
+      if (editId) {
+        db.ref('daily_reports/' + todayStr + '/suppliers/' + editId).update({ name, paid, remaining })
+          .then(() => { alert('تم تعديل المورد بنجاح!'); resetSuppForm(); });
+      } else {
+        db.ref('daily_reports/' + todayStr + '/suppliers').push({ name, paid, remaining })
+          .then(() => { resetSuppForm(); });
+      }
     }
 
+    function editSupplier(id) {
+      const s = currentData.suppliers[id];
+      if (!s) return;
+      document.getElementById('editSuppId').value = id;
+      document.getElementById('suppName').value = s.name;
+      document.getElementById('suppPaid').value = s.paid;
+      document.getElementById('suppRemaining').value = s.remaining;
+      document.getElementById('suppFormTitle').innerText = '✏️ تعديل بيانات المورد: ' + s.name;
+    }
+
+    function deleteSupplier(id) {
+      if (confirm('هل أنت متأكد من حذف هذا المورد؟')) {
+        db.ref('daily_reports/' + todayStr + '/suppliers/' + id).remove();
+      }
+    }
+
+    function resetSuppForm() {
+      document.getElementById('editSuppId').value = '';
+      document.getElementById('suppName').value = '';
+      document.getElementById('suppPaid').value = '';
+      document.getElementById('suppRemaining').value = '';
+      document.getElementById('suppFormTitle').innerText = '➕ إضافة / تعديل مورد';
+    }
+
+    // إظهار لوحة المحاسب
     function toggleAdmin() {
       const pin = prompt("أدخل الرقم السري الخاص بالمحاسب:");
       if (pin === "1234") {
@@ -430,22 +660,32 @@
       }
     }
 
+    // رسالة واتساب المطورة
     function sendWhatsApp() {
-      const drawersList = Object.values(currentData.drawers || {});
-      let details = drawersList.map(d => {
-        const exp = (parseFloat(d.opening || 0) + parseFloat(d.salesCash || 0));
-        const diff = parseFloat(d.actual || 0) - exp;
-        const status = diff === 0 ? "مطابق" : (diff < 0 ? `عجز (${Math.abs(diff)})` : `زيادة (+${diff})`);
-        return `🔸 *${d.name}:* الفعلي ${d.actual} ر.س | الحالة: ${status}`;
+      const dList = Object.values(currentData.drawers || {});
+      const expList = Object.values(currentData.expenses || {});
+      
+      let details = dList.map(d => {
+        const drawerExp = expList.filter(e => e.source === d.name).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+        const expCash = (parseFloat(d.opening || 0) + parseFloat(d.cashReport || 0)) - drawerExp;
+        const diffCash = parseFloat(d.actualCash || 0) - expCash;
+        const diffCard = parseFloat(d.actualCard || 0) - parseFloat(d.cardReport || 0);
+        const netDiff = diffCash + diffCard;
+
+        const stat = netDiff === 0 ? "✅ مطابق" : (netDiff < 0 ? `❌ عجز (${Math.abs(netDiff).toFixed(2)} ر.س)` : `🔵 زيادة (+${netDiff.toFixed(2)} ر.س)`);
+        return `👤 *${d.name}:* مبيعات: ${(parseFloat(d.cashReport || 0) + parseFloat(d.cardReport || 0)).toFixed(2)} | كاش بالدرج: ${parseFloat(d.actualCash || 0).toFixed(2)} | الحالة: ${stat}`;
       }).join('%0A');
 
-      const msg = `📊 *تقرير تقفيل العهد واليومية - ${todayStr}*%0A` +
+      const totalSales = (parseFloat(document.getElementById('totalSystemSales').innerText) || 0).toFixed(2);
+      const totalCash = (parseFloat(document.getElementById('totalActualCash').innerText) || 0).toFixed(2);
+
+      const msg = `📊 *تقرير تقفيل اليومية ومطابقة الكاشيرات - ${todayStr}*%0A` +
                   `-----------------------------------%0A` +
                   details + `%0A` +
                   `-----------------------------------%0A` +
-                  `💳 *إجمالي مبيعات المحل:* ${(parseFloat(document.getElementById('totalSales').innerText) || 0).toFixed(2)} ر.س%0A` +
-                  `💵 *إجمالي الكاش الموجود:* ${(parseFloat(document.getElementById('totalActualCash').innerText) || 0).toFixed(2)} ر.س%0A` +
-                  `🌐 المتابعة المباشرة عبر الرابط.`;
+                  `💳 *إجمالي مبيعات المحل:* ${totalSales} ر.س%0A` +
+                  `💵 *إجمالي الكاش الفعلي الموجود:* ${totalCash} ر.س%0A` +
+                  `🌐 الرابط المباشر للمتابعة الحية.`;
 
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
     }
