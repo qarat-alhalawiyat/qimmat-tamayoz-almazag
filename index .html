@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام الإغلاق اليومي المالي</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- خط تجوال الأنيق -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase Compatibility SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-6">
+
+  <div class="max-w-5xl mx-auto space-y-6">
+    
+    <!-- الهيدر -->
+    <header class="flex flex-col sm:flex-row justify-between items-center bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-lg gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-emerald-400">لوحة المتابعة المالية اليومية</h1>
+        <p class="text-sm text-slate-400" id="liveDate">جاري تحميل التاريخ...</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-2"></span>
+          مباشر ومحدث لحظياً
+        </span>
+        <button onclick="toggleAdmin()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded-lg border border-slate-600 transition">
+          🔐 وضع المحاسب
+        </button>
+      </div>
+    </header>
+
+    <!-- البطاقات الرئيسية (Dashboard Cards) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- كاش الصندوق -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow relative overflow-hidden">
+        <div class="text-xs text-slate-400 mb-1">صافي النقدية بالدرج (الكاش)</div>
+        <div class="text-2xl font-bold text-emerald-400" id="cashInDrawer">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[10px] text-slate-500 mt-1">(رصيد بداية + مبيعات كاش - منصرف)</div>
+      </div>
+
+      <!-- إجمالي المبيعات -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <div class="text-xs text-slate-400 mb-1">إجمالي مبيعات اليوم</div>
+        <div class="text-2xl font-bold text-blue-400" id="totalSales">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[11px] text-slate-400 mt-1">كاش: <span id="salesCash" class="text-slate-200">0</span> | شبكة: <span id="salesCard" class="text-slate-200">0</span></div>
+      </div>
+
+      <!-- المصاريف وسداد الموردين -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <div class="text-xs text-slate-400 mb-1">إجمالي المنصرف والمدفوعات</div>
+        <div class="text-2xl font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[11px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses" class="text-slate-200">0</span> | سداد موردين: <span id="supplierPaid" class="text-slate-200">0</span></div>
+      </div>
+
+      <!-- مديونية الموردين الإجمالية -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <div class="text-xs text-slate-400 mb-1">إجمالي مديونية الموردين</div>
+        <div class="text-2xl font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[10px] text-slate-500 mt-1">المتبقي لجميع الموردين</div>
+      </div>
+    </div>
+
+    <!-- زر توليد رسالة واتساب سريعة -->
+    <div class="flex justify-end">
+      <button onclick="sendWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2 shadow-md transition">
+        <span>📲 نسخ وإرسال ملخص اليوم عبر واتساب</span>
+      </button>
+    </div>
+
+    <!-- قسم تفاصيل المصاريف وحركة الموردين المعروض للطرفين -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- جدول المصاريف اليومية -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
+          <span>📋 بيان المصاريف النثرية</span>
+          <span class="text-xs font-normal text-slate-400" id="expensesCount">0 بند</span>
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-900/50">
+              <tr>
+                <th class="p-2">البيان</th>
+                <th class="p-2">المبلغ</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody" class="divide-y divide-slate-700/50">
+              <tr><td colspan="2" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- جدول سداد ومديونيات الموردين -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
+          <span>🚚 سجل الموردين</span>
+          <span class="text-xs font-normal text-slate-400" id="suppliersCount">0 مورد</span>
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-900/50">
+              <tr>
+                <th class="p-2">المورد</th>
+                <th class="p-2">المسدد اليوم</th>
+                <th class="p-2">المتبقي له</th>
+              </tr>
+            </thead>
+            <tbody id="suppliersTableBody" class="divide-y divide-slate-700/50">
+              <tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات موردين اليوم</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- لوحة إدخال البيانات الخاصة بالمحاسب (مخفية وتفتح برقم سري 1234) -->
+    <div id="adminPanel" class="hidden bg-slate-800/90 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h2 class="text-lg font-bold text-emerald-400">📝 شاشة إدخال وتقفيل الوردية اليومية</h2>
+        <span class="text-xs text-slate-400">تُحفظ البيانات فوراً في قاعدة البيانات السحابية</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">رصيد البداية (عهدة الصندوق)</label>
+          <input type="number" id="inputOpeningCash" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-emerald-300">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">مبيعات الكاش (نقدي)</label>
+          <input type="number" id="inputSalesCash" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-emerald-300">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">مبيعات الشبكة / مدى</label>
+          <input type="number" id="inputSalesCard" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-blue-300">
+        </div>
+      </div>
+
+      <!-- إدخال مصروف سريع -->
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/60">
+        <h3 class="text-xs font-bold text-slate-300 mb-2">➕ إضافة مصروف نثري</h3>
+        <div class="flex gap-2">
+          <input type="text" id="expenseName" placeholder="البيان (مثال: فاتورة كهرباء، نظافة)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="expenseAmount" placeholder="المبلغ" class="w-28 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <button onclick="addExpense()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 rounded-lg text-xs font-bold">إضافة</button>
+        </div>
+      </div>
+
+      <!-- إدخال حركة مورد -->
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/60">
+        <h3 class="text-xs font-bold text-slate-300 mb-2">➕ تسجيل دفعة أو مديونية مورد</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <input type="text" id="suppName" placeholder="اسم المورد / الشركة" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="suppPaid" placeholder="المبلغ المسدد كاش" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="suppRemaining" placeholder="إجمالي المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <button onclick="addSupplier()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ المورد</button>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="saveDailyTotals()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-2 rounded-xl text-sm transition">
+          💾 حفظ وتحديث الصندوق العام
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // إعدادات Firebase الخاصة بمشروعك مباشرة
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD53an3IKwwjom9iIuHSwbrFNB8CglVvF4",
+      authDomain: "market-pos-470ad.firebaseapp.com",
+      databaseURL: "https://market-pos-470ad-default-rtdb.firebaseio.com",
+      projectId: "market-pos-470ad",
+      storageBucket: "market-pos-470ad.firebasestorage.app",
+      messagingSenderId: "672633751313",
+      appId: "1:672633751313:web:9cca5e0fa3ad53c471aeb0",
+      measurementId: "G-VBL3THTSJZ"
+    };
+
+    // تشغيل الفايربيس
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // تهيئة التاريخ
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('liveDate').innerText = "تاريخ اليومية: " + todayStr;
+
+    // المتغيرات المحلية اللحظية
+    let currentData = {
+      openingCash: 0,
+      salesCash: 0,
+      salesCard: 0,
+      expenses: [],
+      suppliers: []
+    };
+
+    // ==========================================
+    // الاستماع اللحظي للتغييرات (Realtime Live Sync)
+    // ==========================================
+    db.ref('daily_reports/' + todayStr).on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        currentData = {
+          openingCash: data.openingCash || 0,
+          salesCash: data.salesCash || 0,
+          salesCard: data.salesCard || 0,
+          expenses: data.expenses ? Object.values(data.expenses) : [],
+          suppliers: data.suppliers ? Object.values(data.suppliers) : []
+        };
+      }
+      renderDashboard();
+    });
+
+    // رسم وتحديث الواجهة
+    function renderDashboard() {
+      const totalSales = currentData.salesCash + currentData.salesCard;
+      const totalExpensesList = currentData.expenses.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const totalSupplierPaid = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+      const totalSupplierDue = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.remaining) || 0), 0);
+
+      const netCashInDrawer = (currentData.openingCash + currentData.salesCash) - (totalExpensesList + totalSupplierPaid);
+
+      // تحديث البطاقات
+      document.getElementById('cashInDrawer').innerHTML = `${netCashInDrawer.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('totalSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('salesCash').innerText = currentData.salesCash.toFixed(2);
+      document.getElementById('salesCard').innerText = currentData.salesCard.toFixed(2);
+
+      document.getElementById('totalExpenses').innerHTML = `${(totalExpensesList + totalSupplierPaid).toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('pettyExpenses').innerText = totalExpensesList.toFixed(2);
+      document.getElementById('supplierPaid').innerText = totalSupplierPaid.toFixed(2);
+      document.getElementById('totalSupplierDue').innerHTML = `${totalSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
+
+      // جدول المصاريف
+      const expBody = document.getElementById('expensesTableBody');
+      if (currentData.expenses.length === 0) {
+        expBody.innerHTML = `<tr><td colspan="2" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`;
+      } else {
+        expBody.innerHTML = currentData.expenses.map(e => `
+          <tr class="hover:bg-slate-700/30">
+            <td class="p-2">${e.name}</td>
+            <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)} ر.س</td>
+          </tr>
+        `).join('');
+      }
+      document.getElementById('expensesCount').innerText = `${currentData.expenses.length} بند`;
+
+      // جدول الموردين
+      const suppBody = document.getElementById('suppliersTableBody');
+      if (currentData.suppliers.length === 0) {
+        suppBody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات موردين اليوم</td></tr>`;
+      } else {
+        suppBody.innerHTML = currentData.suppliers.map(s => `
+          <tr class="hover:bg-slate-700/30">
+            <td class="p-2 font-medium">${s.name}</td>
+            <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)} ر.س</td>
+            <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)} ر.س</td>
+          </tr>
+        `).join('');
+      }
+      document.getElementById('suppliersCount').innerText = `${currentData.suppliers.length} مورد`;
+    }
+
+    // دوال الإدخال الخاصة بالمحاسب
+    function saveDailyTotals() {
+      const opening = parseFloat(document.getElementById('inputOpeningCash').value) || 0;
+      const sCash = parseFloat(document.getElementById('inputSalesCash').value) || 0;
+      const sCard = parseFloat(document.getElementById('inputSalesCard').value) || 0;
+
+      db.ref('daily_reports/' + todayStr).update({
+        openingCash: opening,
+        salesCash: sCash,
+        salesCard: sCard
+      }).then(() => alert('تم حفظ أرقام اليومية وتحديث شاشة المتابعة بنجاح!'));
+    }
+
+    function addExpense() {
+      const name = document.getElementById('expenseName').value.trim();
+      const amount = parseFloat(document.getElementById('expenseAmount').value);
+      if (!name || isNaN(amount)) return alert('يرجى كتابة بيان المصروف والمبلغ بشكل صحيح');
+
+      db.ref('daily_reports/' + todayStr + '/expenses').push({ name, amount }).then(() => {
+        document.getElementById('expenseName').value = '';
+        document.getElementById('expenseAmount').value = '';
+      });
+    }
+
+    function addSupplier() {
+      const name = document.getElementById('suppName').value.trim();
+      const paid = parseFloat(document.getElementById('suppPaid').value) || 0;
+      const remaining = parseFloat(document.getElementById('suppRemaining').value) || 0;
+      if (!name) return alert('يرجى إدخال اسم المورد');
+
+      db.ref('daily_reports/' + todayStr + '/suppliers').push({ name, paid, remaining }).then(() => {
+        document.getElementById('suppName').value = '';
+        document.getElementById('suppPaid').value = '';
+        document.getElementById('suppRemaining').value = '';
+      });
+    }
+
+    // زر إظهار لوحة المحاسب
+    function toggleAdmin() {
+      const pin = prompt("أدخل الرقم السري للمحاسب (الافتراضي: 1234):");
+      if (pin === "1234") {
+        const panel = document.getElementById('adminPanel');
+        panel.classList.toggle('hidden');
+        document.getElementById('inputOpeningCash').value = currentData.openingCash;
+        document.getElementById('inputSalesCash').value = currentData.salesCash;
+        document.getElementById('inputSalesCard').value = currentData.salesCard;
+      } else if (pin !== null) {
+        alert("الرمز السري غير صحيح!");
+      }
+    }
+
+    // توليد رسالة واتساب
+    function sendWhatsApp() {
+      const totalSales = currentData.salesCash + currentData.salesCard;
+      const totalExpensesList = currentData.expenses.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const totalSupplierPaid = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+      const netCash = (currentData.openingCash + currentData.salesCash) - (totalExpensesList + totalSupplierPaid);
+
+      const msg = `📊 *تقرير الإغلاق المالي اليومي - ${todayStr}*%0A` +
+                  `-----------------------------------%0A` +
+                  `💵 *صافي الكاش بالدرج:* ${netCash.toFixed(2)} ر.س%0A` +
+                  `💳 *إجمالي المبيعات:* ${totalSales.toFixed(2)} ر.س (كاش: ${currentData.salesCash} | شبكة: ${currentData.salesCard})%0A` +
+                  `📉 *إجمالي المصاريف:* ${totalExpensesList.toFixed(2)} ر.س%0A` +
+                  `🚚 *سداد الموردين:* ${totalSupplierPaid.toFixed(2)} ر.س%0A` +
+                  `-----------------------------------%0A` +
+                  `🌐 المتابعة الحية متاحة عبر الرابط المباشر.`;
+
+      window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+    }
+  </script>
+</body>
+</html>
