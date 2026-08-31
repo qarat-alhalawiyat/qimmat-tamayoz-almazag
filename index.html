@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام الإغلاق اليومي المالي - قمة تميز المذاق</title>
+  <title>نظام الإغلاق اليومي المالي والعهد - قمة تميز المذاق</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- خط تجوال الأنيق -->
@@ -17,12 +17,12 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-6">
 
-  <div class="max-w-5xl mx-auto space-y-6">
+  <div class="max-w-6xl mx-auto space-y-6">
     
     <!-- الهيدر -->
     <header class="flex flex-col sm:flex-row justify-between items-center bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-lg gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-emerald-400">لوحة المتابعة المالية اليومية</h1>
+        <h1 class="text-2xl font-bold text-emerald-400">لوحة الإغلاق المالي والرقابة على العهد</h1>
         <p class="text-sm text-slate-400" id="liveDate">جاري تحميل التاريخ...</p>
       </div>
       <div class="flex items-center gap-2">
@@ -31,18 +31,18 @@
           مباشر ومحدث لحظياً
         </span>
         <button onclick="toggleAdmin()" class="bg-slate-700 hover:bg-slate-600 text-xs px-3 py-2 rounded-lg border border-slate-600 transition">
-          🔐 وضع المحاسب
+          🔐 وضع المحاسب والإدخال
         </button>
       </div>
     </header>
 
-    <!-- البطاقات الرئيسية (Dashboard Cards) -->
+    <!-- البطاقات الرئيسية -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- كاش الصندوق -->
-      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow relative overflow-hidden">
-        <div class="text-xs text-slate-400 mb-1">صافي النقدية بالدرج (الكاش)</div>
-        <div class="text-2xl font-bold text-emerald-400" id="cashInDrawer">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1">(رصيد بداية + مبيعات كاش - منصرف)</div>
+      <!-- إجمالي الكاش الفعلي بالصناديق -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+        <div class="text-xs text-slate-400 mb-1">إجمالي الكاش الفعلي (جميع العهد)</div>
+        <div class="text-2xl font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[10px] text-slate-500 mt-1">مجموع الكاش الموجود حالياً</div>
       </div>
 
       <!-- إجمالي المبيعات -->
@@ -52,29 +52,55 @@
         <div class="text-[11px] text-slate-400 mt-1">كاش: <span id="salesCash" class="text-slate-200">0</span> | شبكة: <span id="salesCard" class="text-slate-200">0</span></div>
       </div>
 
-      <!-- المصاريف وسداد الموردين -->
+      <!-- إجمالي المنصرف -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <div class="text-xs text-slate-400 mb-1">إجمالي المنصرف والمدفوعات</div>
         <div class="text-2xl font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[11px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses" class="text-slate-200">0</span> | سداد موردين: <span id="supplierPaid" class="text-slate-200">0</span></div>
+        <div class="text-[11px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses" class="text-slate-200">0</span> | موردين: <span id="supplierPaid" class="text-slate-200">0</span></div>
       </div>
 
-      <!-- مديونية الموردين الإجمالية -->
+      <!-- حالة المطابقة الإجمالية (عجز / زيادة) -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
-        <div class="text-xs text-slate-400 mb-1">إجمالي مديونية الموردين</div>
-        <div class="text-2xl font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1">المتبقي لجميع الموردين</div>
+        <div class="text-xs text-slate-400 mb-1">صافي الفروقات (عجز / زيادة)</div>
+        <div class="text-2xl font-bold" id="totalVariance">0.00 <span class="text-xs">ر.س</span></div>
+        <div class="text-[10px] text-slate-500 mt-1" id="varianceStatus">مطابق تماماً</div>
+      </div>
+    </div>
+
+    <!-- جدول تتبع العهد والكاشيرات بالتفصيل -->
+    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
+      <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
+        <span>👤 تفصيل عهد الصناديق والكاشيرات ومطابقة الدرج</span>
+        <span class="text-xs font-normal text-slate-400" id="drawersCount">0 عهدة</span>
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-right text-xs">
+          <thead class="text-slate-400 bg-slate-900/50">
+            <tr>
+              <th class="p-2.5">المسؤول / الصندوق</th>
+              <th class="p-2.5">رصيد البداية</th>
+              <th class="p-2.5">مبيعات الكاش</th>
+              <th class="p-2.5">المنصرف</th>
+              <th class="p-2.5">المفترض بالدرج</th>
+              <th class="p-2.5">الفعلي بالعد</th>
+              <th class="p-2.5">الفارق (عجز / زيادة)</th>
+            </tr>
+          </thead>
+          <tbody id="drawersTableBody" class="divide-y divide-slate-700/50">
+            <tr><td colspan="7" class="p-3 text-center text-slate-500">لا توجد عهد مسجلة اليوم</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <!-- زر توليد رسالة واتساب سريعة -->
     <div class="flex justify-end">
       <button onclick="sendWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl text-sm flex items-center gap-2 shadow-md transition">
-        <span>📲 نسخ وإرسال ملخص اليوم عبر واتساب</span>
+        <span>📲 نسخ وإرسال ملخص تقفيل العهد اليوم عبر واتساب</span>
       </button>
     </div>
 
-    <!-- قسم تفاصيل المصاريف وحركة الموردين المعروض للطرفين -->
+    <!-- تفاصيل المصاريف والموردين -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
       <!-- جدول المصاريف اليومية -->
@@ -88,11 +114,12 @@
             <thead class="text-slate-400 bg-slate-900/50">
               <tr>
                 <th class="p-2">البيان</th>
+                <th class="p-2">الصندوق المصروف منه</th>
                 <th class="p-2">المبلغ</th>
               </tr>
             </thead>
             <tbody id="expensesTableBody" class="divide-y divide-slate-700/50">
-              <tr><td colspan="2" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>
+              <tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>
             </tbody>
           </table>
         </div>
@@ -109,7 +136,7 @@
             <thead class="text-slate-400 bg-slate-900/50">
               <tr>
                 <th class="p-2">المورد</th>
-                <th class="p-2">المسدد اليوم</th>
+                <th class="p-2">المسدد كاش</th>
                 <th class="p-2">المتبقي له</th>
               </tr>
             </thead>
@@ -121,62 +148,66 @@
       </div>
     </div>
 
-    <!-- لوحة إدخال البيانات الخاصة بالمحاسب (مخفية وتفتح برقم سري بدون فضحه) -->
-    <div id="adminPanel" class="hidden bg-slate-800/90 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-xl space-y-4">
+    <!-- لوحة إدخال البيانات الخاصة بالمحاسب -->
+    <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-5">
       <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-        <h2 class="text-lg font-bold text-emerald-400">📝 شاشة إدخال وتقفيل الوردية اليومية</h2>
-        <span class="text-xs text-slate-400">تُحفظ البيانات فوراً في قاعدة البيانات السحابية</span>
+        <h2 class="text-lg font-bold text-emerald-400">📝 شاشة إدارة العهد والإقفال اليومي</h2>
+        <span class="text-xs text-slate-400">حفظ فوري في Firebase</span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs text-slate-300 mb-1">رصيد البداية (عهدة الصندوق)</label>
-          <input type="number" id="inputOpeningCash" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-emerald-300">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-300 mb-1">مبيعات الكاش (نقدي)</label>
-          <input type="number" id="inputSalesCash" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-emerald-300">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-300 mb-1">مبيعات الشبكة / مدى</label>
-          <input type="number" id="inputSalesCard" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-blue-300">
+      <!-- 1. إدارة عهد الكاشيرات والمحاسب -->
+      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-3">
+        <h3 class="text-xs font-bold text-emerald-300">➕ إضافة / تحديث عهدة (كاشير 1، كاشير 2، عهدة المحاسب...)</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          <input type="text" id="drawerName" placeholder="الاسم (مثال: كاشير 1)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="drawerOpening" placeholder="رصيد البداية" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="drawerSalesCash" placeholder="مبيعات كاش" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="drawerActual" placeholder="الفعلي بالعد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <button onclick="saveDrawer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs py-2">حفظ العهدة</button>
         </div>
       </div>
 
-      <!-- إدخال مصروف سريع -->
-      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/60">
-        <h3 class="text-xs font-bold text-slate-300 mb-2">➕ إضافة مصروف نثري</h3>
-        <div class="flex gap-2">
-          <input type="text" id="expenseName" placeholder="البيان (مثال: فاتورة كهرباء، نظافة)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <input type="number" id="expenseAmount" placeholder="المبلغ" class="w-28 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <button onclick="addExpense()" class="bg-rose-600 hover:bg-rose-500 text-white px-4 rounded-lg text-xs font-bold">إضافة</button>
+      <!-- 2. مبيعات الشبكة الإجمالية للمحل -->
+      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-2">
+        <h3 class="text-xs font-bold text-blue-300">💳 إجمالي مبيعات نقاط البيع (شبكة / مدى)</h3>
+        <div class="flex gap-2 max-w-sm">
+          <input type="number" id="inputSalesCard" placeholder="إجمالي الشبكة" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
+          <button onclick="saveCardSales()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 rounded-lg text-xs">تحديث الشبكة</button>
         </div>
       </div>
 
-      <!-- إدخال حركة مورد -->
-      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-700/60">
-        <h3 class="text-xs font-bold text-slate-300 mb-2">➕ تسجيل دفعة أو مديونية مورد</h3>
+      <!-- 3. إضافة مصروف وتحديد مصدره -->
+      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-2">
+        <h3 class="text-xs font-bold text-rose-300">➕ إضافة مصروف نثري</h3>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-          <input type="text" id="suppName" placeholder="اسم المورد / الشركة" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <input type="number" id="suppPaid" placeholder="المبلغ المسدد كاش" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <input type="number" id="suppRemaining" placeholder="إجمالي المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-          <button onclick="addSupplier()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ المورد</button>
+          <input type="text" id="expenseName" placeholder="البيان (أكياس، نظافة...)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="expenseAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300">
+            <option value="عهدة المحاسب">عهدة المحاسب</option>
+            <option value="كاشير 1">كاشير 1</option>
+            <option value="كاشير 2">كاشير 2</option>
+          </select>
+          <button onclick="addExpense()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs py-2">إضافة المصروف</button>
         </div>
       </div>
 
-      <div class="pt-2 flex justify-end">
-        <button onclick="saveDailyTotals()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-2 rounded-xl text-sm transition">
-          💾 حفظ وتحديث الصندوق العام
-        </button>
+      <!-- 4. إضافة سداد مورد -->
+      <div class="p-4 bg-slate-900/70 rounded-xl border border-slate-700 space-y-2">
+        <h3 class="text-xs font-bold text-amber-300">➕ تسجيل دفعة أو مديونية مورد</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          <input type="text" id="suppName" placeholder="اسم المورد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="suppPaid" placeholder="المسدد كاش" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="number" id="suppRemaining" placeholder="المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <button onclick="addSupplier()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg text-xs py-2">حفظ المورد</button>
+        </div>
       </div>
+
     </div>
 
   </div>
 
   <script>
-    // ==========================================
-    // إعدادات Firebase الخاصة بمشروعك مباشرة
-    // ==========================================
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyD53an3IKwwjom9iIuHSwbrFNB8CglVvF4",
       authDomain: "market-pos-470ad.firebaseapp.com",
@@ -188,34 +219,27 @@
       measurementId: "G-VBL3THTSJZ"
     };
 
-    // تشغيل الفايربيس
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.database();
 
-    // تهيئة التاريخ
     const todayStr = new Date().toISOString().split('T')[0];
     document.getElementById('liveDate').innerText = "تاريخ اليومية: " + todayStr;
 
-    // المتغيرات المحلية اللحظية
     let currentData = {
-      openingCash: 0,
-      salesCash: 0,
+      drawers: {},
       salesCard: 0,
       expenses: [],
       suppliers: []
     };
 
-    // ==========================================
-    // الاستماع اللحظي للتغييرات (Realtime Live Sync)
-    // ==========================================
+    // الاستماع المباشر
     db.ref('daily_reports/' + todayStr).on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
         currentData = {
-          openingCash: data.openingCash || 0,
-          salesCash: data.salesCash || 0,
+          drawers: data.drawers || {},
           salesCard: data.salesCard || 0,
           expenses: data.expenses ? Object.values(data.expenses) : [],
           suppliers: data.suppliers ? Object.values(data.suppliers) : []
@@ -224,34 +248,102 @@
       renderDashboard();
     });
 
-    // رسم وتحديث الواجهة
     function renderDashboard() {
-      const totalSales = currentData.salesCash + currentData.salesCard;
+      const drawersList = Object.entries(currentData.drawers).map(([key, val]) => ({ id: key, ...val }));
+      
+      let totalSalesCash = 0;
+      let totalActualCash = 0;
+      let totalExpectedCash = 0;
+
+      // حساب المصاريف وسداد الموردين
       const totalExpensesList = currentData.expenses.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalSupplierPaid = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-      const totalSupplierDue = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.remaining) || 0), 0);
+      const grandExpenses = totalExpensesList + totalSupplierPaid;
 
-      const netCashInDrawer = (currentData.openingCash + currentData.salesCash) - (totalExpensesList + totalSupplierPaid);
+      // جدول العهد
+      const drawersBody = document.getElementById('drawersTableBody');
+      if (drawersList.length === 0) {
+        drawersBody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-slate-500">لا توجد عهد مسجلة اليوم</td></tr>`;
+      } else {
+        drawersBody.innerHTML = drawersList.map(d => {
+          const opening = parseFloat(d.opening || 0);
+          const salesCash = parseFloat(d.salesCash || 0);
+          const actual = parseFloat(d.actual || 0);
+          
+          // حساب المنصرف الخاص بهذه العهدة إن وجد
+          const drawerExpenses = currentData.expenses
+            .filter(e => e.source === d.name)
+            .reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+
+          const expected = (opening + salesCash) - drawerExpenses;
+          const diff = actual - expected;
+
+          totalSalesCash += salesCash;
+          totalActualCash += actual;
+          totalExpectedCash += expected;
+
+          let diffBadge = `<span class="text-emerald-400 font-bold">مطابق (0.00)</span>`;
+          if (diff < 0) {
+            diffBadge = `<span class="text-rose-400 font-bold">عجز (${Math.abs(diff).toFixed(2)} ر.س)</span>`;
+          } else if (diff > 0) {
+            diffBadge = `<span class="text-blue-400 font-bold">زيادة (+${diff.toFixed(2)} ر.س)</span>`;
+          }
+
+          return `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2.5 font-bold text-slate-200">${d.name}</td>
+              <td class="p-2.5 text-slate-300">${opening.toFixed(2)}</td>
+              <td class="p-2.5 text-emerald-400">${salesCash.toFixed(2)}</td>
+              <td class="p-2.5 text-rose-400">${drawerExpenses.toFixed(2)}</td>
+              <td class="p-2.5 font-semibold text-slate-100">${expected.toFixed(2)}</td>
+              <td class="p-2.5 font-bold text-emerald-300">${actual.toFixed(2)}</td>
+              <td class="p-2.5">${diffBadge}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+      document.getElementById('drawersCount').innerText = `${drawersList.length} عهدة`;
 
       // تحديث البطاقات
-      document.getElementById('cashInDrawer').innerHTML = `${netCashInDrawer.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('totalSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('salesCash').innerText = currentData.salesCash.toFixed(2);
-      document.getElementById('salesCard').innerText = currentData.salesCard.toFixed(2);
+      const totalSales = totalSalesCash + currentData.salesCard;
+      const grandVariance = totalActualCash - totalExpectedCash;
 
-      document.getElementById('totalExpenses').innerHTML = `${(totalExpensesList + totalSupplierPaid).toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('totalActualCash').innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('totalSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('salesCash').innerText = totalSalesCash.toFixed(2);
+      document.getElementById('salesCard').innerText = currentData.salesCard.toFixed(2);
+      document.getElementById('totalExpenses').innerHTML = `${grandExpenses.toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('pettyExpenses').innerText = totalExpensesList.toFixed(2);
       document.getElementById('supplierPaid').innerText = totalSupplierPaid.toFixed(2);
-      document.getElementById('totalSupplierDue').innerHTML = `${totalSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
+
+      const varEl = document.getElementById('totalVariance');
+      const varStatusEl = document.getElementById('varianceStatus');
+      if (grandVariance < 0) {
+        varEl.className = "text-2xl font-bold text-rose-400";
+        varEl.innerHTML = `-${Math.abs(grandVariance).toFixed(2)} <span class="text-xs">ر.س</span>`;
+        varStatusEl.innerText = "يوجد عجز إجمالي في الصناديق";
+        varStatusEl.className = "text-[10px] text-rose-400 mt-1";
+      } else if (grandVariance > 0) {
+        varEl.className = "text-2xl font-bold text-blue-400";
+        varEl.innerHTML = `+${grandVariance.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        varStatusEl.innerText = "توجد زيادة إجمالية في الصناديق";
+        varStatusEl.className = "text-[10px] text-blue-400 mt-1";
+      } else {
+        varEl.className = "text-2xl font-bold text-emerald-400";
+        varEl.innerHTML = `0.00 <span class="text-xs">ر.س</span>`;
+        varStatusEl.innerText = "مطابق تماماً بدون عجز أو زيادة";
+        varStatusEl.className = "text-[10px] text-emerald-400 mt-1";
+      }
 
       // جدول المصاريف
       const expBody = document.getElementById('expensesTableBody');
       if (currentData.expenses.length === 0) {
-        expBody.innerHTML = `<tr><td colspan="2" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`;
+        expBody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`;
       } else {
         expBody.innerHTML = currentData.expenses.map(e => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2">${e.name}</td>
+            <td class="p-2 text-slate-400">${e.source || 'عهدة المحاسب'}</td>
             <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)} ر.س</td>
           </tr>
         `).join('');
@@ -274,25 +366,43 @@
       document.getElementById('suppliersCount').innerText = `${currentData.suppliers.length} مورد`;
     }
 
-    // دوال الإدخال الخاصة بالمحاسب
-    function saveDailyTotals() {
-      const opening = parseFloat(document.getElementById('inputOpeningCash').value) || 0;
-      const sCash = parseFloat(document.getElementById('inputSalesCash').value) || 0;
-      const sCard = parseFloat(document.getElementById('inputSalesCard').value) || 0;
+    // دوال الإدخال
+    function saveDrawer() {
+      const name = document.getElementById('drawerName').value.trim();
+      const opening = parseFloat(document.getElementById('drawerOpening').value) || 0;
+      const salesCash = parseFloat(document.getElementById('drawerSalesCash').value) || 0;
+      const actual = parseFloat(document.getElementById('drawerActual').value) || 0;
 
-      db.ref('daily_reports/' + todayStr).update({
-        openingCash: opening,
-        salesCash: sCash,
-        salesCard: sCard
-      }).then(() => alert('تم حفظ أرقام اليومية وتحديث شاشة المتابعة بنجاح!'));
+      if (!name) return alert('يرجى تحديد اسم الكاشير أو الصندوق');
+
+      const drawerId = name.replace(/\s+/g, '_');
+      db.ref('daily_reports/' + todayStr + '/drawers/' + drawerId).set({
+        name,
+        opening,
+        salesCash,
+        actual
+      }).then(() => {
+        alert('تم حفظ عهدة ' + name + ' بنجاح!');
+        document.getElementById('drawerName').value = '';
+        document.getElementById('drawerOpening').value = '';
+        document.getElementById('drawerSalesCash').value = '';
+        document.getElementById('drawerActual').value = '';
+      });
+    }
+
+    function saveCardSales() {
+      const val = parseFloat(document.getElementById('inputSalesCard').value) || 0;
+      db.ref('daily_reports/' + todayStr).update({ salesCard: val })
+        .then(() => alert('تم تحديث مبيعات الشبكة بنجاح!'));
     }
 
     function addExpense() {
       const name = document.getElementById('expenseName').value.trim();
       const amount = parseFloat(document.getElementById('expenseAmount').value);
-      if (!name || isNaN(amount)) return alert('يرجى كتابة بيان المصروف والمبلغ بشكل صحيح');
+      const source = document.getElementById('expenseSource').value;
+      if (!name || isNaN(amount)) return alert('يرجى كتابة بيان المصروف والمبلغ');
 
-      db.ref('daily_reports/' + todayStr + '/expenses').push({ name, amount }).then(() => {
+      db.ref('daily_reports/' + todayStr + '/expenses').push({ name, amount, source }).then(() => {
         document.getElementById('expenseName').value = '';
         document.getElementById('expenseAmount').value = '';
       });
@@ -311,35 +421,31 @@
       });
     }
 
-    // زر إظهار لوحة المحاسب - رسالة طلب الرمز السري سرية تماماً
     function toggleAdmin() {
       const pin = prompt("أدخل الرقم السري الخاص بالمحاسب:");
       if (pin === "1234") {
-        const panel = document.getElementById('adminPanel');
-        panel.classList.toggle('hidden');
-        document.getElementById('inputOpeningCash').value = currentData.openingCash;
-        document.getElementById('inputSalesCash').value = currentData.salesCash;
-        document.getElementById('inputSalesCard').value = currentData.salesCard;
+        document.getElementById('adminPanel').classList.toggle('hidden');
       } else if (pin !== null) {
         alert("الرمز السري غير صحيح!");
       }
     }
 
-    // توليد رسالة واتساب
     function sendWhatsApp() {
-      const totalSales = currentData.salesCash + currentData.salesCard;
-      const totalExpensesList = currentData.expenses.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const totalSupplierPaid = currentData.suppliers.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-      const netCash = (currentData.openingCash + currentData.salesCash) - (totalExpensesList + totalSupplierPaid);
+      const drawersList = Object.values(currentData.drawers || {});
+      let details = drawersList.map(d => {
+        const exp = (parseFloat(d.opening || 0) + parseFloat(d.salesCash || 0));
+        const diff = parseFloat(d.actual || 0) - exp;
+        const status = diff === 0 ? "مطابق" : (diff < 0 ? `عجز (${Math.abs(diff)})` : `زيادة (+${diff})`);
+        return `🔸 *${d.name}:* الفعلي ${d.actual} ر.س | الحالة: ${status}`;
+      }).join('%0A');
 
-      const msg = `📊 *تقرير الإغلاق المالي اليومي - ${todayStr}*%0A` +
+      const msg = `📊 *تقرير تقفيل العهد واليومية - ${todayStr}*%0A` +
                   `-----------------------------------%0A` +
-                  `💵 *صافي الكاش بالدرج:* ${netCash.toFixed(2)} ر.س%0A` +
-                  `💳 *إجمالي المبيعات:* ${totalSales.toFixed(2)} ر.س (كاش: ${currentData.salesCash} | شبكة: ${currentData.salesCard})%0A` +
-                  `📉 *إجمالي المصاريف:* ${totalExpensesList.toFixed(2)} ر.س%0A` +
-                  `🚚 *سداد الموردين:* ${totalSupplierPaid.toFixed(2)} ر.س%0A` +
+                  details + `%0A` +
                   `-----------------------------------%0A` +
-                  `🌐 المتابعة الحية متاحة عبر الرابط المباشر.`;
+                  `💳 *إجمالي مبيعات المحل:* ${(parseFloat(document.getElementById('totalSales').innerText) || 0).toFixed(2)} ر.س%0A` +
+                  `💵 *إجمالي الكاش الموجود:* ${(parseFloat(document.getElementById('totalActualCash').innerText) || 0).toFixed(2)} ر.س%0A` +
+                  `🌐 المتابعة المباشرة عبر الرابط.`;
 
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
     }
