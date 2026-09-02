@@ -37,10 +37,8 @@
         </div>
       </div>
 
-      <!-- شريط أدوات صاحب المحل: اختيار التاريخ، مراجعة الأيام السابقة، والتقارير المجمعة -->
+      <!-- شريط أدوات صاحب المحل -->
       <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
-        
-        <!-- التبديل بين اليومي والتجميعي الفتراتي -->
         <div class="flex items-center gap-2">
           <label class="text-slate-400 font-bold">نوع العرض:</label>
           <div class="inline-flex rounded-lg bg-slate-800 p-1 border border-slate-700">
@@ -49,14 +47,12 @@
           </div>
         </div>
 
-        <!-- محدد التاريخ اليومي -->
         <div id="dailyDatePickerContainer" class="flex items-center gap-2">
           <label class="text-slate-400 font-bold">اختر تاريخ اليومية للعرض:</label>
           <input type="date" id="selectedDate" onchange="onDateChange()" class="bg-slate-800 border border-slate-700 rounded-lg p-1.5 text-emerald-300 text-xs">
           <button onclick="setTodayDate()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-slate-300">اليوم</button>
         </div>
 
-        <!-- محدد الفترة الزمنية التجميعية (من تاريخ إلى تاريخ) -->
         <div id="periodPickerContainer" class="hidden flex-wrap items-center gap-2">
           <label class="text-slate-400 font-bold">من:</label>
           <input type="date" id="periodFrom" class="bg-slate-800 border border-slate-700 rounded-lg p-1.5 text-blue-300 text-xs">
@@ -64,23 +60,21 @@
           <input type="date" id="periodTo" class="bg-slate-800 border border-slate-700 rounded-lg p-1.5 text-blue-300 text-xs">
           <button onclick="loadPeriodReport()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg transition">🔍 استخراج التقرير التجميعي</button>
           
-          <!-- أزرار فترات سريعة -->
           <div class="flex gap-1">
             <button onclick="setQuickPeriod(7)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1.5 rounded text-[11px] text-slate-300">آخر 7 أيام</button>
             <button onclick="setQuickPeriod(30)" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1.5 rounded text-[11px] text-slate-300">الشهر الحالي (30 يوم)</button>
           </div>
         </div>
-
       </div>
     </header>
 
     <!-- البطاقات الرئيسية الـ 6 -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      <!-- إجمالي المبيعات -->
+      <!-- إجمالي المبيعات (مجموع مبيعات الأجهزة) -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
-        <div class="text-[11px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
+        <div class="text-[11px] text-slate-400 mb-1" id="cardTitleSales">إجمالي مبيعات الأجهزة</div>
         <div class="text-lg font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1">كاش: <span id="totalCashSales">0</span> | شبكة: <span id="totalCardSales">0</span></div>
+        <div class="text-[10px] text-slate-400 mt-1">شامل كل أجهزة الكاشير</div>
       </div>
 
       <!-- إجمالي الكاش الفعلي -->
@@ -119,7 +113,7 @@
       </div>
     </div>
 
-    <!-- جدول تتبع ومطابقة الكاشيرات والعهد (يظهر في العرض اليومي) -->
+    <!-- جدول تتبع ومطابقة الكاشيرات والعهد -->
     <div id="dailyDrawersSection" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
       <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>👤 كشف مطابقة الكاشيرات وتحديد العجز / الزيادة</span>
@@ -133,7 +127,7 @@
               <th class="p-2.5">مبيعات الجهاز</th>
               <th class="p-2.5">رصيد البداية</th>
               <th class="p-2.5">المنصرف منه</th>
-              <th class="p-2.5">مفترض الكاش</th>
+              <th class="p-2.5 text-emerald-400 font-bold">مفترض الكاش</th>
               <th class="p-2.5">فعلي الكاش</th>
               <th class="p-2.5">فارق الكاش</th>
               <th class="p-2.5">مفترض الشبكة</th>
@@ -149,7 +143,7 @@
       </div>
     </div>
 
-    <!-- جدول الملخص اليومي لكل أيام الفترة (يظهر فقط في عرض الفترات والشهري) -->
+    <!-- جدول الملخص للفترات -->
     <div id="periodDaysSummarySection" class="hidden bg-slate-800 p-4 rounded-2xl border border-blue-500/30 shadow">
       <h2 class="text-base font-bold text-blue-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>📅 كشف حركة الأيام خلال الفترة المحددة بالتفصيل (يوم بيوم)</span>
@@ -183,9 +177,8 @@
       </button>
     </div>
 
-    <!-- تفاصيل المصاريف والموردين وحركات البنك -->
+    <!-- تفاصيل المصاريف والموردين والبنك -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <!-- 1. المصاريف -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-sm font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>📋 بيان المصاريف</span>
@@ -207,7 +200,6 @@
         </div>
       </div>
 
-      <!-- 2. الموردين -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-sm font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>🚚 سجل الموردين</span>
@@ -230,8 +222,7 @@
         </div>
       </div>
 
-      <!-- 3. البنك -->
-      <div class="bg-slate-800 p-4 rounded-2xl border border-cyan-500/40 shadow">
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-sm font-bold text-cyan-300 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>🏦 حركات وتحويلات البنك</span>
           <span class="text-xs font-normal text-slate-400" id="bankTransCount">0 حركة</span>
@@ -253,12 +244,12 @@
       </div>
     </div>
 
-    <!-- لوحة المحاسب الشاملة للإدخال والتعديل والحذف وتغيير كلمة السر -->
+    <!-- لوحة تحكم المحاسب -->
     <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-3 gap-3">
         <div>
-          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل اليوميات السابقة والحالية)</h2>
-          <p class="text-xs text-slate-400">يمكنك اختيار أي تاريخ سابق وتعديل أو إضافة بياناته بأثر رجعي فوراً</p>
+          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل اليوميات)</h2>
+          <p class="text-xs text-slate-400">يمكنك تعديل أي قيمة يدوياً بما فيها "مفترض الكاش"</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="changeAdminPassword()" class="bg-slate-700 hover:bg-slate-600 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/30">
@@ -268,7 +259,6 @@
         </div>
       </div>
 
-      <!-- شريط تحديد تاريخ الإدخال والتعديل الخاص بالمحاسب -->
       <div class="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-emerald-300">📅 تاريخ اليومية المراد إدخالها أو تعديلها:</span>
@@ -278,42 +268,42 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- 1. إدخال وتعديل عهدة كاشير -->
+      <!-- إدخال وتعديل عهدة كاشير مع حقل مفترض الكاش المباشر -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ إضافة / تعديل إغلاق كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
-        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-7 gap-2">
           <div>
-            <label class="text-[10px] text-slate-400">اسم الكاشير / الصندوق</label>
-            <input type="text" id="drawerName" placeholder="مثال: كاشير 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+            <label class="text-[10px] text-slate-400">اسم الكاشير</label>
+            <input type="text" id="drawerName" placeholder="مثال: كاشير 2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
           </div>
           <div>
             <label class="text-[10px] text-slate-400">مبيعات الجهاز (Z Report)</label>
-            <input type="number" step="0.01" id="drawerTotalZ" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
+            <input type="number" step="0.01" id="drawerTotalZ" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
           </div>
           <div>
             <label class="text-[10px] text-slate-400">العهدة الافتتاحية</label>
             <input type="number" step="0.01" id="drawerOpening" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
           </div>
           <div>
-            <label class="text-[10px] text-slate-400">مبيعات الكاش بالجهاز</label>
-            <input type="number" step="0.01" id="drawerCashReport" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-emerald-300">
+            <label class="text-[10px] text-amber-400 font-bold">مفترض الكاش (اكتبه يدوياً)</label>
+            <input type="number" step="0.01" id="drawerExpectedCashInput" placeholder="اتركه فارغاً للحساب التلقائي" class="w-full bg-slate-900 border border-amber-500/60 rounded-lg p-2 text-xs text-amber-300 font-bold">
           </div>
           <div>
             <label class="text-[10px] text-slate-400">الكاش الفعلي بالدرج (العد)</label>
             <input type="number" step="0.01" id="drawerActualCash" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-emerald-300 font-bold">
           </div>
           <div>
-            <label class="text-[10px] text-slate-400">مبيعات الشبكة بالجهاز</label>
+            <label class="text-[10px] text-slate-400">مفترض الشبكة (مدى)</label>
             <input type="number" step="0.01" id="drawerCardReport" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
           </div>
           <div>
-            <label class="text-[10px] text-slate-400">الفعلي بالشبكة (مدى)</label>
+            <label class="text-[10px] text-slate-400">الفعلي بالشبكة (إيصال)</label>
             <input type="number" step="0.01" id="drawerActualCard" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
           </div>
-          <div class="sm:col-span-2 flex items-end gap-2">
-            <button onclick="saveDrawer()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs py-2.5">💾 حفظ بيانات الكاشير</button>
-            <button onclick="resetDrawerForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-3 py-2.5 rounded-lg">إلغاء</button>
+          <div class="sm:col-span-7 flex justify-end gap-2 mt-2">
+            <button onclick="saveDrawer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs px-6 py-2.5 shadow">💾 حفظ بيانات الكاشير</button>
+            <button onclick="resetDrawerForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-4 py-2.5 rounded-lg">إلغاء</button>
           </div>
         </div>
 
@@ -323,6 +313,7 @@
               <tr>
                 <th class="p-2">الكاشير</th>
                 <th class="p-2">مبيعات الجهاز</th>
+                <th class="p-2">مفترض الكاش</th>
                 <th class="p-2">فعلي كاش</th>
                 <th class="p-2">فعلي شبكة</th>
                 <th class="p-2 text-center">إجراءات</th>
@@ -333,10 +324,9 @@
         </div>
       </div>
 
-      <!-- 2. رصيد وحركات الحساب البنكي -->
+      <!-- إعدادات البنك -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-cyan-500/40 space-y-3">
         <h3 class="text-xs font-bold text-cyan-300">🏦 إعدادات وحركات الحساب البنكي لليومية</h3>
-        
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
           <div>
             <label class="text-[10px] text-slate-400">الرصيد الافتتاحي السابق في البنك</label>
@@ -346,9 +336,9 @@
             </div>
           </div>
           <div class="sm:col-span-3">
-            <label class="text-[10px] text-slate-400">➕ إضافة حركة بنكية مباشرة (حوالة واردة، تحويل خارجي، رسوم...)</label>
+            <label class="text-[10px] text-slate-400">➕ إضافة حركة بنكية مباشرة</label>
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 mt-1">
-              <input type="text" id="bankTransDesc" placeholder="البيان (مثال: حوالة فرع، رسوم)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+              <input type="text" id="bankTransDesc" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
               <input type="number" step="0.01" id="bankTransAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
               <select id="bankTransType" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
                 <option value="in">➕ تحويل وارد (إيداع)</option>
@@ -374,12 +364,12 @@
         </div>
       </div>
 
-      <!-- 3. المصاريف -->
+      <!-- المصاريف -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-rose-300" id="expenseFormTitle">➕ إضافة / تعديل مصروف نثري</h3>
         <input type="hidden" id="editExpenseId" value="">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-          <input type="text" id="expenseName" placeholder="البيان (مثال: نظافة، أدوات)" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+          <input type="text" id="expenseName" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="expenseAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
             <option value="عهدة المحاسب">عهدة المحاسب (كاش)</option>
@@ -408,7 +398,7 @@
         </div>
       </div>
 
-      <!-- 4. الموردين -->
+      <!-- الموردين -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-amber-300" id="suppFormTitle">➕ إضافة / تعديل دفعة مورد</h3>
         <input type="hidden" id="editSuppId" value="">
@@ -443,7 +433,6 @@
           </table>
         </div>
       </div>
-
     </div>
 
   </div>
@@ -466,7 +455,6 @@
     }
     const db = firebase.database();
 
-    // إدارة التواريخ والحالة
     let currentDateStr = new Date().toISOString().split('T')[0];
     let adminTargetDateStr = currentDateStr;
     let viewMode = 'daily';
@@ -573,7 +561,7 @@
         periodPicker.classList.add('hidden');
         dailyDrawersSec.classList.remove('hidden');
         periodDaysSec.classList.add('hidden');
-        document.getElementById('cardTitleSales').innerText = "إجمالي المبيعات (اليومي)";
+        document.getElementById('cardTitleSales').innerText = "إجمالي مبيعات الأجهزة";
         document.getElementById('cardTitleCash').innerText = "الكاش الفعلي بالصناديق";
         renderDashboard();
       } else {
@@ -598,7 +586,6 @@
       loadPeriodReport();
     }
 
-    // دالة مساعدة لمطابقة اسم الكاشير مع مصدر الصرف
     function isSourceMatch(sourceName, drawerName) {
       if (!sourceName || !drawerName) return false;
       const s = sourceName.trim().toLowerCase();
@@ -620,8 +607,7 @@
       db.ref('daily_reports').once('value').then((snapshot) => {
         const allData = snapshot.val() || {};
         
-        let periodCashSales = 0;
-        let periodCardSales = 0;
+        let periodSalesTotal = 0;
         let periodActualCash = 0;
         let periodExpenses = 0;
         let periodSupplierPaid = 0;
@@ -642,8 +628,7 @@
           const sList = Object.values(day.suppliers || {});
           const bList = Object.values(day.bankTransactions || {});
 
-          let dayCashSales = 0;
-          let dayCardSales = 0;
+          let daySales = 0;
           let dayActualCash = 0;
           let dayExpectedCash = 0;
 
@@ -653,27 +638,23 @@
 
           dList.forEach(dr => {
             const zReport = parseFloat(dr.totalZ || 0);
-            const cardReport = parseFloat(dr.cardReport || 0);
-            let cashReport = parseFloat(dr.cashReport || 0);
-            if (cashReport === 0 && zReport > cardReport) {
-              cashReport = zReport - cardReport;
-            }
-
-            const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-            const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
-            const expCash = (parseFloat(dr.opening || 0) + cashReport) - (drExp + drSupp);
-            
-            dayCashSales += cashReport;
-            dayCardSales += cardReport;
+            daySales += zReport;
             dayActualCash += parseFloat(dr.actualCash || 0);
+
+            let expCash = 0;
+            if (dr.expectedCash !== undefined && dr.expectedCash !== null && dr.expectedCash !== "") {
+              expCash = parseFloat(dr.expectedCash) || 0;
+            } else {
+              const cardReport = parseFloat(dr.cardReport || 0);
+              const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+              const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+              expCash = Math.max(0, (zReport - cardReport) - (drExp + drSupp));
+            }
             dayExpectedCash += expCash;
           });
 
-          const daySalesTotal = dayCashSales + dayCardSales;
           const dayVariance = (dayActualCash - dayExpectedCash);
-
-          periodCashSales += dayCashSales;
-          periodCardSales += dayCardSales;
+          periodSalesTotal += daySales;
           periodActualCash += dayActualCash;
           periodExpenses += dayExpAmount;
           periodSupplierPaid += daySuppPaid;
@@ -687,12 +668,12 @@
           daysRows.push(`
             <tr class="hover:bg-slate-700/30">
               <td class="p-2.5 font-bold text-slate-100">${dKey}</td>
-              <td class="p-2.5 text-emerald-400 font-medium">${dayCashSales.toFixed(2)}</td>
-              <td class="p-2.5 text-blue-400 font-medium">${dayCardSales.toFixed(2)}</td>
-              <td class="p-2.5 font-bold text-white">${daySalesTotal.toFixed(2)}</td>
+              <td class="p-2.5 text-emerald-400 font-medium">${dayActualCash.toFixed(2)}</td>
+              <td class="p-2.5 text-blue-400 font-medium">${dayExpectedCash.toFixed(2)}</td>
+              <td class="p-2.5 font-bold text-white">${daySales.toFixed(2)}</td>
               <td class="p-2.5 text-rose-400">${dayExpAmount.toFixed(2)}</td>
               <td class="p-2.5 text-amber-400">${daySuppPaid.toFixed(2)}</td>
-              <td class="p-2.5 font-bold ${dayVariance < 0 ? 'text-rose-400' : 'text-emerald-400'}">${Math.abs(dayVariance) < 0.05 ? 'مطابق' : (dayVariance < 0 ? `عجز (${Math.abs(dayVariance).toFixed(2)})` : `+${dayVariance.toFixed(2)}`)}</td>
+              <td class="p-2.5 font-bold ${dayVariance < -0.05 ? 'text-rose-400' : 'text-emerald-400'}">${Math.abs(dayVariance) < 0.05 ? 'مطابق' : (dayVariance < 0 ? `عجز (${Math.abs(dayVariance).toFixed(2)})` : `+${dayVariance.toFixed(2)}`)}</td>
               <td class="p-2.5 text-center">
                 <button onclick="goToSpecificDay('${dKey}')" class="bg-emerald-600/80 hover:bg-emerald-500 text-white px-2 py-0.5 rounded text-[11px]">فتح اليومية 👁️</button>
               </td>
@@ -700,75 +681,11 @@
           `);
         });
 
-        const pBody = document.getElementById('periodDaysTableBody');
-        pBody.innerHTML = daysRows.length === 0 
-          ? `<tr><td colspan="8" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة في هذا النطاق الزمني</td></tr>` 
-          : daysRows.join('');
-        document.getElementById('periodDaysCount').innerText = `${daysRows.length} يوم مسجل`;
-
-        const totalSalesPeriod = periodCashSales + periodCardSales;
-        document.getElementById('totalSystemSales').innerHTML = `${totalSalesPeriod.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('totalCashSales').innerText = periodCashSales.toFixed(2);
-        document.getElementById('totalCardSales').innerText = periodCardSales.toFixed(2);
-
+        document.getElementById('periodDaysTableBody').innerHTML = daysRows.join('');
+        document.getElementById('totalSystemSales').innerHTML = `${periodSalesTotal.toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('totalActualCash').innerHTML = `${periodActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('totalExpenses').innerHTML = `${(periodExpenses + periodSupplierPaid).toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('pettyExpenses').innerText = periodExpenses.toFixed(2);
-        document.getElementById('supplierPaid').innerText = periodSupplierPaid.toFixed(2);
         document.getElementById('totalSupplierDue').innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
-
-        const totalBankOut = combinedExpenses.filter(e => e.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
-                             combinedSuppliers.filter(s => s.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
-        const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-        const netPeriodBank = (periodCardSales + totalBankIn) - totalBankOut;
-        document.getElementById('bankBalance').innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
-
-        const varEl = document.getElementById('totalVariance');
-        const varStat = document.getElementById('varianceStatus');
-        if (periodVariance < -0.05) {
-          varEl.className = "text-lg font-bold text-rose-400";
-          varEl.innerHTML = `-${Math.abs(periodVariance).toFixed(2)} <span class="text-xs">ر.س</span>`;
-          varStat.innerText = "عجز تراكمي بالفترة";
-          varStat.className = "text-[9px] text-rose-400 mt-1";
-        } else if (periodVariance > 0.05) {
-          varEl.className = "text-lg font-bold text-blue-400";
-          varEl.innerHTML = `+${periodVariance.toFixed(2)} <span class="text-xs">ر.س</span>`;
-          varStat.innerText = "زيادة تراكمية بالفترة";
-          varStat.className = "text-[9px] text-blue-400 mt-1";
-        } else {
-          varEl.className = "text-lg font-bold text-emerald-400";
-          varEl.innerHTML = `0.00 <span class="text-xs">ر.س</span>`;
-          varStat.innerText = "مطابق تماماً طوال الفترة";
-          varStat.className = "text-[9px] text-emerald-400 mt-1";
-        }
-
-        document.getElementById('expensesTableBody').innerHTML = combinedExpenses.map(e => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2">${e.name} <span class="text-[9px] text-slate-500">(${e.date})</span></td>
-            <td class="p-2 text-slate-400 text-[11px]">${e.source}</td>
-            <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)}</td>
-          </tr>
-        `).join('');
-        document.getElementById('expensesCount').innerText = `${combinedExpenses.length} بند`;
-
-        document.getElementById('suppliersTableBody').innerHTML = combinedSuppliers.map(s => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2 font-medium">${s.name} <span class="text-[9px] text-slate-500">(${s.date})</span></td>
-            <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
-            <td class="p-2 text-slate-400 text-[11px]">${s.source || 'عهدة'}</td>
-            <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
-          </tr>
-        `).join('');
-        document.getElementById('suppliersCount').innerText = `${combinedSuppliers.length} حركة`;
-
-        document.getElementById('bankTransTableBody').innerHTML = combinedBankTrans.map(t => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2">${t.desc} <span class="text-[9px] text-slate-500">(${t.date})</span></td>
-            <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
-            <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
-          </tr>
-        `).join('');
-        document.getElementById('bankTransCount').innerText = `${combinedBankTrans.length} حركة`;
       });
     }
 
@@ -786,19 +703,15 @@
       const suppList = Object.entries(currentData.suppliers).map(([key, val]) => ({ id: key, ...val }));
       const bankTransList = Object.entries(currentData.bankTransactions).map(([key, val]) => ({ id: key, ...val }));
 
-      let totalSales = 0;
-      let totalCashReport = 0;
-      let totalCardReport = 0;
+      let totalDeviceSales = 0; // إجمالي مبيعات أجهزة الكاشيرات
       let totalActualCash = 0;
       let totalActualCard = 0;
-      let totalExpectedCash = 0;
       let grandVariance = 0;
 
       const totalExpensesAmount = expList.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalSuppPaidAmount = suppList.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
       const totalSupplierDue = suppList.reduce((acc, curr) => acc + (parseFloat(curr.remaining) || 0), 0);
 
-      // جدول الكاشيرات
       const body = document.getElementById('drawersTableBody');
       if (drawersList.length === 0) {
         body.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
@@ -806,41 +719,39 @@
         body.innerHTML = drawersList.map(d => {
           const zReport = parseFloat(d.totalZ || 0);
           const opening = parseFloat(d.opening || 0);
+          const actualCash = parseFloat(d.actualCash || 0);
           const cardReport = parseFloat(d.cardReport || 0);
           const actualCard = parseFloat(d.actualCard || 0);
-          const actualCash = parseFloat(d.actualCash || 0);
 
-          // احتساب مبيعات الكاش برمجياً في حال كانت 0 ومبيعات الجهاز أكبر من الشبكة
-          let cashReport = parseFloat(d.cashReport || 0);
-          if (cashReport === 0 && zReport > cardReport) {
-            cashReport = zReport - cardReport;
-          }
-
-          // تجميع المصاريف وسداد الموردين مع مطابقة مرنة للاسم ورقم الكاشير
           const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
           const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-
           const totalDrawerOut = drawerExp + drawerSupp;
-          const expectedCash = (opening + cashReport) - totalDrawerOut;
+
+          // إذا تم إدخال مفترض الكاش يدوياً يُعتمد فوراً، وإلا يُحسب تلقائياً
+          let expectedCash = 0;
+          if (d.expectedCash !== undefined && d.expectedCash !== null && d.expectedCash !== "") {
+            expectedCash = parseFloat(d.expectedCash) || 0;
+          } else {
+            // المعادلة التلقائية: (مبيعات الجهاز - الشبكة) + البداية - المصاريف
+            expectedCash = Math.max(0, (zReport - cardReport) + opening - totalDrawerOut);
+          }
+
           const cashDiff = actualCash - expectedCash;
           const cardDiff = actualCard - cardReport;
           const netDrawerDiff = cashDiff + cardDiff;
 
-          totalSales += (zReport > 0 ? zReport : (cashReport + cardReport));
-          totalCashReport += cashReport;
-          totalCardReport += cardReport;
+          totalDeviceSales += zReport;
           totalActualCash += actualCash;
           totalActualCard += actualCard;
-          totalExpectedCash += expectedCash;
           grandVariance += netDrawerDiff;
 
           const cashBadge = Math.abs(cashDiff) < 0.05 
             ? `<span class="text-emerald-400">مطابق</span>` 
-            : (cashDiff < 0 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
+            : (cashDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
 
           const cardBadge = Math.abs(cardDiff) < 0.05 
             ? `<span class="text-emerald-400">مطابق</span>` 
-            : (cardDiff < 0 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
+            : (cardDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
 
           let totalStatusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">مطابق تماماً</span>`;
           if (netDrawerDiff < -0.05) {
@@ -852,10 +763,10 @@
           return `
             <tr class="hover:bg-slate-700/30">
               <td class="p-2.5 font-bold text-slate-100">${d.name}</td>
-              <td class="p-2.5 text-blue-300 font-semibold">${zReport.toFixed(2)}</td>
+              <td class="p-2.5 text-blue-300 font-bold">${zReport.toFixed(2)}</td>
               <td class="p-2.5 text-slate-300">${opening.toFixed(2)}</td>
               <td class="p-2.5 text-rose-400 font-bold">${totalDrawerOut.toFixed(2)}</td>
-              <td class="p-2.5 text-emerald-300 font-semibold">${expectedCash.toFixed(2)}</td>
+              <td class="p-2.5 text-amber-300 font-bold">${expectedCash.toFixed(2)}</td>
               <td class="p-2.5 text-emerald-400 font-bold">${actualCash.toFixed(2)}</td>
               <td class="p-2.5">${cashBadge}</td>
               <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
@@ -868,6 +779,11 @@
       }
       document.getElementById('drawersCount').innerText = `${drawersList.length} كاشير / صندوق`;
 
+      // إجمالي مبيعات الأجهزة بالكامل
+      document.getElementById('totalSystemSales').innerHTML = `${totalDeviceSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('totalActualCash').innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
+
+      // حسابات البنك
       const bankExpOut = expList.filter(e => e.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => s.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
       const bankTransIn = bankTransList.filter(t => t.type === 'in').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
@@ -876,15 +792,12 @@
       const netBank = (currentData.bankOpening + totalActualCard + bankTransIn) - (bankExpOut + bankSuppOut + bankTransOut);
       document.getElementById('bankBalance').innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      document.getElementById('totalSystemSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('totalCashSales').innerText = totalCashReport.toFixed(2);
-      document.getElementById('totalCardSales').innerText = totalCardReport.toFixed(2);
-      document.getElementById('totalActualCash').innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('totalExpenses').innerHTML = `${(totalExpensesAmount + totalSuppPaidAmount).toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('pettyExpenses').innerText = totalExpensesAmount.toFixed(2);
       document.getElementById('supplierPaid').innerText = totalSuppPaidAmount.toFixed(2);
       document.getElementById('totalSupplierDue').innerHTML = `${totalSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
+      // صافي العجز أو الزيادة
       const varEl = document.getElementById('totalVariance');
       const varStat = document.getElementById('varianceStatus');
       if (grandVariance < -0.05) {
@@ -895,7 +808,7 @@
       } else if (grandVariance > 0.05) {
         varEl.className = "text-lg font-bold text-blue-400";
         varEl.innerHTML = `+${grandVariance.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        varStat.innerText = `توجد زيادة إجمالية قدرها ${grandVariance.toFixed(2)} ر.س`;
+        varStat.innerText = `توجد زيادة قدرها ${grandVariance.toFixed(2)} ر.س`;
         varStat.className = "text-[9px] text-blue-400 mt-1 font-bold";
       } else {
         varEl.className = "text-lg font-bold text-emerald-400";
@@ -904,52 +817,55 @@
         varStat.className = "text-[9px] text-emerald-400 mt-1";
       }
 
+      // عرض المصاريف
       const expBody = document.getElementById('expensesTableBody');
       expBody.innerHTML = expList.length === 0 
-        ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`
+        ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف</td></tr>`
         : expList.map(e => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2">${e.name}</td>
-            <td class="p-2 text-slate-400 text-[11px]">${e.source}</td>
+            <td class="p-2 text-rose-300 font-bold">${e.source}</td>
             <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)} ر.س</td>
           </tr>
         `).join('');
       document.getElementById('expensesCount').innerText = `${expList.length} بند`;
 
+      // عرض الموردين
       const suppBody = document.getElementById('suppliersTableBody');
       suppBody.innerHTML = suppList.length === 0 
-        ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">لا توجد حركات موردين اليوم</td></tr>`
+        ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">لا توجد حركات</td></tr>`
         : suppList.map(s => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2 font-medium">${s.name}</td>
             <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
-            <td class="p-2 text-slate-400 text-[11px]">${s.source || 'عهدة'}</td>
+            <td class="p-2 text-slate-400">${s.source || 'عهدة'}</td>
             <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
           </tr>
         `).join('');
       document.getElementById('suppliersCount').innerText = `${suppList.length} مورد`;
 
+      // عرض البنك
       const bTransBody = document.getElementById('bankTransTableBody');
       bTransBody.innerHTML = bankTransList.length === 0 
-        ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية اليوم</td></tr>`
+        ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات بنكية</td></tr>`
         : bankTransList.map(t => `
           <tr class="hover:bg-slate-700/30">
             <td class="p-2">${t.desc}</td>
-            <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
+            <td class="p-2 ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
             <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)} ر.س</td>
           </tr>
         `).join('');
       document.getElementById('bankTransCount').innerText = `${bankTransList.length} حركة`;
     }
 
-    // جداول الإدارة للمحاسب
+    // جداول المحاسب
     function renderAdminLists() {
-      // 1. الكاشيرات
       const dList = Object.entries(currentData.drawers).map(([k, v]) => ({ id: k, ...v }));
       document.getElementById('adminDrawersList').innerHTML = dList.map(d => `
         <tr>
           <td class="p-2 font-bold">${d.name}</td>
           <td class="p-2">${parseFloat(d.totalZ || 0).toFixed(2)}</td>
+          <td class="p-2 text-amber-400 font-bold">${d.expectedCash !== undefined ? d.expectedCash : 'تلقائي'}</td>
           <td class="p-2 text-emerald-400">${parseFloat(d.actualCash || 0).toFixed(2)}</td>
           <td class="p-2 text-blue-400">${parseFloat(d.actualCard || 0).toFixed(2)}</td>
           <td class="p-2 text-center space-x-1">
@@ -959,7 +875,6 @@
         </tr>
       `).join('');
 
-      // 2. البنك
       document.getElementById('bankOpening').value = currentData.bankOpening || '';
       const bList = Object.entries(currentData.bankTransactions).map(([k, v]) => ({ id: k, ...v }));
       document.getElementById('adminBankTransList').innerHTML = bList.map(t => `
@@ -973,7 +888,6 @@
         </tr>
       `).join('');
 
-      // 3. المصاريف
       const eList = Object.entries(currentData.expenses).map(([k, v]) => ({ id: k, ...v }));
       document.getElementById('adminExpensesList').innerHTML = eList.map(e => `
         <tr>
@@ -987,7 +901,6 @@
         </tr>
       `).join('');
 
-      // 4. الموردين
       const sList = Object.entries(currentData.suppliers).map(([k, v]) => ({ id: k, ...v }));
       document.getElementById('adminSuppliersList').innerHTML = sList.map(s => `
         <tr>
@@ -1003,7 +916,7 @@
       `).join('');
     }
 
-    // دوال الكاشير
+    // حفظ الكاشير
     function saveDrawer() {
       const editId = document.getElementById('editDrawerId').value;
       const name = document.getElementById('drawerName').value.trim();
@@ -1012,19 +925,21 @@
       const actualCash = parseFloat(document.getElementById('drawerActualCash').value) || 0;
       const cardReport = parseFloat(document.getElementById('drawerCardReport').value) || 0;
       const actualCard = parseFloat(document.getElementById('drawerActualCard').value) || 0;
-      let cashReport = parseFloat(document.getElementById('drawerCashReport').value);
+      const expectedCashVal = document.getElementById('drawerExpectedCashInput').value.trim();
 
       if (!name) return alert('يرجى كتابة اسم الكاشير');
 
-      // لو تُرِكت مبيعات الكاش فارغة أو صفر، تُحسب تلقائياً من تقرير Z - الشبكة
-      if (isNaN(cashReport) || cashReport === 0) {
-        cashReport = Math.max(0, totalZ - cardReport);
+      const drawerData = {
+        name, totalZ, opening, actualCash, cardReport, actualCard
+      };
+
+      // إذا كتب المحاسب مفترض الكاش يدوياً يُسجل، وإلا يحسب تلقائياً
+      if (expectedCashVal !== "") {
+        drawerData.expectedCash = parseFloat(expectedCashVal) || 0;
       }
 
       const id = editId ? editId : name.replace(/\s+/g, '_');
-      db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).set({
-        name, totalZ, opening, cashReport, actualCash, cardReport, actualCard
-      }).then(() => {
+      db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).set(drawerData).then(() => {
         alert('تم الحفظ بنجاح ليومية: ' + adminTargetDateStr);
         resetDrawerForm();
       });
@@ -1037,7 +952,7 @@
       document.getElementById('drawerName').value = d.name || '';
       document.getElementById('drawerTotalZ').value = d.totalZ || '';
       document.getElementById('drawerOpening').value = d.opening || '';
-      document.getElementById('drawerCashReport').value = d.cashReport || '';
+      document.getElementById('drawerExpectedCashInput').value = (d.expectedCash !== undefined) ? d.expectedCash : '';
       document.getElementById('drawerActualCash').value = d.actualCash || '';
       document.getElementById('drawerCardReport').value = d.cardReport || '';
       document.getElementById('drawerActualCard').value = d.actualCard || '';
@@ -1055,7 +970,7 @@
       document.getElementById('drawerName').value = '';
       document.getElementById('drawerTotalZ').value = '';
       document.getElementById('drawerOpening').value = '';
-      document.getElementById('drawerCashReport').value = '';
+      document.getElementById('drawerExpectedCashInput').value = '';
       document.getElementById('drawerActualCash').value = '';
       document.getElementById('drawerCardReport').value = '';
       document.getElementById('drawerActualCard').value = '';
@@ -1074,7 +989,7 @@
       const desc = document.getElementById('bankTransDesc').value.trim();
       const amount = parseFloat(document.getElementById('bankTransAmount').value);
       const type = document.getElementById('bankTransType').value;
-      if (!desc || isNaN(amount)) return alert('يرجى إدخال بيان الحركة البنكية والمبلغ');
+      if (!desc || isNaN(amount)) return alert('يرجى إدخال بيان الحركة والمبلغ');
 
       db.ref('daily_reports/' + adminTargetDateStr + '/bankTransactions').push({ desc, amount, type }).then(() => {
         document.getElementById('bankTransDesc').value = '';
@@ -1200,7 +1115,7 @@
 
       const msg = `${title}%0A` +
                   `-----------------------------------%0A` +
-                  `💳 *إجمالي المبيعات المحققة:* ${totalSales} ر.س%0A` +
+                  `💳 *إجمالي مبيعات الأجهزة:* ${totalSales} ر.س%0A` +
                   `💵 *إجمالي الكاش الفعلي المحصل:* ${totalCash} ر.س%0A` +
                   `🏦 *صافي رصيد البنك:* ${bankBal} ر.س%0A` +
                   `📉 *إجمالي المنصرف والمدفوعات:* ${totalExp} ر.س%0A` +
