@@ -69,42 +69,36 @@
 
     <!-- البطاقات الرئيسية الـ 6 -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      <!-- إجمالي المبيعات (تم حذف سطر كاش/شبكة من تحته بناءً على طلبك) -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
         <div class="text-lg font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-500 mt-1" id="salesCardSubText">شامل كل أجهزة الكاشير</div>
       </div>
 
-      <!-- إجمالي الكاش الفعلي -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
         <div class="text-lg font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد</div>
       </div>
 
-      <!-- رصيد البنك الذكي -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-cyan-500/40 shadow">
         <div class="text-[11px] text-cyan-300 mb-1">🏦 صافي رصيد البنك</div>
         <div class="text-lg font-bold text-cyan-400" id="bankBalance">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-400 mt-1" id="cardSubBank">شامل مبيعات الشبكة والحوالات</div>
       </div>
 
-      <!-- إجمالي المنصرف والمدفوعات -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1">إجمالي المنصرف والمدفوعات</div>
         <div class="text-lg font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses">0</span> | موردين: <span id="supplierPaid">0</span></div>
       </div>
 
-      <!-- إجمالي مديونية الموردين -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1">إجمالي متبقي الموردين</div>
         <div class="text-lg font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-500 mt-1">الديون المتبقية</div>
       </div>
 
-      <!-- صافي الفروقات الكلية -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow col-span-2 sm:col-span-1">
         <div class="text-[11px] text-slate-400 mb-1">فروقات الصناديق (عجز/زيادة)</div>
         <div class="text-lg font-bold" id="totalVariance">0.00 <span class="text-xs">ر.س</span></div>
@@ -112,7 +106,7 @@
       </div>
     </div>
 
-    <!-- جدول تتبع ومطابقة الكاشيرات والعهد (يومي) -->
+    <!-- جدول تتبع ومطابقة الكاشيرات -->
     <div id="dailyDrawersSection" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
       <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>👤 كشف مطابقة الكاشيرات وتحديد العجز / الزيادة</span>
@@ -142,7 +136,7 @@
       </div>
     </div>
 
-    <!-- جدول الملخص للفترات (تم ضبط عمود الكاش ليقرأ الكاش الفعلي) -->
+    <!-- جدول الملخص للفترات -->
     <div id="periodDaysSummarySection" class="hidden bg-slate-800 p-4 rounded-2xl border border-blue-500/30 shadow">
       <h2 class="text-base font-bold text-blue-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>📅 كشف حركة الأيام خلال الفترة المحددة بالتفصيل (يوم بيوم)</span>
@@ -599,7 +593,6 @@
       return false;
     }
 
-    // استخراج تقرير الفترة المجمعة
     function loadPeriodReport() {
       let fromStr = toStandardDigits(document.getElementById('periodFrom').value);
       let toStr = toStandardDigits(document.getElementById('periodTo').value);
@@ -656,19 +649,18 @@
             const actualCard = parseFloat(dr.actualCard || 0);
             const actualCash = parseFloat(dr.actualCash || 0);
 
-            let cashReport = parseFloat(dr.cashReport || 0);
-            if (cashReport === 0 && zReport > cardReport) {
-              cashReport = zReport - cardReport;
-            }
+            // احتساب مبيعات الكاش الإجمالية بدقة من مبيعات الجهاز
+            const calcCash = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
 
             const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
             const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
             
-            let expCash = (parseFloat(dr.opening || 0) + cashReport) - (drExp + drSupp);
+            // مفترض الكاش = (رصيد البداية + مبيعات الكاش الإجمالية) - المصروفات
+            const expCash = (parseFloat(dr.opening || 0) + calcCash) - (drExp + drSupp);
             
             dayActualCash += actualCash;
             dayCardSales += (actualCard > 0 ? actualCard : cardReport);
-            daySalesTotal += (zReport > 0 ? zReport : (cashReport + cardReport));
+            daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
             dayExpectedCash += expCash;
           });
 
@@ -686,7 +678,6 @@
           combinedSuppliers = combinedSuppliers.concat(sList.map(s => ({ ...s, date: dKey })));
           combinedBankTrans = combinedBankTrans.concat(bList.map(b => ({ ...b, date: dKey })));
 
-          // هنا التعديل: العمود يقرأ الكاش الفعلي باليد لليوم (dayActualCash)
           daysRows.push(`
             <tr class="hover:bg-slate-700/30">
               <td class="p-2.5 font-bold text-slate-100">${dKey}</td>
@@ -709,7 +700,6 @@
           : daysRows.join('');
         document.getElementById('periodDaysCount').innerText = `${daysRows.length} يوم مسجل`;
 
-        // تحديث بطاقة إجمالي مبيعات الفترة بدون سطر كاش/شبكة
         document.getElementById('totalSystemSales').innerHTML = `${periodSalesTotalSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
 
@@ -719,14 +709,12 @@
         document.getElementById('supplierPaid').innerText = periodSupplierPaid.toFixed(2);
         document.getElementById('totalSupplierDue').innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // حساب صافي رصيد البنك للفترة
         const totalBankOut = combinedExpenses.filter(e => e.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
                              combinedSuppliers.filter(s => s.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
         const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
         const netPeriodBank = (periodCardSalesSum + totalBankIn) - totalBankOut;
         document.getElementById('bankBalance').innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // حساب العجز / الزيادة للفترة
         const varEl = document.getElementById('totalVariance');
         const varStat = document.getElementById('varianceStatus');
         if (periodVariance < -0.05) {
@@ -783,6 +771,7 @@
       bindDateListener(currentDateStr);
     }
 
+    // عرض اليومية المفردة
     function renderDashboard() {
       const drawersList = Object.entries(currentData.drawers).map(([key, val]) => ({ id: key, ...val }));
       const expList = Object.entries(currentData.expenses).map(([key, val]) => ({ id: key, ...val }));
@@ -809,21 +798,20 @@
           const cardReport = parseFloat(d.cardReport || 0);
           const actualCard = parseFloat(d.actualCard || 0);
 
-          let cashReport = parseFloat(d.cashReport || 0);
-          if (cashReport === 0 && zReport > cardReport) {
-            cashReport = zReport - cardReport;
-          }
+          // احتساب مبيعات الكاش بدقة: مبيعات الجهاز - مبيعات الشبكة
+          const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
           const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
           const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
           const totalDrawerOut = drawerExp + drawerSupp;
           
-          const expectedCash = (opening + cashReport) - totalDrawerOut;
+          // مفترض الكاش = (رصيد البداية + مبيعات الكاش بالجهاز) - المنصرف
+          const expectedCash = (opening + calculatedCashSales) - totalDrawerOut;
           const cashDiff = actualCash - expectedCash;
           const cardDiff = actualCard - cardReport;
           const netDrawerDiff = cashDiff + cardDiff;
 
-          totalSales += (zReport > 0 ? zReport : (cashReport + cardReport));
+          totalSales += (zReport > 0 ? zReport : (calculatedCashSales + cardReport));
           totalActualCash += actualCash;
           totalActualCard += actualCard;
           grandVariance += netDrawerDiff;
@@ -849,7 +837,7 @@
               <td class="p-2.5 text-blue-300 font-semibold">${zReport.toFixed(2)}</td>
               <td class="p-2.5 text-slate-300">${opening.toFixed(2)}</td>
               <td class="p-2.5 text-rose-400 font-bold">${totalDrawerOut.toFixed(2)}</td>
-              <td class="p-2.5 text-slate-300 font-bold">${expectedCash.toFixed(2)}</td>
+              <td class="p-2.5 text-emerald-300 font-bold">${expectedCash.toFixed(2)}</td>
               <td class="p-2.5 text-emerald-400 font-bold">${actualCash.toFixed(2)}</td>
               <td class="p-2.5">${cashBadge}</td>
               <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
@@ -870,7 +858,6 @@
       const netBank = (currentData.bankOpening + totalActualCard + bankTransIn) - (bankExpOut + bankSuppOut + bankTransOut);
       document.getElementById('bankBalance').innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      // تحديث مبيعات اليومية بدون سطر كاش/شبكة
       document.getElementById('totalSystemSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
 
