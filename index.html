@@ -69,36 +69,42 @@
 
     <!-- البطاقات الرئيسية الـ 6 -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <!-- إجمالي المبيعات (تم حذف سطر كاش/شبكة من تحته بناءً على طلبك) -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
         <div class="text-lg font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1">كاش: <span id="totalCashSales">0</span> | شبكة: <span id="totalCardSales">0</span></div>
+        <div class="text-[10px] text-slate-500 mt-1" id="salesCardSubText">شامل كل أجهزة الكاشير</div>
       </div>
 
+      <!-- إجمالي الكاش الفعلي -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
         <div class="text-lg font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد</div>
       </div>
 
+      <!-- رصيد البنك الذكي -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-cyan-500/40 shadow">
         <div class="text-[11px] text-cyan-300 mb-1">🏦 صافي رصيد البنك</div>
         <div class="text-lg font-bold text-cyan-400" id="bankBalance">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-400 mt-1" id="cardSubBank">شامل مبيعات الشبكة والحوالات</div>
       </div>
 
+      <!-- إجمالي المنصرف والمدفوعات -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1">إجمالي المنصرف والمدفوعات</div>
         <div class="text-lg font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses">0</span> | موردين: <span id="supplierPaid">0</span></div>
       </div>
 
+      <!-- إجمالي مديونية الموردين -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1">إجمالي متبقي الموردين</div>
         <div class="text-lg font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-xs">ر.س</span></div>
         <div class="text-[10px] text-slate-500 mt-1">الديون المتبقية</div>
       </div>
 
+      <!-- صافي الفروقات الكلية -->
       <div class="bg-slate-800 p-3.5 rounded-2xl border border-slate-700 shadow col-span-2 sm:col-span-1">
         <div class="text-[11px] text-slate-400 mb-1">فروقات الصناديق (عجز/زيادة)</div>
         <div class="text-lg font-bold" id="totalVariance">0.00 <span class="text-xs">ر.س</span></div>
@@ -106,7 +112,7 @@
       </div>
     </div>
 
-    <!-- جدول تتبع ومطابقة الكاشيرات -->
+    <!-- جدول تتبع ومطابقة الكاشيرات والعهد (يومي) -->
     <div id="dailyDrawersSection" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
       <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>👤 كشف مطابقة الكاشيرات وتحديد العجز / الزيادة</span>
@@ -130,13 +136,13 @@
             </tr>
           </thead>
           <tbody id="drawersTableBody" class="divide-y divide-slate-700/50">
-            <tr><td colspan="11" class="p-4 text-center text-slate-500">جاري تحميل البيانات...</td></tr>
+            <tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة لهذا التاريخ</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- جدول الفترات -->
+    <!-- جدول الملخص للفترات (تم ضبط عمود الكاش ليقرأ الكاش الفعلي) -->
     <div id="periodDaysSummarySection" class="hidden bg-slate-800 p-4 rounded-2xl border border-blue-500/30 shadow">
       <h2 class="text-base font-bold text-blue-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>📅 كشف حركة الأيام خلال الفترة المحددة بالتفصيل (يوم بيوم)</span>
@@ -147,7 +153,7 @@
           <thead class="text-slate-400 bg-slate-900/50">
             <tr>
               <th class="p-2.5">التاريخ</th>
-              <th class="p-2.5">مبيعات الكاش</th>
+              <th class="p-2.5">الكاش الفعلي باليد</th>
               <th class="p-2.5">مبيعات الشبكة</th>
               <th class="p-2.5">إجمالي المبيعات</th>
               <th class="p-2.5">المصاريف</th>
@@ -242,7 +248,7 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-3 gap-3">
         <div>
           <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل اليوميات)</h2>
-          <p class="text-xs text-slate-400">يمكنك تعديل أي بيانات وإضافة حركات بأثر رجعي فوراً</p>
+          <p class="text-xs text-slate-400">يمكنك تعديل أي بيانات سابقة أو حالية بأثر رجعي</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="changeAdminPassword()" class="bg-slate-700 hover:bg-slate-600 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/30">
@@ -254,14 +260,14 @@
 
       <div class="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-emerald-300">📅 تاريخ اليومية المستهدفة:</span>
+          <span class="text-xs font-bold text-emerald-300">📅 تاريخ اليومية المراد إدخالها أو تعديلها:</span>
           <input type="date" id="adminTargetDate" onchange="onAdminDateChange()" class="bg-slate-900 border border-emerald-500/50 rounded-lg p-2 text-xs font-bold text-emerald-300">
           <button onclick="setAdminTargetToday()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-2.5 py-2 rounded-lg text-slate-200">تاريخ اليوم</button>
         </div>
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- إدخال عهدة كاشير -->
+      <!-- إدخال وتعديل كاشير -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ إضافة / تعديل إغلاق كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
@@ -316,7 +322,7 @@
         </div>
       </div>
 
-      <!-- إعدادات البنك -->
+      <!-- إعدادات وحركات البنك -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-cyan-500/40 space-y-3">
         <h3 class="text-xs font-bold text-cyan-300">🏦 إعدادات وحركات الحساب البنكي لليومية</h3>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
@@ -430,7 +436,6 @@
   </div>
 
   <script>
-    // إعدادات Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD53an3IKwwjom9iIuHSwbrFNB8CglVvF4",
       authDomain: "market-pos-470ad.firebaseapp.com",
@@ -594,6 +599,7 @@
       return false;
     }
 
+    // استخراج تقرير الفترة المجمعة
     function loadPeriodReport() {
       let fromStr = toStandardDigits(document.getElementById('periodFrom').value);
       let toStr = toStandardDigits(document.getElementById('periodTo').value);
@@ -610,14 +616,13 @@
       db.ref('daily_reports').once('value').then((snapshot) => {
         const allData = snapshot.val() || {};
         
-        let periodCashSales = 0;
-        let periodCardSales = 0;
-        let periodActualCash = 0;
+        let periodActualCashSum = 0;
+        let periodCardSalesSum = 0;
+        let periodSalesTotalSum = 0;
         let periodExpenses = 0;
         let periodSupplierPaid = 0;
         let periodSupplierDue = 0;
         let periodVariance = 0;
-        let periodActualCardSum = 0;
 
         let combinedExpenses = [];
         let combinedSuppliers = [];
@@ -636,11 +641,10 @@
           const sList = Object.values(day.suppliers || {});
           const bList = Object.values(day.bankTransactions || {});
 
-          let dayCashSales = 0;
-          let dayCardSales = 0;
           let dayActualCash = 0;
+          let dayCardSales = 0;
+          let daySalesTotal = 0;
           let dayExpectedCash = 0;
-          let dayActualCard = 0;
 
           const dayExpAmount = eList.reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
           const daySuppPaid = sList.reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
@@ -662,20 +666,17 @@
             
             let expCash = (parseFloat(dr.opening || 0) + cashReport) - (drExp + drSupp);
             
-            dayCashSales += cashReport;
-            dayCardSales += (zReport > 0 ? (zReport - cashReport) : cardReport);
             dayActualCash += actualCash;
-            dayActualCard += (actualCard > 0 ? actualCard : cardReport);
+            dayCardSales += (actualCard > 0 ? actualCard : cardReport);
+            daySalesTotal += (zReport > 0 ? zReport : (cashReport + cardReport));
             dayExpectedCash += expCash;
           });
 
-          const daySalesTotal = dayCashSales + dayCardSales;
           const dayVariance = (dayActualCash - dayExpectedCash);
 
-          periodCashSales += dayCashSales;
-          periodCardSales += dayCardSales;
-          periodActualCash += dayActualCash;
-          periodActualCardSum += dayActualCard;
+          periodActualCashSum += dayActualCash;
+          periodCardSalesSum += dayCardSales;
+          periodSalesTotalSum += daySalesTotal;
           periodExpenses += dayExpAmount;
           periodSupplierPaid += daySuppPaid;
           periodSupplierDue = daySuppDue;
@@ -685,10 +686,11 @@
           combinedSuppliers = combinedSuppliers.concat(sList.map(s => ({ ...s, date: dKey })));
           combinedBankTrans = combinedBankTrans.concat(bList.map(b => ({ ...b, date: dKey })));
 
+          // هنا التعديل: العمود يقرأ الكاش الفعلي باليد لليوم (dayActualCash)
           daysRows.push(`
             <tr class="hover:bg-slate-700/30">
               <td class="p-2.5 font-bold text-slate-100">${dKey}</td>
-              <td class="p-2.5 text-emerald-400 font-medium">${dayCashSales.toFixed(2)}</td>
+              <td class="p-2.5 text-emerald-400 font-bold">${dayActualCash.toFixed(2)}</td>
               <td class="p-2.5 text-blue-400 font-medium">${dayCardSales.toFixed(2)}</td>
               <td class="p-2.5 font-bold text-white">${daySalesTotal.toFixed(2)}</td>
               <td class="p-2.5 text-rose-400">${dayExpAmount.toFixed(2)}</td>
@@ -707,23 +709,24 @@
           : daysRows.join('');
         document.getElementById('periodDaysCount').innerText = `${daysRows.length} يوم مسجل`;
 
-        const totalSalesPeriod = periodCashSales + periodCardSales;
-        document.getElementById('totalSystemSales').innerHTML = `${totalSalesPeriod.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('totalCashSales').innerText = periodCashSales.toFixed(2);
-        document.getElementById('totalCardSales').innerText = periodCardSales.toFixed(2);
+        // تحديث بطاقة إجمالي مبيعات الفترة بدون سطر كاش/شبكة
+        document.getElementById('totalSystemSales').innerHTML = `${periodSalesTotalSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
 
-        document.getElementById('totalActualCash').innerHTML = `${periodActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        document.getElementById('totalActualCash').innerHTML = `${periodActualCashSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('totalExpenses').innerHTML = `${(periodExpenses + periodSupplierPaid).toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('pettyExpenses').innerText = periodExpenses.toFixed(2);
         document.getElementById('supplierPaid').innerText = periodSupplierPaid.toFixed(2);
         document.getElementById('totalSupplierDue').innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
+        // حساب صافي رصيد البنك للفترة
         const totalBankOut = combinedExpenses.filter(e => e.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
                              combinedSuppliers.filter(s => s.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
         const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-        const netPeriodBank = (periodActualCardSum + totalBankIn) - totalBankOut;
+        const netPeriodBank = (periodCardSalesSum + totalBankIn) - totalBankOut;
         document.getElementById('bankBalance').innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
+        // حساب العجز / الزيادة للفترة
         const varEl = document.getElementById('totalVariance');
         const varStat = document.getElementById('varianceStatus');
         if (periodVariance < -0.05) {
@@ -786,9 +789,7 @@
       const suppList = Object.entries(currentData.suppliers).map(([key, val]) => ({ id: key, ...val }));
       const bankTransList = Object.entries(currentData.bankTransactions).map(([key, val]) => ({ id: key, ...val }));
 
-      let totalZ = 0;
-      let totalCashReport = 0;
-      let totalCardReport = 0;
+      let totalSales = 0;
       let totalActualCash = 0;
       let totalActualCard = 0;
       let grandVariance = 0;
@@ -822,9 +823,7 @@
           const cardDiff = actualCard - cardReport;
           const netDrawerDiff = cashDiff + cardDiff;
 
-          totalZ += (zReport > 0 ? zReport : (cashReport + cardReport));
-          totalCashReport += cashReport;
-          totalCardReport += cardReport;
+          totalSales += (zReport > 0 ? zReport : (cashReport + cardReport));
           totalActualCash += actualCash;
           totalActualCard += actualCard;
           grandVariance += netDrawerDiff;
@@ -871,9 +870,10 @@
       const netBank = (currentData.bankOpening + totalActualCard + bankTransIn) - (bankExpOut + bankSuppOut + bankTransOut);
       document.getElementById('bankBalance').innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      document.getElementById('totalSystemSales').innerHTML = `${(totalCashReport + totalCardReport).toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('totalCashSales').innerText = totalCashReport.toFixed(2);
-      document.getElementById('totalCardSales').innerText = totalCardReport.toFixed(2);
+      // تحديث مبيعات اليومية بدون سطر كاش/شبكة
+      document.getElementById('totalSystemSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
+
       document.getElementById('totalActualCash').innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('totalExpenses').innerHTML = `${(totalExpensesAmount + totalSuppPaidAmount).toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('pettyExpenses').innerText = totalExpensesAmount.toFixed(2);
@@ -1196,7 +1196,6 @@
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
     }
 
-    // تشغيل آمن بعد اكتمال تحميل عناصر الصفحة
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('selectedDate').value = currentDateStr;
       document.getElementById('adminTargetDate').value = adminTargetDateStr;
