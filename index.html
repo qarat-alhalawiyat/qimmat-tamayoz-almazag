@@ -49,7 +49,7 @@
         <div id="dailyDatePickerContainer" class="flex items-center gap-2">
           <label class="text-slate-400 font-bold">اختر تاريخ اليومية للعرض:</label>
           <input type="date" id="selectedDate" onchange="onDateChange()" class="bg-slate-800 border border-slate-700 rounded-lg p-1.5 text-emerald-300 text-xs">
-          <button onclick="setTodayDate()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-2 rounded-lg text-slate-300">اليوم</button>
+          <button onclick="setTodayDate()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-slate-300">اليوم</button>
         </div>
 
         <div id="periodPickerContainer" class="hidden flex-wrap items-center gap-2">
@@ -67,7 +67,7 @@
       </div>
     </header>
 
-    <!-- البطاقات العلوية الرئيسية السبعة -->
+    <!-- البطاقات العلوية السبعة -->
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
       <!-- 1. إجمالي المبيعات -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
@@ -149,7 +149,7 @@
       </div>
     </div>
 
-    <!-- جدول الفترات المجمع (معه جدول ملخص الكاشيرات خلال الفترة) -->
+    <!-- جدول الفترات المجمع -->
     <div id="periodDaysSummarySection" class="hidden space-y-6">
       
       <!-- ملخص عجز وزيادة كل كاشير طوال الفترة -->
@@ -491,6 +491,12 @@
         .replace(/\//g, '-');
     }
 
+    // دالة لتوحيد أسماء الكاشيرات ومنع التكرار بسبب المسافات
+    function normalizeCashierName(name) {
+      if (!name) return 'كاشير غير محدد';
+      return name.toString().trim().replace(/\s+/g, ' ');
+    }
+
     let currentDateStr = new Date().toISOString().split('T')[0];
     let adminTargetDateStr = currentDateStr;
     let viewMode = 'daily';
@@ -539,7 +545,7 @@
     }
 
     function onDateChange() {
-      const val = document.getElementById('selectedDate').value;
+      const val = document.getElementById('selectedDate')?.value;
       if (val) {
         currentDateStr = toStandardDigits(val);
         bindDateListener(currentDateStr);
@@ -548,17 +554,19 @@
 
     function setTodayDate() {
       currentDateStr = new Date().toISOString().split('T')[0];
-      document.getElementById('selectedDate').value = currentDateStr;
+      const selEl = document.getElementById('selectedDate');
+      if (selEl) selEl.value = currentDateStr;
       bindDateListener(currentDateStr);
     }
 
     function onAdminDateChange() {
-      const val = document.getElementById('adminTargetDate').value;
+      const val = document.getElementById('adminTargetDate')?.value;
       if (val) {
         adminTargetDateStr = toStandardDigits(val);
         updateAdminTargetNotice();
         currentDateStr = adminTargetDateStr;
-        document.getElementById('selectedDate').value = adminTargetDateStr;
+        const selEl = document.getElementById('selectedDate');
+        if (selEl) selEl.value = adminTargetDateStr;
         bindDateListener(adminTargetDateStr);
       }
     }
@@ -566,10 +574,12 @@
     function setAdminTargetToday() {
       const today = new Date().toISOString().split('T')[0];
       adminTargetDateStr = today;
-      document.getElementById('adminTargetDate').value = today;
+      const admEl = document.getElementById('adminTargetDate');
+      if (admEl) admEl.value = today;
       updateAdminTargetNotice();
       currentDateStr = today;
-      document.getElementById('selectedDate').value = today;
+      const selEl = document.getElementById('selectedDate');
+      if (selEl) selEl.value = today;
       bindDateListener(today);
     }
 
@@ -588,24 +598,28 @@
       const periodDaysSec = document.getElementById('periodDaysSummarySection');
 
       if (mode === 'daily') {
-        btnDaily.className = "px-3 py-1 rounded-md bg-emerald-600 text-white font-bold transition";
-        btnPeriod.className = "px-3 py-1 rounded-md text-slate-400 hover:text-white transition";
-        dailyPicker.classList.remove('hidden');
-        periodPicker.classList.add('hidden');
-        dailyDrawersSec.classList.remove('hidden');
-        periodDaysSec.classList.add('hidden');
-        document.getElementById('cardTitleSales').innerText = "إجمالي المبيعات";
-        document.getElementById('cardTitleCash').innerText = "الكاش الفعلي بالصناديق";
+        if (btnDaily) btnDaily.className = "px-3 py-1 rounded-md bg-emerald-600 text-white font-bold transition";
+        if (btnPeriod) btnPeriod.className = "px-3 py-1 rounded-md text-slate-400 hover:text-white transition";
+        if (dailyPicker) dailyPicker.classList.remove('hidden');
+        if (periodPicker) periodPicker.classList.add('hidden');
+        if (dailyDrawersSec) dailyDrawersSec.classList.remove('hidden');
+        if (periodDaysSec) periodDaysSec.classList.add('hidden');
+        const sTitle = document.getElementById('cardTitleSales');
+        if (sTitle) sTitle.innerText = "إجمالي المبيعات";
+        const cTitle = document.getElementById('cardTitleCash');
+        if (cTitle) cTitle.innerText = "الكاش الفعلي بالصناديق";
         renderDashboard();
       } else {
-        btnPeriod.className = "px-3 py-1 rounded-md bg-blue-600 text-white font-bold transition";
-        btnDaily.className = "px-3 py-1 rounded-md text-slate-400 hover:text-white transition";
-        dailyPicker.classList.add('hidden');
-        periodPicker.classList.remove('hidden');
-        dailyDrawersSec.classList.add('hidden');
-        periodDaysSec.classList.remove('hidden');
-        document.getElementById('cardTitleSales').innerText = "إجمالي مبيعات الفترة";
-        document.getElementById('cardTitleCash').innerText = "مجموع الكاش المحقق بالفترة";
+        if (btnPeriod) btnPeriod.className = "px-3 py-1 rounded-md bg-blue-600 text-white font-bold transition";
+        if (btnDaily) btnDaily.className = "px-3 py-1 rounded-md text-slate-400 hover:text-white transition";
+        if (dailyPicker) dailyPicker.classList.add('hidden');
+        if (periodPicker) periodPicker.classList.remove('hidden');
+        if (dailyDrawersSec) dailyDrawersSec.classList.add('hidden');
+        if (periodDaysSec) periodDaysSec.classList.remove('hidden');
+        const sTitle = document.getElementById('cardTitleSales');
+        if (sTitle) sTitle.innerText = "إجمالي مبيعات الفترة";
+        const cTitle = document.getElementById('cardTitleCash');
+        if (cTitle) cTitle.innerText = "مجموع الكاش المحقق بالفترة";
         setQuickPeriod(30);
       }
     }
@@ -614,8 +628,10 @@
       const to = new Date();
       const from = new Date();
       from.setDate(to.getDate() - (days - 1));
-      document.getElementById('periodTo').value = to.toISOString().split('T')[0];
-      document.getElementById('periodFrom').value = from.toISOString().split('T')[0];
+      const pTo = document.getElementById('periodTo');
+      const pFrom = document.getElementById('periodFrom');
+      if (pTo) pTo.value = to.toISOString().split('T')[0];
+      if (pFrom) pFrom.value = from.toISOString().split('T')[0];
       loadPeriodReport();
     }
 
@@ -630,10 +646,10 @@
       return false;
     }
 
-    // استخراج تقرير الفترة المجمعة مع فصل عجز وزيادة كل كاشير لحاله
+    // استخراج تقرير الفترة المجمعة مع دمج الكاشيرات تلقائياً
     function loadPeriodReport() {
-      let fromStr = toStandardDigits(document.getElementById('periodFrom').value);
-      let toStr = toStandardDigits(document.getElementById('periodTo').value);
+      let fromStr = toStandardDigits(document.getElementById('periodFrom')?.value);
+      let toStr = toStandardDigits(document.getElementById('periodTo')?.value);
       if (!fromStr || !toStr) return alert('يرجى تحديد بداية ونهاية الفترة');
 
       if (fromStr > toStr) {
@@ -642,7 +658,8 @@
         toStr = temp;
       }
 
-      document.getElementById('activeViewTitle').innerText = `تقرير مالي مجمع للفترة من [ ${fromStr} ] إلى [ ${toStr} ]`;
+      const activeTitle = document.getElementById('activeViewTitle');
+      if (activeTitle) activeTitle.innerText = `تقرير مالي مجمع للفترة من [ ${fromStr} ] إلى [ ${toStr} ]`;
 
       db.ref('daily_reports').once('value').then((snapshot) => {
         const allData = snapshot.val() || {};
@@ -689,7 +706,9 @@
             const cardReport = parseFloat(dr.cardReport || 0);
             const actualCard = parseFloat(dr.actualCard || 0);
             const actualCash = parseFloat(dr.actualCash || 0);
-            const cName = dr.name ? dr.name.trim() : 'كاشير غير محدد';
+            
+            // توحيد الاسم لمنع التكرار نهائياً
+            const cName = normalizeCashierName(dr.name);
 
             if (!cashiersSummary[cName]) {
               cashiersSummary[cName] = {
@@ -703,8 +722,8 @@
             }
 
             const calcCash = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
-            const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-            const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+            const drExp = eList.filter(e => isSourceMatch(e.source, cName)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+            const drSupp = sList.filter(s => isSourceMatch(s.source, cName)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
             
             const expCash = calcCash - (drExp + drSupp);
             const cashDiff = actualCash - expCash;
@@ -764,7 +783,7 @@
           `);
         });
 
-        // 1. ملء جدول ملخص أداء كل كاشير بالفترة
+        // 1. ملء جدول ملخص أداء كل كاشير بالفترة بعد دمج الأسماء
         const cashiersArr = Object.values(cashiersSummary);
         const cBody = document.getElementById('periodCashiersTableBody');
         if (cBody) {
@@ -812,62 +831,87 @@
         const pDayCount = document.getElementById('periodDaysCount');
         if (pDayCount) pDayCount.innerText = `${daysRows.length} يوم مسجل`;
 
-        document.getElementById('totalSystemSales').innerHTML = `${periodSalesTotalSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
+        const sSales = document.getElementById('totalSystemSales');
+        if (sSales) sSales.innerHTML = `${periodSalesTotalSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const sSub = document.getElementById('salesCardSubText');
+        if (sSub) sSub.innerText = 'شامل كل أجهزة الكاشير';
 
-        document.getElementById('totalActualCash').innerHTML = `${periodActualCashSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('totalExpenses').innerHTML = `${(periodExpenses + periodSupplierPaid).toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('pettyExpenses').innerText = periodExpenses.toFixed(2);
-        document.getElementById('supplierPaid').innerText = periodSupplierPaid.toFixed(2);
-        document.getElementById('totalSupplierDue').innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const aCash = document.getElementById('totalActualCash');
+        if (aCash) aCash.innerHTML = `${periodActualCashSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const tExp = document.getElementById('totalExpenses');
+        if (tExp) tExp.innerHTML = `${(periodExpenses + periodSupplierPaid).toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const pExp = document.getElementById('pettyExpenses');
+        if (pExp) pExp.innerText = periodExpenses.toFixed(2);
+        const sPaid = document.getElementById('supplierPaid');
+        if (sPaid) sPaid.innerText = periodSupplierPaid.toFixed(2);
+        const sDue = document.getElementById('totalSupplierDue');
+        if (sDue) sDue.innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
         // حساب صافي رصيد البنك للفترة
         const totalBankOut = combinedExpenses.filter(e => e.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
                              combinedSuppliers.filter(s => s.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
         const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
         const netPeriodBank = (periodCardSalesSum + totalBankIn) - totalBankOut;
-        document.getElementById('bankBalance').innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const bBal = document.getElementById('bankBalance');
+        if (bBal) bBal.innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
         // تحديث بطاقتي العجز والزيادة المنفصلتين للفترة
-        document.getElementById('totalShortageCard').innerHTML = `${periodTotalShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('shortageCountStatus').innerText = periodTotalShortage > 0.05 ? `إجمالي عجز الفترة` : `لا يوجد عجز`;
+        const tShort = document.getElementById('totalShortageCard');
+        if (tShort) tShort.innerHTML = `${periodTotalShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const sStat = document.getElementById('shortageCountStatus');
+        if (sStat) sStat.innerText = periodTotalShortage > 0.05 ? `إجمالي عجز الفترة` : `لا يوجد عجز`;
 
-        document.getElementById('totalOverCard').innerHTML = `${periodTotalOver.toFixed(2)} <span class="text-xs">ر.س</span>`;
-        document.getElementById('overCountStatus').innerText = periodTotalOver > 0.05 ? `إجمالي زيادة الفترة` : `لا توجد زيادة`;
+        const tOver = document.getElementById('totalOverCard');
+        if (tOver) tOver.innerHTML = `${periodTotalOver.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        const oStat = document.getElementById('overCountStatus');
+        if (oStat) oStat.innerText = periodTotalOver > 0.05 ? `إجمالي زيادة الفترة` : `لا توجد زيادة`;
 
-        document.getElementById('expensesTableBody').innerHTML = combinedExpenses.map(e => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2">${e.name} <span class="text-[9px] text-slate-500">(${e.date})</span></td>
-            <td class="p-2 text-slate-400 text-[11px]">${e.source}</td>
-            <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)}</td>
-          </tr>
-        `).join('');
-        document.getElementById('expensesCount').innerText = `${combinedExpenses.length} بند`;
+        const expBody = document.getElementById('expensesTableBody');
+        if (expBody) {
+          expBody.innerHTML = combinedExpenses.map(e => `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2">${e.name} <span class="text-[9px] text-slate-500">(${e.date})</span></td>
+              <td class="p-2 text-slate-400 text-[11px]">${e.source}</td>
+              <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)}</td>
+            </tr>
+          `).join('');
+        }
+        const expCount = document.getElementById('expensesCount');
+        if (expCount) expCount.innerText = `${combinedExpenses.length} بند`;
 
-        document.getElementById('suppliersTableBody').innerHTML = combinedSuppliers.map(s => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2 font-medium">${s.name} <span class="text-[9px] text-slate-500">(${s.date})</span></td>
-            <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
-            <td class="p-2 text-slate-400 text-[11px]">${s.source || 'عهدة'}</td>
-            <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
-          </tr>
-        `).join('');
-        document.getElementById('suppliersCount').innerText = `${combinedSuppliers.length} حركة`;
+        const suppBody = document.getElementById('suppliersTableBody');
+        if (suppBody) {
+          suppBody.innerHTML = combinedSuppliers.map(s => `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2 font-medium">${s.name} <span class="text-[9px] text-slate-500">(${s.date})</span></td>
+              <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
+              <td class="p-2 text-slate-400 text-[11px]">${s.source || 'عهدة'}</td>
+              <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
+            </tr>
+          `).join('');
+        }
+        const suppCount = document.getElementById('suppliersCount');
+        if (suppCount) suppCount.innerText = `${combinedSuppliers.length} حركة`;
 
-        document.getElementById('bankTransTableBody').innerHTML = combinedBankTrans.map(t => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2">${t.desc} <span class="text-[9px] text-slate-500">(${t.date})</span></td>
-            <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
-            <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
-          </tr>
-        `).join('');
-        document.getElementById('bankTransCount').innerText = `${combinedBankTrans.length} حركة`;
+        const bTransBody = document.getElementById('bankTransTableBody');
+        if (bTransBody) {
+          bTransBody.innerHTML = combinedBankTrans.map(t => `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2">${t.desc} <span class="text-[9px] text-slate-500">(${t.date})</span></td>
+              <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
+              <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
+            </tr>
+          `).join('');
+        }
+        const bCount = document.getElementById('bankTransCount');
+        if (bCount) bCount.innerText = `${combinedBankTrans.length} حركة`;
       });
     }
 
     function goToSpecificDay(dateStr) {
       setViewMode('daily');
-      document.getElementById('selectedDate').value = toStandardDigits(dateStr);
+      const selEl = document.getElementById('selectedDate');
+      if (selEl) selEl.value = toStandardDigits(dateStr);
       currentDateStr = toStandardDigits(dateStr);
       bindDateListener(currentDateStr);
     }
@@ -890,71 +934,74 @@
       const totalSupplierDue = suppList.reduce((acc, curr) => acc + (parseFloat(curr.remaining) || 0), 0);
 
       const body = document.getElementById('drawersTableBody');
-      if (drawersList.length === 0) {
-        body.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
-      } else {
-        body.innerHTML = drawersList.map(d => {
-          const zReport = parseFloat(d.totalZ || 0);
-          const actualCash = parseFloat(d.actualCash || 0);
-          const cardReport = parseFloat(d.cardReport || 0);
-          const actualCard = parseFloat(d.actualCard || 0);
+      if (body) {
+        if (drawersList.length === 0) {
+          body.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
+        } else {
+          body.innerHTML = drawersList.map(d => {
+            const zReport = parseFloat(d.totalZ || 0);
+            const actualCash = parseFloat(d.actualCash || 0);
+            const cardReport = parseFloat(d.cardReport || 0);
+            const actualCard = parseFloat(d.actualCard || 0);
 
-          const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
+            const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
-          const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-          const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-          const totalDrawerOut = drawerExp + drawerSupp;
-          
-          const expectedCash = calculatedCashSales - totalDrawerOut;
-          const cashDiff = actualCash - expectedCash;
-          const cardDiff = actualCard - cardReport;
-          const netDrawerDiff = cashDiff + cardDiff;
+            const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+            const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+            const totalDrawerOut = drawerExp + drawerSupp;
+            
+            const expectedCash = calculatedCashSales - totalDrawerOut;
+            const cashDiff = actualCash - expectedCash;
+            const cardDiff = actualCard - cardReport;
+            const netDrawerDiff = cashDiff + cardDiff;
 
-          let drawerShortage = 0;
-          let drawerOver = 0;
+            let drawerShortage = 0;
+            let drawerOver = 0;
 
-          if (netDrawerDiff < -0.05) {
-            drawerShortage = Math.abs(netDrawerDiff);
-            totalDailyShortage += drawerShortage;
-          } else if (netDrawerDiff > 0.05) {
-            drawerOver = netDrawerDiff;
-            totalDailyOver += drawerOver;
-          }
+            if (netDrawerDiff < -0.05) {
+              drawerShortage = Math.abs(netDrawerDiff);
+              totalDailyShortage += drawerShortage;
+            } else if (netDrawerDiff > 0.05) {
+              drawerOver = netDrawerDiff;
+              totalDailyOver += drawerOver;
+            }
 
-          totalSales += (zReport > 0 ? zReport : (calculatedCashSales + cardReport));
-          totalActualCash += actualCash;
-          totalActualCard += actualCard;
+            totalSales += (zReport > 0 ? zReport : (calculatedCashSales + cardReport));
+            totalActualCash += actualCash;
+            totalActualCard += actualCard;
 
-          const cashBadge = Math.abs(cashDiff) < 0.05 
-            ? `<span class="text-emerald-400">مطابق</span>` 
-            : (cashDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
+            const cashBadge = Math.abs(cashDiff) < 0.05 
+              ? `<span class="text-emerald-400">مطابق</span>` 
+              : (cashDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
 
-          const cardBadge = Math.abs(cardDiff) < 0.05 
-            ? `<span class="text-emerald-400">مطابق</span>` 
-            : (cardDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
+            const cardBadge = Math.abs(cardDiff) < 0.05 
+              ? `<span class="text-emerald-400">مطابق</span>` 
+              : (cardDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
 
-          return `
-            <tr class="hover:bg-slate-700/30">
-              <td class="p-2.5 font-bold text-slate-100">${d.name}</td>
-              <td class="p-2.5 text-blue-300 font-semibold">${zReport.toFixed(2)}</td>
-              <td class="p-2.5 text-rose-400 font-bold">${totalDrawerOut.toFixed(2)}</td>
-              <td class="p-2.5 text-emerald-300 font-bold">${expectedCash.toFixed(2)}</td>
-              <td class="p-2.5 text-emerald-400 font-bold">${actualCash.toFixed(2)}</td>
-              <td class="p-2.5">${cashBadge}</td>
-              <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
-              <td class="p-2.5 text-blue-400 font-bold">${actualCard.toFixed(2)}</td>
-              <td class="p-2.5">${cardBadge}</td>
-              <td class="p-2.5 font-bold ${drawerShortage > 0.05 ? 'text-rose-400' : 'text-slate-500'}">
-                ${drawerShortage > 0.05 ? `عجز (${drawerShortage.toFixed(2)})` : '0.00'}
-              </td>
-              <td class="p-2.5 font-bold ${drawerOver > 0.05 ? 'text-blue-400' : 'text-slate-500'}">
-                ${drawerOver > 0.05 ? `+${drawerOver.toFixed(2)}` : '0.00'}
-              </td>
-            </tr>
-          `;
-        }).join('');
+            return `
+              <tr class="hover:bg-slate-700/30">
+                <td class="p-2.5 font-bold text-slate-100">${d.name}</td>
+                <td class="p-2.5 text-blue-300 font-semibold">${zReport.toFixed(2)}</td>
+                <td class="p-2.5 text-rose-400 font-bold">${totalDrawerOut.toFixed(2)}</td>
+                <td class="p-2.5 text-emerald-300 font-bold">${expectedCash.toFixed(2)}</td>
+                <td class="p-2.5 text-emerald-400 font-bold">${actualCash.toFixed(2)}</td>
+                <td class="p-2.5">${cashBadge}</td>
+                <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
+                <td class="p-2.5 text-blue-400 font-bold">${actualCard.toFixed(2)}</td>
+                <td class="p-2.5">${cardBadge}</td>
+                <td class="p-2.5 font-bold ${drawerShortage > 0.05 ? 'text-rose-400' : 'text-slate-500'}">
+                  ${drawerShortage > 0.05 ? `عجز (${drawerShortage.toFixed(2)})` : '0.00'}
+                </td>
+                <td class="p-2.5 font-bold ${drawerOver > 0.05 ? 'text-blue-400' : 'text-slate-500'}">
+                  ${drawerOver > 0.05 ? `+${drawerOver.toFixed(2)}` : '0.00'}
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
       }
-      document.getElementById('drawersCount').innerText = `${drawersList.length} كاشير / صندوق`;
+      const dCount = document.getElementById('drawersCount');
+      if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
       const bankExpOut = expList.filter(e => e.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => s.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
@@ -962,124 +1009,159 @@
       const bankTransOut = bankTransList.filter(t => t.type === 'out').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
       const netBank = (currentData.bankOpening + totalActualCard + bankTransIn) - (bankExpOut + bankSuppOut + bankTransOut);
-      document.getElementById('bankBalance').innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const bBal = document.getElementById('bankBalance');
+      if (bBal) bBal.innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      document.getElementById('totalSystemSales').innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
+      const sSales = document.getElementById('totalSystemSales');
+      if (sSales) sSales.innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const sSub = document.getElementById('salesCardSubText');
+      if (sSub) sSub.innerText = 'شامل كل أجهزة الكاشير';
 
-      document.getElementById('totalActualCash').innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('totalExpenses').innerHTML = `${(totalExpensesAmount + totalSuppPaidAmount).toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('pettyExpenses').innerText = totalExpensesAmount.toFixed(2);
-      document.getElementById('supplierPaid').innerText = totalSuppPaidAmount.toFixed(2);
-      document.getElementById('totalSupplierDue').innerHTML = `${totalSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const aCash = document.getElementById('totalActualCash');
+      if (aCash) aCash.innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const tExp = document.getElementById('totalExpenses');
+      if (tExp) tExp.innerHTML = `${(totalExpensesAmount + totalSuppPaidAmount).toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const pExp = document.getElementById('pettyExpenses');
+      if (pExp) pExp.innerText = totalExpensesAmount.toFixed(2);
+      const sPaid = document.getElementById('supplierPaid');
+      if (sPaid) sPaid.innerText = totalSuppPaidAmount.toFixed(2);
+      const sDue = document.getElementById('totalSupplierDue');
+      if (sDue) sDue.innerHTML = `${totalSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      document.getElementById('totalShortageCard').innerHTML = `${totalDailyShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('shortageCountStatus').innerText = totalDailyShortage > 0.05 ? `يوجد عجز إجمالي ${totalDailyShortage.toFixed(2)} ر.س` : `مطابق (لا يوجد عجز)`;
+      const tShort = document.getElementById('totalShortageCard');
+      if (tShort) tShort.innerHTML = `${totalDailyShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const sStat = document.getElementById('shortageCountStatus');
+      if (sStat) sStat.innerText = totalDailyShortage > 0.05 ? `يوجد عجز إجمالي ${totalDailyShortage.toFixed(2)} ر.س` : `مطابق (لا يوجد عجز)`;
 
-      document.getElementById('totalOverCard').innerHTML = `${totalDailyOver.toFixed(2)} <span class="text-xs">ر.س</span>`;
-      document.getElementById('overCountStatus').innerText = totalDailyOver > 0.05 ? `توجد زيادة إجمالية ${totalDailyOver.toFixed(2)} ر.س` : `لا توجد زيادة`;
+      const tOver = document.getElementById('totalOverCard');
+      if (tOver) tOver.innerHTML = `${totalDailyOver.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      const oStat = document.getElementById('overCountStatus');
+      if (oStat) oStat.innerText = totalDailyOver > 0.05 ? `توجد زيادة إجمالية ${totalDailyOver.toFixed(2)} ر.س` : `لا توجد زيادة`;
 
       const expBody = document.getElementById('expensesTableBody');
-      expBody.innerHTML = expList.length === 0 
-        ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`
-        : expList.map(e => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2">${e.name}</td>
-            <td class="p-2 text-slate-400 text-[11px]">${e.source}</td>
-            <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)} ر.س</td>
-          </tr>
-        `).join('');
-      document.getElementById('expensesCount').innerText = `${expList.length} بند`;
+      if (expBody) {
+        expBody.innerHTML = expList.length === 0 
+          ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد مصاريف مسجلة اليوم</td></tr>`
+          : expList.map(e => `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2">${e.name}</td>
+              <td class="p-2 text-slate-400 text-[11px]">${e.source}</td>
+              <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)} ر.س</td>
+            </tr>
+          `).join('');
+      }
+      const expCount = document.getElementById('expensesCount');
+      if (expCount) expCount.innerText = `${expList.length} بند`;
 
       const suppBody = document.getElementById('suppliersTableBody');
-      suppBody.innerHTML = suppList.length === 0 
-        ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">لا توجد حركات موردين اليوم</td></tr>`
-        : suppList.map(s => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2 font-medium">${s.name}</td>
-            <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
-            <td class="p-2 text-slate-400 text-[11px]">${s.source || 'عهدة'}</td>
-            <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
-          </tr>
-        `).join('');
-      document.getElementById('suppliersCount').innerText = `${suppList.length} مورد`;
+      if (suppBody) {
+        suppBody.innerHTML = suppList.length === 0 
+          ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">لا توجد حركات موردين اليوم</td></tr>`
+          : suppList.map(s => `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2 font-medium">${s.name}</td>
+              <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
+              <td class="p-2 text-slate-400 text-[11px]">${s.source || 'عهدة'}</td>
+              <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
+            </tr>
+          `).join('');
+      }
+      const suppCount = document.getElementById('suppliersCount');
+      if (suppCount) suppCount.innerText = `${suppList.length} مورد`;
 
       const bTransBody = document.getElementById('bankTransTableBody');
-      bTransBody.innerHTML = bankTransList.length === 0 
-        ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية اليوم</td></tr>`
-        : bankTransList.map(t => `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-2">${t.desc}</td>
-            <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
-            <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)} ر.س</td>
-          </tr>
-        `).join('');
-      document.getElementById('bankTransCount').innerText = `${bankTransList.length} حركة`;
+      if (bTransBody) {
+        bTransBody.innerHTML = bankTransList.length === 0 
+          ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية اليوم</td></tr>`
+          : bankTransList.map(t => `
+            <tr class="hover:bg-slate-700/30">
+              <td class="p-2">${t.desc}</td>
+              <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
+              <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)} ر.س</td>
+            </tr>
+          `).join('');
+      }
+      const bCount = document.getElementById('bankTransCount');
+      if (bCount) bCount.innerText = `${bankTransList.length} حركة`;
     }
 
     function renderAdminLists() {
       const dList = Object.entries(currentData.drawers).map(([k, v]) => ({ id: k, ...v }));
-      document.getElementById('adminDrawersList').innerHTML = dList.map(d => `
-        <tr>
-          <td class="p-2 font-bold">${d.name}</td>
-          <td class="p-2">${parseFloat(d.totalZ || 0).toFixed(2)}</td>
-          <td class="p-2 text-emerald-400">${parseFloat(d.actualCash || 0).toFixed(2)}</td>
-          <td class="p-2 text-blue-400">${parseFloat(d.actualCard || 0).toFixed(2)}</td>
-          <td class="p-2 text-center space-x-1">
-            <button onclick="editDrawer('${d.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
-            <button onclick="deleteDrawer('${d.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
-          </td>
-        </tr>
-      `).join('');
+      const aDrawers = document.getElementById('adminDrawersList');
+      if (aDrawers) {
+        aDrawers.innerHTML = dList.map(d => `
+          <tr>
+            <td class="p-2 font-bold">${d.name}</td>
+            <td class="p-2">${parseFloat(d.totalZ || 0).toFixed(2)}</td>
+            <td class="p-2 text-emerald-400">${parseFloat(d.actualCash || 0).toFixed(2)}</td>
+            <td class="p-2 text-blue-400">${parseFloat(d.actualCard || 0).toFixed(2)}</td>
+            <td class="p-2 text-center space-x-1">
+              <button onclick="editDrawer('${d.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
+              <button onclick="deleteDrawer('${d.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+            </td>
+          </tr>
+        `).join('');
+      }
 
-      document.getElementById('bankOpening').value = currentData.bankOpening || '';
+      const bOpening = document.getElementById('bankOpening');
+      if (bOpening) bOpening.value = currentData.bankOpening || '';
+      
       const bList = Object.entries(currentData.bankTransactions).map(([k, v]) => ({ id: k, ...v }));
-      document.getElementById('adminBankTransList').innerHTML = bList.map(t => `
-        <tr>
-          <td class="p-2">${t.desc}</td>
-          <td class="p-2 ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد' : 'صادر'}</td>
-          <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
-          <td class="p-2 text-center">
-            <button onclick="deleteBankTrans('${t.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
-          </td>
-        </tr>
-      `).join('');
+      const aBank = document.getElementById('adminBankTransList');
+      if (aBank) {
+        aBank.innerHTML = bList.map(t => `
+          <tr>
+            <td class="p-2">${t.desc}</td>
+            <td class="p-2 ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد' : 'صادر'}</td>
+            <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
+            <td class="p-2 text-center">
+              <button onclick="deleteBankTrans('${t.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+            </td>
+          </tr>
+        `).join('');
+      }
 
       const eList = Object.entries(currentData.expenses).map(([k, v]) => ({ id: k, ...v }));
-      document.getElementById('adminExpensesList').innerHTML = eList.map(e => `
-        <tr>
-          <td class="p-2">${e.name}</td>
-          <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)}</td>
-          <td class="p-2 text-slate-400">${e.source}</td>
-          <td class="p-2 text-center space-x-1">
-            <button onclick="editExpense('${e.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
-            <button onclick="deleteExpense('${e.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
-          </td>
-        </tr>
-      `).join('');
+      const aExp = document.getElementById('adminExpensesList');
+      if (aExp) {
+        aExp.innerHTML = eList.map(e => `
+          <tr>
+            <td class="p-2">${e.name}</td>
+            <td class="p-2 font-bold text-rose-400">${parseFloat(e.amount).toFixed(2)}</td>
+            <td class="p-2 text-slate-400">${e.source}</td>
+            <td class="p-2 text-center space-x-1">
+              <button onclick="editExpense('${e.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
+              <button onclick="deleteExpense('${e.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+            </td>
+          </tr>
+        `).join('');
+      }
 
       const sList = Object.entries(currentData.suppliers).map(([k, v]) => ({ id: k, ...v }));
-      document.getElementById('adminSuppliersList').innerHTML = sList.map(s => `
-        <tr>
-          <td class="p-2 font-medium">${s.name}</td>
-          <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
-          <td class="p-2 text-slate-400">${s.source || 'عهدة'}</td>
-          <td class="p-2 text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
-          <td class="p-2 text-center space-x-1">
-            <button onclick="editSupplier('${s.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
-            <button onclick="deleteSupplier('${s.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
-          </td>
-        </tr>
-      `).join('');
+      const aSupp = document.getElementById('adminSuppliersList');
+      if (aSupp) {
+        aSupp.innerHTML = sList.map(s => `
+          <tr>
+            <td class="p-2 font-medium">${s.name}</td>
+            <td class="p-2 text-emerald-400">${parseFloat(s.paid || 0).toFixed(2)}</td>
+            <td class="p-2 text-slate-400">${s.source || 'عهدة'}</td>
+            <td class="p-2 text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
+            <td class="p-2 text-center space-x-1">
+              <button onclick="editSupplier('${s.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
+              <button onclick="deleteSupplier('${s.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
+            </td>
+          </tr>
+        `).join('');
+      }
     }
 
     function saveDrawer() {
-      const editId = document.getElementById('editDrawerId').value;
-      const name = document.getElementById('drawerName').value.trim();
-      const totalZ = parseFloat(document.getElementById('drawerTotalZ').value) || 0;
-      const actualCash = parseFloat(document.getElementById('drawerActualCash').value) || 0;
-      const cardReport = parseFloat(document.getElementById('drawerCardReport').value) || 0;
-      const actualCard = parseFloat(document.getElementById('drawerActualCard').value) || 0;
+      const editId = document.getElementById('editDrawerId')?.value;
+      const name = document.getElementById('drawerName')?.value.trim();
+      const totalZ = parseFloat(document.getElementById('drawerTotalZ')?.value) || 0;
+      const actualCash = parseFloat(document.getElementById('drawerActualCash')?.value) || 0;
+      const cardReport = parseFloat(document.getElementById('drawerCardReport')?.value) || 0;
+      const actualCard = parseFloat(document.getElementById('drawerActualCard')?.value) || 0;
 
       if (!name) return alert('يرجى كتابة اسم الكاشير');
 
@@ -1095,13 +1177,20 @@
     function editDrawer(id) {
       const d = currentData.drawers[id];
       if (!d) return;
-      document.getElementById('editDrawerId').value = id;
-      document.getElementById('drawerName').value = d.name || '';
-      document.getElementById('drawerTotalZ').value = d.totalZ || '';
-      document.getElementById('drawerActualCash').value = d.actualCash || '';
-      document.getElementById('drawerCardReport').value = d.cardReport || '';
-      document.getElementById('drawerActualCard').value = d.actualCard || '';
-      document.getElementById('drawerFormTitle').innerText = '✏️ تعديل بيانات: ' + d.name;
+      const editEl = document.getElementById('editDrawerId');
+      if (editEl) editEl.value = id;
+      const nameEl = document.getElementById('drawerName');
+      if (nameEl) nameEl.value = d.name || '';
+      const totalZEl = document.getElementById('drawerTotalZ');
+      if (totalZEl) totalZEl.value = d.totalZ || '';
+      const actualCashEl = document.getElementById('drawerActualCash');
+      if (actualCashEl) actualCashEl.value = d.actualCash || '';
+      const cardReportEl = document.getElementById('drawerCardReport');
+      if (cardReportEl) cardReportEl.value = d.cardReport || '';
+      const actualCardEl = document.getElementById('drawerActualCard');
+      if (actualCardEl) actualCardEl.value = d.actualCard || '';
+      const fTitle = document.getElementById('drawerFormTitle');
+      if (fTitle) fTitle.innerText = '✏️ تعديل بيانات: ' + d.name;
     }
 
     function deleteDrawer(id) {
@@ -1111,31 +1200,40 @@
     }
 
     function resetDrawerForm() {
-      document.getElementById('editDrawerId').value = '';
-      document.getElementById('drawerName').value = '';
-      document.getElementById('drawerTotalZ').value = '';
-      document.getElementById('drawerActualCash').value = '';
-      document.getElementById('drawerCardReport').value = '';
-      document.getElementById('drawerActualCard').value = '';
-      document.getElementById('drawerFormTitle').innerText = '➕ إضافة / تعديل إغلاق كاشير';
+      const editEl = document.getElementById('editDrawerId');
+      if (editEl) editEl.value = '';
+      const nameEl = document.getElementById('drawerName');
+      if (nameEl) nameEl.value = '';
+      const totalZEl = document.getElementById('drawerTotalZ');
+      if (totalZEl) totalZEl.value = '';
+      const actualCashEl = document.getElementById('drawerActualCash');
+      if (actualCashEl) actualCashEl.value = '';
+      const cardReportEl = document.getElementById('drawerCardReport');
+      if (cardReportEl) cardReportEl.value = '';
+      const actualCardEl = document.getElementById('drawerActualCard');
+      if (actualCardEl) actualCardEl.value = '';
+      const fTitle = document.getElementById('drawerFormTitle');
+      if (fTitle) fTitle.innerText = '➕ إضافة / تعديل إغلاق كاشير';
     }
 
     function saveBankOpening() {
-      const val = parseFloat(document.getElementById('bankOpening').value) || 0;
+      const val = parseFloat(document.getElementById('bankOpening')?.value) || 0;
       db.ref('daily_reports/' + adminTargetDateStr + '/bankOpening').set(val).then(() => {
         alert('تم حفظ رصيد البنك الافتتاحي ليومية ' + adminTargetDateStr);
       });
     }
 
     function addBankTransaction() {
-      const desc = document.getElementById('bankTransDesc').value.trim();
-      const amount = parseFloat(document.getElementById('bankTransAmount').value);
-      const type = document.getElementById('bankTransType').value;
+      const desc = document.getElementById('bankTransDesc')?.value.trim();
+      const amount = parseFloat(document.getElementById('bankTransAmount')?.value);
+      const type = document.getElementById('bankTransType')?.value;
       if (!desc || isNaN(amount)) return alert('يرجى إدخال بيان الحركة البنكية والمبلغ');
 
       db.ref('daily_reports/' + adminTargetDateStr + '/bankTransactions').push({ desc, amount, type }).then(() => {
-        document.getElementById('bankTransDesc').value = '';
-        document.getElementById('bankTransAmount').value = '';
+        const descEl = document.getElementById('bankTransDesc');
+        if (descEl) descEl.value = '';
+        const amtEl = document.getElementById('bankTransAmount');
+        if (amtEl) amtEl.value = '';
       });
     }
 
@@ -1146,10 +1244,10 @@
     }
 
     function saveExpense() {
-      const editId = document.getElementById('editExpenseId').value;
-      const name = document.getElementById('expenseName').value.trim();
-      const amount = parseFloat(document.getElementById('expenseAmount').value);
-      const source = document.getElementById('expenseSource').value;
+      const editId = document.getElementById('editExpenseId')?.value;
+      const name = document.getElementById('expenseName')?.value.trim();
+      const amount = parseFloat(document.getElementById('expenseAmount')?.value);
+      const source = document.getElementById('expenseSource')?.value;
       if (!name || isNaN(amount)) return alert('يرجى إدخال بيان المصروف والمبلغ');
 
       if (editId) {
@@ -1164,11 +1262,16 @@
     function editExpense(id) {
       const e = currentData.expenses[id];
       if (!e) return;
-      document.getElementById('editExpenseId').value = id;
-      document.getElementById('expenseName').value = e.name;
-      document.getElementById('expenseAmount').value = e.amount;
-      document.getElementById('expenseSource').value = e.source;
-      document.getElementById('expenseFormTitle').innerText = '✏️ تعديل المصروف: ' + e.name;
+      const editEl = document.getElementById('editExpenseId');
+      if (editEl) editEl.value = id;
+      const nameEl = document.getElementById('expenseName');
+      if (nameEl) nameEl.value = e.name;
+      const amtEl = document.getElementById('expenseAmount');
+      if (amtEl) amtEl.value = e.amount;
+      const srcEl = document.getElementById('expenseSource');
+      if (srcEl) srcEl.value = e.source;
+      const fTitle = document.getElementById('expenseFormTitle');
+      if (fTitle) fTitle.innerText = '✏️ تعديل المصروف: ' + e.name;
     }
 
     function deleteExpense(id) {
@@ -1178,18 +1281,22 @@
     }
 
     function resetExpenseForm() {
-      document.getElementById('editExpenseId').value = '';
-      document.getElementById('expenseName').value = '';
-      document.getElementById('expenseAmount').value = '';
-      document.getElementById('expenseFormTitle').innerText = '➕ إضافة / تعديل مصروف نثري';
+      const editEl = document.getElementById('editExpenseId');
+      if (editEl) editEl.value = '';
+      const nameEl = document.getElementById('expenseName');
+      if (nameEl) nameEl.value = '';
+      const amtEl = document.getElementById('expenseAmount');
+      if (amtEl) amtEl.value = '';
+      const fTitle = document.getElementById('expenseFormTitle');
+      if (fTitle) fTitle.innerText = '➕ إضافة / تعديل مصروف نثري';
     }
 
     function saveSupplier() {
-      const editId = document.getElementById('editSuppId').value;
-      const name = document.getElementById('suppName').value.trim();
-      const paid = parseFloat(document.getElementById('suppPaid').value) || 0;
-      const source = document.getElementById('suppSource').value;
-      const remaining = parseFloat(document.getElementById('suppRemaining').value) || 0;
+      const editId = document.getElementById('editSuppId')?.value;
+      const name = document.getElementById('suppName')?.value.trim();
+      const paid = parseFloat(document.getElementById('suppPaid')?.value) || 0;
+      const source = document.getElementById('suppSource')?.value;
+      const remaining = parseFloat(document.getElementById('suppRemaining')?.value) || 0;
       if (!name) return alert('يرجى إدخال اسم المورد');
 
       if (editId) {
@@ -1204,12 +1311,18 @@
     function editSupplier(id) {
       const s = currentData.suppliers[id];
       if (!s) return;
-      document.getElementById('editSuppId').value = id;
-      document.getElementById('suppName').value = s.name;
-      document.getElementById('suppPaid').value = s.paid;
-      document.getElementById('suppSource').value = s.source || 'عهدة';
-      document.getElementById('suppRemaining').value = s.remaining;
-      document.getElementById('suppFormTitle').innerText = '✏️ تعديل بيانات المورد: ' + s.name;
+      const editEl = document.getElementById('editSuppId');
+      if (editEl) editEl.value = id;
+      const nameEl = document.getElementById('suppName');
+      if (nameEl) nameEl.value = s.name;
+      const paidEl = document.getElementById('suppPaid');
+      if (paidEl) paidEl.value = s.paid;
+      const srcEl = document.getElementById('suppSource');
+      if (srcEl) srcEl.value = s.source || 'عهدة';
+      const remEl = document.getElementById('suppRemaining');
+      if (remEl) remEl.value = s.remaining;
+      const fTitle = document.getElementById('suppFormTitle');
+      if (fTitle) fTitle.innerText = '✏️ تعديل بيانات المورد: ' + s.name;
     }
 
     function deleteSupplier(id) {
@@ -1219,17 +1332,22 @@
     }
 
     function resetSuppForm() {
-      document.getElementById('editSuppId').value = '';
-      document.getElementById('suppName').value = '';
-      document.getElementById('suppPaid').value = '';
-      document.getElementById('suppRemaining').value = '';
-      document.getElementById('suppFormTitle').innerText = '➕ إضافة / تعديل مورد';
+      const editEl = document.getElementById('editSuppId');
+      if (editEl) editEl.value = '';
+      const nameEl = document.getElementById('suppName');
+      if (nameEl) nameEl.value = '';
+      const paidEl = document.getElementById('suppPaid');
+      if (paidEl) paidEl.value = '';
+      const remEl = document.getElementById('suppRemaining');
+      if (remEl) remEl.value = '';
+      const fTitle = document.getElementById('suppFormTitle');
+      if (fTitle) fTitle.innerText = '➕ إضافة / تعديل مورد';
     }
 
     function toggleAdmin() {
       const pin = prompt("أدخل الرمز السري للمحاسب:");
       if (pin === adminPin) {
-        document.getElementById('adminPanel').classList.toggle('hidden');
+        document.getElementById('adminPanel')?.classList.toggle('hidden');
       } else if (pin !== null) {
         alert("الرمز السري غير صحيح!");
       }
@@ -1245,15 +1363,15 @@
 
     function sendWhatsApp() {
       const isPeriod = (viewMode === 'period');
-      const title = isPeriod ? `📊 *تقرير الإغلاق المالي للفترة (${document.getElementById('periodFrom').value} إلى ${document.getElementById('periodTo').value})*` : `📊 *تقرير الإغلاق المالي اليومي - ${currentDateStr}*`;
+      const title = isPeriod ? `📊 *تقرير الإغلاق المالي للفترة (${document.getElementById('periodFrom')?.value} إلى ${document.getElementById('periodTo')?.value})*` : `📊 *تقرير الإغلاق المالي اليومي - ${currentDateStr}*`;
       
-      const totalSales = (parseFloat(document.getElementById('totalSystemSales').innerText) || 0).toFixed(2);
-      const totalCash = (parseFloat(document.getElementById('totalActualCash').innerText) || 0).toFixed(2);
-      const bankBal = (parseFloat(document.getElementById('bankBalance').innerText) || 0).toFixed(2);
-      const totalExp = (parseFloat(document.getElementById('totalExpenses').innerText) || 0).toFixed(2);
-      const totalSuppDue = (parseFloat(document.getElementById('totalSupplierDue').innerText) || 0).toFixed(2);
-      const shortage = (parseFloat(document.getElementById('totalShortageCard').innerText) || 0).toFixed(2);
-      const over = (parseFloat(document.getElementById('totalOverCard').innerText) || 0).toFixed(2);
+      const totalSales = (parseFloat(document.getElementById('totalSystemSales')?.innerText) || 0).toFixed(2);
+      const totalCash = (parseFloat(document.getElementById('totalActualCash')?.innerText) || 0).toFixed(2);
+      const bankBal = (parseFloat(document.getElementById('bankBalance')?.innerText) || 0).toFixed(2);
+      const totalExp = (parseFloat(document.getElementById('totalExpenses')?.innerText) || 0).toFixed(2);
+      const totalSuppDue = (parseFloat(document.getElementById('totalSupplierDue')?.innerText) || 0).toFixed(2);
+      const shortage = (parseFloat(document.getElementById('totalShortageCard')?.innerText) || 0).toFixed(2);
+      const over = (parseFloat(document.getElementById('totalOverCard')?.innerText) || 0).toFixed(2);
 
       const msg = `${title}%0A` +
                   `-----------------------------------%0A` +
@@ -1271,8 +1389,10 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('selectedDate').value = currentDateStr;
-      document.getElementById('adminTargetDate').value = adminTargetDateStr;
+      const selEl = document.getElementById('selectedDate');
+      if (selEl) selEl.value = currentDateStr;
+      const admEl = document.getElementById('adminTargetDate');
+      if (admEl) admEl.value = adminTargetDateStr;
       updateAdminTargetNotice();
       bindDateListener(currentDateStr);
     });
