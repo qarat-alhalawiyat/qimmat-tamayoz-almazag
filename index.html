@@ -49,7 +49,7 @@
         <div id="dailyDatePickerContainer" class="flex items-center gap-2">
           <label class="text-slate-400 font-bold">اختر تاريخ اليومية للعرض:</label>
           <input type="date" id="selectedDate" onchange="onDateChange()" class="bg-slate-800 border border-slate-700 rounded-lg p-1.5 text-emerald-300 text-xs">
-          <button onclick="setTodayDate()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-slate-300">اليوم</button>
+          <button onclick="setTodayDate()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-2 rounded-lg text-slate-300">اليوم</button>
         </div>
 
         <div id="periodPickerContainer" class="hidden flex-wrap items-center gap-2">
@@ -67,7 +67,7 @@
       </div>
     </header>
 
-    <!-- البطاقات العلوية الرئيسية (تم فصل العجز والزيادة إلى بطاقتين مستقلتين) -->
+    <!-- البطاقات العلوية الرئيسية السبعة -->
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
       <!-- 1. إجمالي المبيعات -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!-- جدول تتبع الكاشيرات (تم حذف رصيد البداية وإضافة عمودي العجز والزيادة المفصولين) -->
+    <!-- جدول تتبع الكاشيرات اليومي -->
     <div id="dailyDrawersSection" class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
       <h2 class="text-base font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
         <span>👤 كشف مطابقة الكاشيرات مع فصل العجز والزيادة لكل كاشير</span>
@@ -149,32 +149,63 @@
       </div>
     </div>
 
-    <!-- جدول الفترات (تم فصل العجز والزيادة في عمودين مستقلين) -->
-    <div id="periodDaysSummarySection" class="hidden bg-slate-800 p-4 rounded-2xl border border-blue-500/30 shadow">
-      <h2 class="text-base font-bold text-blue-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
-        <span>📅 كشف حركة الأيام خلال الفترة المحددة بالتفصيل (يوم بيوم)</span>
-        <span class="text-xs font-normal text-slate-400" id="periodDaysCount">0 يوم</span>
-      </h2>
-      <div class="overflow-x-auto">
-        <table class="w-full text-right text-xs">
-          <thead class="text-slate-400 bg-slate-900/50">
-            <tr>
-              <th class="p-2.5">التاريخ</th>
-              <th class="p-2.5">الكاش الفعلي باليد</th>
-              <th class="p-2.5">مبيعات الشبكة</th>
-              <th class="p-2.5">إجمالي المبيعات</th>
-              <th class="p-2.5">المصاريف</th>
-              <th class="p-2.5">سداد الموردين</th>
-              <th class="p-2.5 text-rose-400 font-bold">إجمالي العجز 🔴</th>
-              <th class="p-2.5 text-blue-400 font-bold">إجمالي الزيادة 🔵</th>
-              <th class="p-2.5 text-center">فتح اليومية</th>
-            </tr>
-          </thead>
-          <tbody id="periodDaysTableBody" class="divide-y divide-slate-700/50">
-            <tr><td colspan="9" class="p-4 text-center text-slate-500">اختر الفترة واضغط استخراج التقرير</td></tr>
-          </tbody>
-        </table>
+    <!-- جدول الفترات المجمع (معه جدول ملخص الكاشيرات خلال الفترة) -->
+    <div id="periodDaysSummarySection" class="hidden space-y-6">
+      
+      <!-- ملخص عجز وزيادة كل كاشير طوال الفترة -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-amber-500/40 shadow">
+        <h2 class="text-base font-bold text-amber-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
+          <span>👥 ملخص أداء ومطابقة كل كاشير خلال الفترة (عجز وزيادة كل كاشير لحاله)</span>
+          <span class="text-xs font-normal text-slate-400" id="periodCashiersCount">0 كاشير</span>
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-900/50">
+              <tr>
+                <th class="p-2.5">اسم الكاشير</th>
+                <th class="p-2.5">مجموع مبيعات الجهاز بالفترة</th>
+                <th class="p-2.5">مجموع الكاش المسلم باليد</th>
+                <th class="p-2.5">مجموع مبيعات الشبكة</th>
+                <th class="p-2.5 text-rose-400 font-bold">إجمالي العجز المتراكم عليه 🔴</th>
+                <th class="p-2.5 text-blue-400 font-bold">إجمالي الزيادة المتراكمة له 🔵</th>
+                <th class="p-2.5 text-center">الحالة النهائية</th>
+              </tr>
+            </thead>
+            <tbody id="periodCashiersTableBody" class="divide-y divide-slate-700/50">
+              <tr><td colspan="7" class="p-4 text-center text-slate-500">اختر الفترة واضغط استخراج التقرير</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- كشف حركة الأيام خلال الفترة -->
+      <div class="bg-slate-800 p-4 rounded-2xl border border-blue-500/30 shadow">
+        <h2 class="text-base font-bold text-blue-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
+          <span>📅 كشف حركة الأيام خلال الفترة المحددة بالتفصيل (يوم بيوم)</span>
+          <span class="text-xs font-normal text-slate-400" id="periodDaysCount">0 يوم</span>
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-slate-400 bg-slate-900/50">
+              <tr>
+                <th class="p-2.5">التاريخ</th>
+                <th class="p-2.5">الكاش الفعلي باليد</th>
+                <th class="p-2.5">مبيعات الشبكة</th>
+                <th class="p-2.5">إجمالي المبيعات</th>
+                <th class="p-2.5">المصاريف</th>
+                <th class="p-2.5">سداد الموردين</th>
+                <th class="p-2.5 text-rose-400 font-bold">إجمالي العجز اليومي 🔴</th>
+                <th class="p-2.5 text-blue-400 font-bold">إجمالي الزيادة اليومية 🔵</th>
+                <th class="p-2.5 text-center">فتح اليومية</th>
+              </tr>
+            </thead>
+            <tbody id="periodDaysTableBody" class="divide-y divide-slate-700/50">
+              <tr><td colspan="9" class="p-4 text-center text-slate-500">اختر الفترة واضغط استخراج التقرير</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
     <!-- زر واتساب -->
@@ -251,7 +282,7 @@
       </div>
     </div>
 
-    <!-- لوحة المحاسب (تم حذف حقل العهدة الافتتاحية/رصيد البداية) -->
+    <!-- لوحة المحاسب -->
     <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-3 gap-3">
         <div>
@@ -599,7 +630,7 @@
       return false;
     }
 
-    // استخراج تقرير الفترة المجمعة مع فصل العجز والزيادة
+    // استخراج تقرير الفترة المجمعة مع فصل عجز وزيادة كل كاشير لحاله
     function loadPeriodReport() {
       let fromStr = toStandardDigits(document.getElementById('periodFrom').value);
       let toStr = toStandardDigits(document.getElementById('periodTo').value);
@@ -622,13 +653,14 @@
         let periodExpenses = 0;
         let periodSupplierPaid = 0;
         let periodSupplierDue = 0;
-        let periodTotalShortage = 0; // إجمالي العجز التراكمي
-        let periodTotalOver = 0;     // إجمالي الزيادة التراكمية
+        let periodTotalShortage = 0;
+        let periodTotalOver = 0;
 
         let combinedExpenses = [];
         let combinedSuppliers = [];
         let combinedBankTrans = [];
         let daysRows = [];
+        let cashiersSummary = {};
 
         const sortedDates = Object.keys(allData).filter(dKey => {
           const stdKey = toStandardDigits(dKey);
@@ -657,6 +689,18 @@
             const cardReport = parseFloat(dr.cardReport || 0);
             const actualCard = parseFloat(dr.actualCard || 0);
             const actualCash = parseFloat(dr.actualCash || 0);
+            const cName = dr.name ? dr.name.trim() : 'كاشير غير محدد';
+
+            if (!cashiersSummary[cName]) {
+              cashiersSummary[cName] = {
+                name: cName,
+                totalZ: 0,
+                totalCash: 0,
+                totalCard: 0,
+                shortage: 0,
+                over: 0
+              };
+            }
 
             const calcCash = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
             const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
@@ -668,10 +712,18 @@
             const netDrawerDiff = cashDiff + cardDiff;
 
             if (netDrawerDiff < -0.05) {
-              dayShortage += Math.abs(netDrawerDiff);
+              const sAmount = Math.abs(netDrawerDiff);
+              dayShortage += sAmount;
+              cashiersSummary[cName].shortage += sAmount;
             } else if (netDrawerDiff > 0.05) {
-              dayOver += netDrawerDiff;
+              const oAmount = netDrawerDiff;
+              dayOver += oAmount;
+              cashiersSummary[cName].over += oAmount;
             }
+
+            cashiersSummary[cName].totalZ += zReport;
+            cashiersSummary[cName].totalCash += actualCash;
+            cashiersSummary[cName].totalCard += (actualCard > 0 ? actualCard : cardReport);
 
             dayActualCash += actualCash;
             dayCardSales += (actualCard > 0 ? actualCard : cardReport);
@@ -712,11 +764,53 @@
           `);
         });
 
+        // 1. ملء جدول ملخص أداء كل كاشير بالفترة
+        const cashiersArr = Object.values(cashiersSummary);
+        const cBody = document.getElementById('periodCashiersTableBody');
+        if (cBody) {
+          if (cashiersArr.length === 0) {
+            cBody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-500">لا توجد بيانات كاشيرات في هذه الفترة</td></tr>`;
+          } else {
+            cBody.innerHTML = cashiersArr.map(c => {
+              let statusText = `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">مطابق تماماً</span>`;
+              if (c.shortage > 0.05 && c.over > 0.05) {
+                statusText = `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">عجز وزيادة بأيام مختلفة</span>`;
+              } else if (c.shortage > 0.05) {
+                statusText = `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">عجز متراكم (${c.shortage.toFixed(2)})</span>`;
+              } else if (c.over > 0.05) {
+                statusText = `<span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/40 font-bold">زيادة متراكمة (+${c.over.toFixed(2)})</span>`;
+              }
+
+              return `
+                <tr class="hover:bg-slate-700/30">
+                  <td class="p-2.5 font-bold text-amber-300">${c.name}</td>
+                  <td class="p-2.5 text-blue-300 font-semibold">${c.totalZ.toFixed(2)}</td>
+                  <td class="p-2.5 text-emerald-400 font-bold">${c.totalCash.toFixed(2)}</td>
+                  <td class="p-2.5 text-cyan-300">${c.totalCard.toFixed(2)}</td>
+                  <td class="p-2.5 font-bold ${c.shortage > 0.05 ? 'text-rose-400 bg-rose-950/20' : 'text-slate-500'}">
+                    ${c.shortage > 0.05 ? `عجز (${c.shortage.toFixed(2)})` : '0.00'}
+                  </td>
+                  <td class="p-2.5 font-bold ${c.over > 0.05 ? 'text-blue-400 bg-blue-950/20' : 'text-slate-500'}">
+                    ${c.over > 0.05 ? `+${c.over.toFixed(2)}` : '0.00'}
+                  </td>
+                  <td class="p-2.5 text-center">${statusText}</td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+        const pCashierCount = document.getElementById('periodCashiersCount');
+        if (pCashierCount) pCashierCount.innerText = `${cashiersArr.length} كاشير مسجل`;
+
+        // 2. ملء جدول حركة الأيام
         const pBody = document.getElementById('periodDaysTableBody');
-        pBody.innerHTML = daysRows.length === 0 
-          ? `<tr><td colspan="9" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة في هذا النطاق الزمني</td></tr>` 
-          : daysRows.join('');
-        document.getElementById('periodDaysCount').innerText = `${daysRows.length} يوم مسجل`;
+        if (pBody) {
+          pBody.innerHTML = daysRows.length === 0 
+            ? `<tr><td colspan="9" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة في هذا النطاق الزمني</td></tr>` 
+            : daysRows.join('');
+        }
+        const pDayCount = document.getElementById('periodDaysCount');
+        if (pDayCount) pDayCount.innerText = `${daysRows.length} يوم مسجل`;
 
         document.getElementById('totalSystemSales').innerHTML = `${periodSalesTotalSum.toFixed(2)} <span class="text-xs">ر.س</span>`;
         document.getElementById('salesCardSubText').innerText = 'شامل كل أجهزة الكاشير';
@@ -778,7 +872,7 @@
       bindDateListener(currentDateStr);
     }
 
-    // عرض اليومية المفردة مع فصل عجز وزيادة كل كاشير لحاله
+    // عرض اليومية المفردة
     function renderDashboard() {
       const drawersList = Object.entries(currentData.drawers).map(([key, val]) => ({ id: key, ...val }));
       const expList = Object.entries(currentData.expenses).map(([key, val]) => ({ id: key, ...val }));
@@ -788,8 +882,8 @@
       let totalSales = 0;
       let totalActualCash = 0;
       let totalActualCard = 0;
-      let totalDailyShortage = 0; // مجموع العجز لكل الكاشيرات
-      let totalDailyOver = 0;     // مجموع الزيادة لكل الكاشيرات
+      let totalDailyShortage = 0;
+      let totalDailyOver = 0;
 
       const totalExpensesAmount = expList.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const totalSuppPaidAmount = suppList.reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
@@ -811,13 +905,11 @@
           const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
           const totalDrawerOut = drawerExp + drawerSupp;
           
-          // احتساب مفترض الكاش بدون رصيد البداية
           const expectedCash = calculatedCashSales - totalDrawerOut;
           const cashDiff = actualCash - expectedCash;
           const cardDiff = actualCard - cardReport;
           const netDrawerDiff = cashDiff + cardDiff;
 
-          // احتساب العجز والزيادة لهذا الكاشير بشكل منفصل تماماً
           let drawerShortage = 0;
           let drawerOver = 0;
 
@@ -881,7 +973,6 @@
       document.getElementById('supplierPaid').innerText = totalSuppPaidAmount.toFixed(2);
       document.getElementById('totalSupplierDue').innerHTML = `${totalSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-      // تحديث بطاقتي العجز والزيادة المنفصلتين لليوم
       document.getElementById('totalShortageCard').innerHTML = `${totalDailyShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
       document.getElementById('shortageCountStatus').innerText = totalDailyShortage > 0.05 ? `يوجد عجز إجمالي ${totalDailyShortage.toFixed(2)} ر.س` : `مطابق (لا يوجد عجز)`;
 
