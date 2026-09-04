@@ -80,14 +80,14 @@
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
         <div class="text-lg font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد</div>
+        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد بعد المنصرف</div>
       </div>
 
       <!-- 3. صافي رصيد البنك -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-cyan-500/40 shadow">
         <div class="text-[11px] text-cyan-300 mb-1">🏦 صافي رصيد البنك</div>
         <div class="text-lg font-bold text-cyan-400" id="bankBalance">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1" id="cardSubBank">مبيعات الشبكة والحوالات</div>
+        <div class="text-[10px] text-slate-400 mt-1" id="cardSubBank">شامل الافتتاحي والحوالات</div>
       </div>
 
       <!-- 4. إجمالي المنصرف -->
@@ -491,10 +491,21 @@
         .replace(/\//g, '-');
     }
 
-    // دالة لتوحيد أسماء الكاشيرات ومنع التكرار بسبب المسافات
     function normalizeCashierName(name) {
       if (!name) return 'كاشير غير محدد';
       return name.toString().trim().replace(/\s+/g, ' ');
+    }
+
+    function isBankSource(source) {
+      if (!source) return false;
+      const s = source.toString().trim();
+      return s.includes('بنك') || s.includes('تحويل');
+    }
+
+    function isAccountantSource(source) {
+      if (!source) return false;
+      const s = source.toString().trim();
+      return s.includes('محاسب') || s.includes('عهدة المحاسب');
     }
 
     let currentDateStr = new Date().toISOString().split('T')[0];
@@ -646,7 +657,7 @@
       return false;
     }
 
-    // استخراج تقرير الفترة المجمعة مع دمج الكاشيرات تلقائياً
+    // استخراج تقرير الفترة المجمعة
     function loadPeriodReport() {
       let fromStr = toStandardDigits(document.getElementById('periodFrom')?.value);
       let toStr = toStandardDigits(document.getElementById('periodTo')?.value);
@@ -684,6 +695,12 @@
           return stdKey >= fromStr && stdKey <= toStr;
         }).sort();
 
+        // قراءة الرصيد الافتتاحي للبنك من أول يوم في الفترة المحددة
+        let periodInitialBankOpening = 0;
+        if (sortedDates.length > 0) {
+          periodInitialBankOpening = parseFloat(allData[sortedDates[0]]?.bankOpening) || 0;
+        }
+
         sortedDates.forEach(dKey => {
           const day = allData[dKey] || {};
           const dList = Object.values(day.drawers || {});
@@ -707,7 +724,6 @@
             const actualCard = parseFloat(dr.actualCard || 0);
             const actualCash = parseFloat(dr.actualCash || 0);
             
-            // توحيد الاسم لمنع التكرار نهائياً
             const cName = normalizeCashierName(dr.name);
 
             if (!cashiersSummary[cName]) {
@@ -749,7 +765,12 @@
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
-          periodActualCashSum += dayActualCash;
+          // خصم منصرف عهدة المحاسب من الكاش الفعلي
+          const accountantExp = eList.filter(e => isAccountantSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+          const accountantSupp = sList.filter(s => isAccountantSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+          const netDayActualCash = dayActualCash - (accountantExp + accountantSupp);
+
+          periodActualCashSum += netDayActualCash;
           periodCardSalesSum += dayCardSales;
           periodSalesTotalSum += daySalesTotal;
           periodExpenses += dayExpAmount;
@@ -765,7 +786,7 @@
           daysRows.push(`
             <tr class="hover:bg-slate-700/30">
               <td class="p-2.5 font-bold text-slate-100">${dKey}</td>
-              <td class="p-2.5 text-emerald-400 font-bold">${dayActualCash.toFixed(2)}</td>
+              <td class="p-2.5 text-emerald-400 font-bold">${netDayActualCash.toFixed(2)}</td>
               <td class="p-2.5 text-blue-400 font-medium">${dayCardSales.toFixed(2)}</td>
               <td class="p-2.5 font-bold text-white">${daySalesTotal.toFixed(2)}</td>
               <td class="p-2.5 text-rose-400">${dayExpAmount.toFixed(2)}</td>
@@ -783,7 +804,7 @@
           `);
         });
 
-        // 1. ملء جدول ملخص أداء كل كاشير بالفترة بعد دمج الأسماء
+        // 1. ملء جدول ملخص أداء كل كاشير بالفترة
         const cashiersArr = Object.values(cashiersSummary);
         const cBody = document.getElementById('periodCashiersTableBody');
         if (cBody) {
@@ -847,15 +868,15 @@
         const sDue = document.getElementById('totalSupplierDue');
         if (sDue) sDue.innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // حساب صافي رصيد البنك للفترة
-        const totalBankOut = combinedExpenses.filter(e => e.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
-                             combinedSuppliers.filter(s => s.source === 'حساب البنك / تحويل').reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+        // حساب رصيد البنك الصافي للفترة (الافتتاحي + شبكة + وارد) - (مصاريف بنك + سداد بنك + صادر)
+        const totalBankOut = combinedExpenses.filter(e => isBankSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
+                             combinedSuppliers.filter(s => isBankSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0) +
+                             combinedBankTrans.filter(b => b.type === 'out').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
         const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-        const netPeriodBank = (periodCardSalesSum + totalBankIn) - totalBankOut;
+        const netPeriodBank = (periodInitialBankOpening + periodCardSalesSum + totalBankIn) - totalBankOut;
         const bBal = document.getElementById('bankBalance');
         if (bBal) bBal.innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // تحديث بطاقتي العجز والزيادة المنفصلتين للفترة
         const tShort = document.getElementById('totalShortageCard');
         if (tShort) tShort.innerHTML = `${periodTotalShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
         const sStat = document.getElementById('shortageCountStatus');
@@ -1003,8 +1024,14 @@
       const dCount = document.getElementById('drawersCount');
       if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
-      const bankExpOut = expList.filter(e => e.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const bankSuppOut = suppList.filter(s => s.source === 'حساب البنك / تحويل').reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+      // خصم المصروفات المنصرفة من عهدة المحاسب كاش من صندوق الكاش الفعلي
+      const accountantExp = expList.filter(e => isAccountantSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const accountantSupp = suppList.filter(s => isAccountantSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+      const netCashOnHand = totalActualCash - (accountantExp + accountantSupp);
+
+      // حساب رصيد البنك اليومي الصافي: (الافتتاحي + شبكة مدى + تحويل وارد) - (مصاريف بنك + موردين بنك + تحويل صادر)
+      const bankExpOut = expList.filter(e => isBankSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const bankSuppOut = suppList.filter(s => isBankSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
       const bankTransIn = bankTransList.filter(t => t.type === 'in').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankTransOut = bankTransList.filter(t => t.type === 'out').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
 
@@ -1018,7 +1045,8 @@
       if (sSub) sSub.innerText = 'شامل كل أجهزة الكاشير';
 
       const aCash = document.getElementById('totalActualCash');
-      if (aCash) aCash.innerHTML = `${totalActualCash.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      if (aCash) aCash.innerHTML = `${netCashOnHand.toFixed(2)} <span class="text-xs">ر.س</span>`;
+
       const tExp = document.getElementById('totalExpenses');
       if (tExp) tExp.innerHTML = `${(totalExpensesAmount + totalSuppPaidAmount).toFixed(2)} <span class="text-xs">ر.س</span>`;
       const pExp = document.getElementById('pettyExpenses');
@@ -1219,7 +1247,11 @@
     function saveBankOpening() {
       const val = parseFloat(document.getElementById('bankOpening')?.value) || 0;
       db.ref('daily_reports/' + adminTargetDateStr + '/bankOpening').set(val).then(() => {
+        currentData.bankOpening = val;
         alert('تم حفظ رصيد البنك الافتتاحي ليومية ' + adminTargetDateStr);
+        if (viewMode === 'daily') {
+          renderDashboard();
+        }
       });
     }
 
