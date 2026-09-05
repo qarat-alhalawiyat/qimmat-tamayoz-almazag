@@ -138,12 +138,13 @@
               <th class="p-2.5">مفترض الشبكة</th>
               <th class="p-2.5">فعلي الشبكة</th>
               <th class="p-2.5">فارق الشبكة</th>
+              <th class="p-2.5 text-center text-cyan-300">موازنة الشبكة 📄</th>
               <th class="p-2.5 text-rose-400 font-bold">العجز (نقص) 🔴</th>
               <th class="p-2.5 text-blue-400 font-bold">الزيادة (فائض) 🔵</th>
             </tr>
           </thead>
           <tbody id="drawersTableBody" class="divide-y divide-slate-700/50">
-            <tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة لهذا التاريخ</td></tr>
+            <tr><td colspan="12" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة لهذا التاريخ</td></tr>
           </tbody>
         </table>
       </div>
@@ -310,10 +311,12 @@
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ إضافة / تعديل إغلاق كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
+        <input type="hidden" id="drawerReceiptImage" value="">
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
           <div>
             <label class="text-[10px] text-slate-400">اسم الكاشير / الصندوق</label>
-            <input type="text" id="drawerName" placeholder="مثال: كاشير 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+            <input type="text" id="drawerName" placeholder="مثال: كاشير حسين رقم 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
           </div>
           <div>
             <label class="text-[10px] text-slate-400">مبيعات الجهاز (Z Report)</label>
@@ -331,6 +334,16 @@
             <label class="text-[10px] text-slate-400">الفعلي بالشبكة (مدى)</label>
             <input type="number" step="0.01" id="drawerActualCard" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
           </div>
+
+          <!-- رفع صورة إيصال الموازنة -->
+          <div class="sm:col-span-5 bg-slate-950 p-2.5 rounded-xl border border-dashed border-cyan-500/40 flex flex-wrap items-center justify-between gap-2 mt-1">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-cyan-300">📷 إرفاق صورة موازنة الشبكة (مدى):</span>
+              <input type="file" id="receiptFileInput" accept="image/*" onchange="handleImageUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-cyan-900/60 file:text-cyan-300 hover:file:bg-cyan-800">
+            </div>
+            <div id="imageStatusText" class="text-[11px] text-slate-400 font-medium">لم يتم اختيار صورة</div>
+          </div>
+
           <div class="sm:col-span-5 flex items-end justify-end gap-2 mt-2">
             <button onclick="saveDrawer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs px-6 py-2.5 shadow">💾 حفظ بيانات الكاشير</button>
             <button onclick="resetDrawerForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-4 py-2.5 rounded-lg">إلغاء</button>
@@ -345,6 +358,7 @@
                 <th class="p-2">مبيعات الجهاز</th>
                 <th class="p-2">فعلي كاش</th>
                 <th class="p-2">فعلي شبكة</th>
+                <th class="p-2 text-center">إيصال الموازنة</th>
                 <th class="p-2 text-center">إجراءات</th>
               </tr>
             </thead>
@@ -466,6 +480,22 @@
 
   </div>
 
+  <!-- نافذة منبثقة لعرض صورة الإيصال للمدير -->
+  <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onclick="closeImageModal()">
+    <div class="bg-slate-800 p-4 rounded-2xl border border-cyan-500/50 max-w-lg w-full space-y-3" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <h3 class="text-sm font-bold text-cyan-300" id="imageModalTitle">📄 إيصال موازنة الشبكة</h3>
+        <button onclick="closeImageModal()" class="text-slate-400 hover:text-white text-base">✕</button>
+      </div>
+      <div class="max-h-[75vh] overflow-y-auto flex items-center justify-center rounded-xl bg-slate-950 p-2">
+        <img id="modalImagePreview" src="" alt="إيصال الموازنة" class="rounded-lg object-contain max-h-[70vh] w-auto">
+      </div>
+      <div class="flex justify-end">
+        <button onclick="closeImageModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded-lg font-bold">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD53an3IKwwjom9iIuHSwbrFNB8CglVvF4",
@@ -506,6 +536,29 @@
       if (!source) return false;
       const s = source.toString().trim();
       return s.includes('محاسب') || s.includes('عهدة المحاسب');
+    }
+
+    // دالة المطابقة الدقيقة لمنع تكرار خصم المصروف
+    function isSourceMatch(sourceName, drawerName) {
+      if (!sourceName || !drawerName) return false;
+      const s = sourceName.trim().toLowerCase();
+      const d = drawerName.trim().toLowerCase();
+      
+      // إذا كان الصرف من عهدة المحاسب أو البنك لا يخصم من أي كاشير
+      if (isAccountantSource(s) || isBankSource(s)) return false;
+
+      // تطابق تام ومباشر
+      if (s === d) return true;
+
+      // استخراج أرقام الصناديق بدقة لمنع الخلط بين كاشير 1 وكاشير 2
+      const numS = s.match(/\d+/);
+      const numD = d.match(/\d+/);
+      
+      if (numS && numD) {
+        return numS[0] === numD[0];
+      }
+
+      return false;
     }
 
     let currentDateStr = new Date().toISOString().split('T')[0];
@@ -646,18 +699,57 @@
       loadPeriodReport();
     }
 
-    function isSourceMatch(sourceName, drawerName) {
-      if (!sourceName || !drawerName) return false;
-      const s = sourceName.trim().toLowerCase();
-      const d = drawerName.trim().toLowerCase();
-      if (s === d || s.includes(d) || d.includes(s)) return true;
-      const matchNumS = s.match(/\d+/);
-      const matchNumD = d.match(/\d+/);
-      if (matchNumS && matchNumD && matchNumS[0] === matchNumD[0]) return true;
-      return false;
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('imageStatusText');
+      if (statusEl) statusEl.innerText = "⏳ جاري ضغط وتجهيز الصورة...";
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          const maxDim = 1200;
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          document.getElementById('drawerReceiptImage').value = compressedDataUrl;
+          if (statusEl) statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✓ تم إرفاق الصورة بنجاح (${Math.round(compressedDataUrl.length / 1024)} KB)</span>`;
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
     }
 
-    // استخراج تقرير الفترة المجمعة
+    function openImageModal(imgSrc, title) {
+      if (!imgSrc) return;
+      document.getElementById('modalImagePreview').src = imgSrc;
+      document.getElementById('imageModalTitle').innerText = "📄 إيصال موازنة: " + (title || "");
+      document.getElementById('imageModal').classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').classList.add('hidden');
+      document.getElementById('modalImagePreview').src = '';
+    }
+
+    // تقرير الفترة المجمعة
     function loadPeriodReport() {
       let fromStr = toStandardDigits(document.getElementById('periodFrom')?.value);
       let toStr = toStandardDigits(document.getElementById('periodTo')?.value);
@@ -695,7 +787,6 @@
           return stdKey >= fromStr && stdKey <= toStr;
         }).sort();
 
-        // رصيد البنك الافتتاحي في بداية الفترة
         let periodInitialBankOpening = 0;
         if (sortedDates.length > 0) {
           periodInitialBankOpening = parseFloat(allData[sortedDates[0]]?.bankOpening) || 0;
@@ -738,8 +829,8 @@
             }
 
             const calcCash = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
-            const drExp = eList.filter(e => isSourceMatch(e.source, cName)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-            const drSupp = sList.filter(s => isSourceMatch(s.source, cName)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+            const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+            const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
             
             const expCash = calcCash - (drExp + drSupp);
             const cashDiff = actualCash - expCash;
@@ -765,7 +856,6 @@
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
-          // خصم منصرف عهدة المحاسب من الكاش الفعلي
           const accountantExp = eList.filter(e => isAccountantSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
           const accountantSupp = sList.filter(s => isAccountantSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
           const netDayActualCash = dayActualCash - (accountantExp + accountantSupp);
@@ -804,7 +894,6 @@
           `);
         });
 
-        // 1. ملء جدول ملخص أداء كل كاشير بالفترة بعد دمج الأسماء
         const cashiersArr = Object.values(cashiersSummary);
         const cBody = document.getElementById('periodCashiersTableBody');
         if (cBody) {
@@ -842,7 +931,6 @@
         const pCashierCount = document.getElementById('periodCashiersCount');
         if (pCashierCount) pCashierCount.innerText = `${cashiersArr.length} كاشير مسجل`;
 
-        // 2. ملء جدول حركة الأيام
         const pBody = document.getElementById('periodDaysTableBody');
         if (pBody) {
           pBody.innerHTML = daysRows.length === 0 
@@ -868,7 +956,6 @@
         const sDue = document.getElementById('totalSupplierDue');
         if (sDue) sDue.innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        // المعادلة المصححة: خصم الحوالات الصادرة والمسدد بنكياً
         const totalBankOut = combinedExpenses.filter(e => isBankSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
                              combinedSuppliers.filter(s => isBankSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0) +
                              combinedBankTrans.filter(b => b.type === 'out').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
@@ -958,7 +1045,7 @@
       const body = document.getElementById('drawersTableBody');
       if (body) {
         if (drawersList.length === 0) {
-          body.innerHTML = `<tr><td colspan="11" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
+          body.innerHTML = `<tr><td colspan="12" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
         } else {
           body.innerHTML = drawersList.map(d => {
             const zReport = parseFloat(d.totalZ || 0);
@@ -968,6 +1055,7 @@
 
             const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
+            // مطابقة دقيقة خاصة بهذا الكاشير فقط
             const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
             const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
             const totalDrawerOut = drawerExp + drawerSupp;
@@ -1000,6 +1088,10 @@
               ? `<span class="text-emerald-400">مطابق</span>` 
               : (cardDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
 
+            const receiptBtn = d.receiptImage 
+              ? `<button onclick="openImageModal('${d.receiptImage}', '${d.name}')" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold px-2 py-1 rounded text-[11px] shadow transition">📷 عرض الإيصال</button>`
+              : `<span class="text-slate-600">غير مرفق</span>`;
+
             return `
               <tr class="hover:bg-slate-700/30">
                 <td class="p-2.5 font-bold text-slate-100">${d.name}</td>
@@ -1011,6 +1103,7 @@
                 <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
                 <td class="p-2.5 text-blue-400 font-bold">${actualCard.toFixed(2)}</td>
                 <td class="p-2.5">${cardBadge}</td>
+                <td class="p-2.5 text-center">${receiptBtn}</td>
                 <td class="p-2.5 font-bold ${drawerShortage > 0.05 ? 'text-rose-400' : 'text-slate-500'}">
                   ${drawerShortage > 0.05 ? `عجز (${drawerShortage.toFixed(2)})` : '0.00'}
                 </td>
@@ -1025,12 +1118,10 @@
       const dCount = document.getElementById('drawersCount');
       if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // خصم المصروفات المنصرفة من عهدة المحاسب كاش
       const accountantExp = expList.filter(e => isAccountantSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const accountantSupp = suppList.filter(s => isAccountantSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
       const netCashOnHand = totalActualCash - (accountantExp + accountantSupp);
 
-      // خصم الحركات الصادرة من البنك في اليومية بدقة
       const bankExpOut = expList.filter(e => isBankSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => isBankSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
       const bankTransIn = bankTransList.filter(t => t.type === 'in').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
@@ -1124,6 +1215,9 @@
             <td class="p-2">${parseFloat(d.totalZ || 0).toFixed(2)}</td>
             <td class="p-2 text-emerald-400">${parseFloat(d.actualCash || 0).toFixed(2)}</td>
             <td class="p-2 text-blue-400">${parseFloat(d.actualCard || 0).toFixed(2)}</td>
+            <td class="p-2 text-center">
+              ${d.receiptImage ? `<button onclick="openImageModal('${d.receiptImage}', '${d.name}')" class="text-cyan-400 underline text-[11px]">معاينة 👁️</button>` : `<span class="text-slate-600">لا يوجد</span>`}
+            </td>
             <td class="p-2 text-center space-x-1">
               <button onclick="editDrawer('${d.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-0.5 rounded text-[11px]">تعديل</button>
               <button onclick="deleteDrawer('${d.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-0.5 rounded text-[11px]">حذف</button>
@@ -1191,12 +1285,13 @@
       const actualCash = parseFloat(document.getElementById('drawerActualCash')?.value) || 0;
       const cardReport = parseFloat(document.getElementById('drawerCardReport')?.value) || 0;
       const actualCard = parseFloat(document.getElementById('drawerActualCard')?.value) || 0;
+      const receiptImage = document.getElementById('drawerReceiptImage')?.value || "";
 
       if (!name) return alert('يرجى كتابة اسم الكاشير');
 
       const id = editId ? editId : name.replace(/\s+/g, '_');
       db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).set({
-        name, totalZ, actualCash, cardReport, actualCard
+        name, totalZ, actualCash, cardReport, actualCard, receiptImage
       }).then(() => {
         alert('تم الحفظ بنجاح ليومية: ' + adminTargetDateStr);
         resetDrawerForm();
@@ -1218,6 +1313,14 @@
       if (cardReportEl) cardReportEl.value = d.cardReport || '';
       const actualCardEl = document.getElementById('drawerActualCard');
       if (actualCardEl) actualCardEl.value = d.actualCard || '';
+      
+      const imgEl = document.getElementById('drawerReceiptImage');
+      if (imgEl) imgEl.value = d.receiptImage || '';
+      const statusEl = document.getElementById('imageStatusText');
+      if (statusEl) {
+        statusEl.innerHTML = d.receiptImage ? `<span class="text-cyan-300 font-bold">✓ يوجد إيصال مرفق مسبقاً</span>` : 'لم يتم اختيار صورة';
+      }
+
       const fTitle = document.getElementById('drawerFormTitle');
       if (fTitle) fTitle.innerText = '✏️ تعديل بيانات: ' + d.name;
     }
@@ -1241,6 +1344,12 @@
       if (cardReportEl) cardReportEl.value = '';
       const actualCardEl = document.getElementById('drawerActualCard');
       if (actualCardEl) actualCardEl.value = '';
+      const imgEl = document.getElementById('drawerReceiptImage');
+      if (imgEl) imgEl.value = '';
+      const fInput = document.getElementById('receiptFileInput');
+      if (fInput) fInput.value = '';
+      const statusEl = document.getElementById('imageStatusText');
+      if (statusEl) statusEl.innerText = 'لم يتم اختيار صورة';
       const fTitle = document.getElementById('drawerFormTitle');
       if (fTitle) fTitle.innerText = '➕ إضافة / تعديل إغلاق كاشير';
     }
