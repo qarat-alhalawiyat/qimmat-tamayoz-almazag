@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>نظام الإغلاق المالي الشامل والتقارير - قمة تميز المذاق</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- خط تجوال -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase Compatibility SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
@@ -16,6 +19,7 @@
 
   <div class="max-w-7xl mx-auto space-y-6">
     
+    <!-- الهيدر والتحكم -->
     <header class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-lg space-y-4">
       <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div>
@@ -63,6 +67,7 @@
       </div>
     </header>
 
+    <!-- البطاقات العلوية -->
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
@@ -142,7 +147,7 @@
     <div id="periodDaysSummarySection" class="hidden space-y-6">
       <div class="bg-slate-800 p-4 rounded-2xl border border-amber-500/40 shadow">
         <h2 class="text-base font-bold text-amber-300 mb-3 border-b border-slate-700 pb-2 flex justify-between items-center">
-          <span>👥 ملخص أداء ومطابقة كل كاشير خلال الفترة (عجز وزيادة كل كاشير لحاله)</span>
+          <span>👥 ملخص أداء كل كاشير خلال الفترة (مدمج لكل موظف)</span>
           <span class="text-xs font-normal text-slate-400" id="periodCashiersCount">0 كاشير</span>
         </h2>
         <div class="overflow-x-auto">
@@ -267,12 +272,12 @@
       </div>
     </div>
 
-    <!-- لوحة المحاسب -->
+    <!-- لوحة المحاسب بنظام القوائم المنظمة واقتراحك الذكي -->
     <div id="adminPanel" class="hidden bg-slate-800/95 border-2 border-emerald-500/50 p-5 rounded-2xl shadow-2xl space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-3 gap-3">
         <div>
-          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل اليوميات)</h2>
-          <p class="text-xs text-slate-400">تعديل بيانات وإغلاقات الكاشيرات السابقة والحالية فوراً</p>
+          <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل الورديات)</h2>
+          <p class="text-xs text-slate-400">تخصيص الموظف والوردية والجهاز بدقة لمنع أي تداخل</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="changeAdminPassword()" class="bg-slate-700 hover:bg-slate-600 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/30">
@@ -291,23 +296,49 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- إدخال وتعديل كاشير -->
+      <!-- إدخال وتعديل الوردية المنظم بالقوائم -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
-        <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ إضافة / تعديل إغلاق وردية كاشير</h3>
+        <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ تسجيل تصفية وردية كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
         <input type="hidden" id="drawerReceiptImage" value="">
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
+          <!-- قائمة الموظفين -->
           <div>
-            <label class="text-[10px] text-slate-400">اسم الكاشير / الصندوق</label>
-            <input type="text" id="drawerName" placeholder="مثال: كاشير حسين رقم 1" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+            <label class="text-[10px] text-slate-400 flex justify-between">
+              <span>الموظف المسلم</span>
+              <span onclick="addNewStaffMember()" class="text-emerald-400 cursor-pointer hover:underline">+ جديد</span>
+            </label>
+            <select id="staffSelect" class="w-full bg-slate-900 border border-emerald-500/50 rounded-lg p-2 text-xs text-white font-bold">
+              <option value="حسين">حسين</option>
+              <option value="سامر">سامر</option>
+            </select>
           </div>
+
+          <!-- قائمة الأجهزة -->
           <div>
-            <label class="text-[10px] text-slate-400">مبيعات الجهاز (Z Report)</label>
+            <label class="text-[10px] text-slate-400">جهاز الكاشير</label>
+            <select id="deviceSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white font-bold">
+              <option value="كاشير 1">كاشير 1</option>
+              <option value="كاشير 2">كاشير 2</option>
+            </select>
+          </div>
+
+          <!-- الوردية -->
+          <div>
+            <label class="text-[10px] text-slate-400">الوردية</label>
+            <select id="shiftSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white font-bold">
+              <option value="وردية 1">وردية 1 (صباحي)</option>
+              <option value="وردية 2">وردية 2 (مسائي)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-[10px] text-slate-400">مبيعات الجهاز (Z)</label>
             <input type="number" step="0.01" id="drawerTotalZ" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300">
           </div>
           <div>
-            <label class="text-[10px] text-slate-400">الكاش الفعلي بالدرج (العد)</label>
+            <label class="text-[10px] text-slate-400">الكاش الفعلي (العد)</label>
             <input type="number" step="0.01" id="drawerActualCash" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-emerald-300 font-bold">
           </div>
           <div>
@@ -319,7 +350,8 @@
             <input type="number" step="0.01" id="drawerActualCard" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
           </div>
 
-          <div class="sm:col-span-5 bg-slate-950 p-2.5 rounded-xl border border-dashed border-cyan-500/40 flex flex-wrap items-center justify-between gap-2 mt-1">
+          <!-- رفع صورة إيصال الموازنة -->
+          <div class="sm:col-span-7 bg-slate-950 p-2.5 rounded-xl border border-dashed border-cyan-500/40 flex flex-wrap items-center justify-between gap-2 mt-1">
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-cyan-300">📷 إرفاق صورة موازنة الشبكة (مدى):</span>
               <input type="file" id="receiptFileInput" accept="image/*" onchange="handleImageUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-cyan-900/60 file:text-cyan-300 hover:file:bg-cyan-800">
@@ -327,7 +359,7 @@
             <div id="imageStatusText" class="text-[11px] text-slate-400 font-medium">لم يتم اختيار صورة</div>
           </div>
 
-          <div class="sm:col-span-5 flex items-end justify-end gap-2 mt-2">
+          <div class="sm:col-span-7 flex items-end justify-end gap-2 mt-2">
             <button onclick="saveDrawer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs px-6 py-2.5 shadow">💾 حفظ الوردية</button>
             <button onclick="resetDrawerForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-4 py-2.5 rounded-lg">إلغاء</button>
           </div>
@@ -337,7 +369,7 @@
           <table class="w-full text-right text-xs">
             <thead class="text-slate-400 bg-slate-950">
               <tr>
-                <th class="p-2">الكاشير</th>
+                <th class="p-2">الكاشير / الوردية</th>
                 <th class="p-2">مبيعات الجهاز</th>
                 <th class="p-2">فعلي كاش</th>
                 <th class="p-2">فعلي شبكة</th>
@@ -398,10 +430,7 @@
           <input type="text" id="expenseName" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="expenseAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-            <option value="عهدة المحاسب">عهدة المحاسب (كاش)</option>
-            <option value="حساب البنك / تحويل">🏦 حساب البنك / تحويل بنكي</option>
-            <option value="كاشير 1">درج كاشير 1 (كاش)</option>
-            <option value="كاشير 2">درج كاشير 2 (كاش)</option>
+            <!-- ديناميكي يقرأ الورديات الفعلية -->
           </select>
           <div class="flex gap-2">
             <button onclick="saveExpense()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs py-2">حفظ المصروف</button>
@@ -432,10 +461,7 @@
           <input type="text" id="suppName" placeholder="اسم المورد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="suppPaid" placeholder="المبلغ المسدد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="suppSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-            <option value="عهدة المحاسب">عهدة المحاسب (كاش)</option>
-            <option value="حساب البنك / تحويل">🏦 حساب البنك / تحويل بنكي</option>
-            <option value="كاشير 1">درج كاشير 1 (كاش)</option>
-            <option value="كاشير 2">درج كاشير 2 (كاش)</option>
+            <!-- ديناميكي يقرأ الورديات الفعلية -->
           </select>
           <input type="number" step="0.01" id="suppRemaining" placeholder="إجمالي المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <div class="flex gap-2">
@@ -515,27 +541,37 @@
       return s.includes('محاسب') || s.includes('عهدة المحاسب');
     }
 
-    // دالة مطابقة متوافقة 100% مع البيانات القديمة والجديدة
+    // مطابقة المصروف بالدرج مع حماية كاملة للبيانات القديمة والجديدة
     function isSourceMatch(sourceName, drawerName) {
       if (!sourceName || !drawerName) return false;
-      const s = sourceName.trim().toLowerCase();
-      const d = drawerName.trim().toLowerCase();
+      const s = sourceName.toString().trim().toLowerCase();
+      const d = drawerName.toString().trim().toLowerCase();
 
       if (isAccountantSource(s) || isBankSource(s)) return false;
 
-      // تطابق تام
-      if (s === d || s.includes(d) || d.includes(s)) return true;
+      // تطابق تام ومباشر
+      if (s === d || s === `درج ${d}` || d === `درج ${s}`) return true;
 
-      // مطابقة رقم الصندوق (كاشير 2 يطابق كاشير حسين رقم 2)
+      // للأيام القديمة (توافق كامل دون تكرار)
       const numS = s.match(/\d+/);
       const numD = d.match(/\d+/);
+
+      // إذا كان الصرف من "كاشير 2" و الدرج يحتوي على "2"
       if (numS && numD && numS[0] === numD[0]) {
+        // لو الوردية محددة بالاسم نتحقق منها
+        if (s.includes('وردية') && d.includes('وردية')) {
+          return s === d;
+        }
+        // وإلا إذا كان لنفس الشخص أو الصندوق القديم
+        if (s.includes('حسين') && !d.includes('حسين')) return false;
+        if (s.includes('سامر') && !d.includes('سامر')) return false;
         return true;
       }
 
       return false;
     }
 
+    // تجميع الشخص الصافي لتقرير الفترات
     function getPersonGroupName(name) {
       if (!name) return 'كاشير غير محدد';
       const n = name.toString().trim();
@@ -588,7 +624,48 @@
           renderDashboard();
         }
         renderAdminLists();
+        updateSourceDropdowns();
       });
+    }
+
+    // تحديث خيارات مصادر الصرف بدقة بناء على الورديات المدخلة
+    function updateSourceDropdowns() {
+      const expSelect = document.getElementById('expenseSource');
+      const suppSelect = document.getElementById('suppSource');
+      if (!expSelect || !suppSelect) return;
+
+      const curExpVal = expSelect.value;
+      const curSuppVal = suppSelect.value;
+
+      let optionsHtml = `
+        <option value="عهدة المحاسب">عهدة المحاسب (كاش)</option>
+        <option value="حساب البنك / تحويل">🏦 حساب البنك / تحويل بنكي</option>
+      `;
+
+      Object.values(currentData.drawers).forEach(d => {
+        if (d.name) {
+          const cleanName = d.name.toString().trim();
+          optionsHtml += `<option value="${cleanName}">درج ${cleanName}</option>`;
+        }
+      });
+
+      expSelect.innerHTML = optionsHtml;
+      suppSelect.innerHTML = optionsHtml;
+
+      if (curExpVal) expSelect.value = curExpVal;
+      if (curSuppVal) suppSelect.value = curSuppVal;
+    }
+
+    function addNewStaffMember() {
+      const newName = prompt("أدخل اسم الموظف الجديد:");
+      if (newName && newName.trim()) {
+        const sel = document.getElementById('staffSelect');
+        const opt = document.createElement('option');
+        opt.value = newName.trim();
+        opt.innerText = newName.trim();
+        sel.appendChild(opt);
+        sel.value = newName.trim();
+      }
     }
 
     function onDateChange() {
@@ -729,6 +806,7 @@
       document.getElementById('modalImagePreview').src = '';
     }
 
+    // استخراج تقرير الفترة المجمعة
     function loadPeriodReport() {
       let fromStr = toStandardDigits(document.getElementById('periodFrom')?.value);
       let toStr = toStandardDigits(document.getElementById('periodTo')?.value);
@@ -794,6 +872,7 @@
             const actualCard = parseFloat(dr.actualCard || 0);
             const actualCash = parseFloat(dr.actualCash || 0);
             
+            // دمج في جدول الفترات بحسب اسم الشخص
             const personName = getPersonGroupName(dr.name);
 
             if (!cashiersSummary[personName]) {
@@ -809,7 +888,7 @@
 
             const calcCash = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
             
-            // مطابقة المصروف بالاسم أو الرقم لخصم منصرف الأيام السابقة
+            // مطابقة المصروف بالدرج مع مراعاة الأيام القديمة
             const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
             const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
             
@@ -1006,6 +1085,7 @@
       bindDateListener(currentDateStr);
     }
 
+    // عرض اليومية المفردة
     function renderDashboard() {
       const drawersList = Object.entries(currentData.drawers).map(([key, val]) => ({ id: key, ...val }));
       const expList = Object.entries(currentData.expenses).map(([key, val]) => ({ id: key, ...val }));
@@ -1035,7 +1115,7 @@
 
             const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
-            // خصم منصرف هذه الوردية بالمطابقة المرنة
+            // خصم منصرف هذه الوردية فقط
             const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
             const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
             const totalDrawerOut = drawerExp + drawerSupp;
@@ -1258,20 +1338,25 @@
       }
     }
 
+    // حفظ الوردية المنظمة بالقوائم ومعرف فريد
     function saveDrawer() {
       const editId = document.getElementById('editDrawerId')?.value;
-      const name = document.getElementById('drawerName')?.value.trim();
+      const staff = document.getElementById('staffSelect')?.value || 'كاشير';
+      const device = document.getElementById('deviceSelect')?.value || 'كاشير 1';
+      const shift = document.getElementById('shiftSelect')?.value || 'وردية 1';
+      
       const totalZ = parseFloat(document.getElementById('drawerTotalZ')?.value) || 0;
       const actualCash = parseFloat(document.getElementById('drawerActualCash')?.value) || 0;
       const cardReport = parseFloat(document.getElementById('drawerCardReport')?.value) || 0;
       const actualCard = parseFloat(document.getElementById('drawerActualCard')?.value) || 0;
       const receiptImage = document.getElementById('drawerReceiptImage')?.value || "";
 
-      if (!name) return alert('يرجى كتابة اسم الكاشير');
+      // تكوين اسم كامل منظم
+      const fullName = `كاشير ${staff} (${device} - ${shift})`;
 
       const id = editId ? editId : 'shift_' + Date.now();
       db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).set({
-        name, totalZ, actualCash, cardReport, actualCard, receiptImage
+        name: fullName, totalZ, actualCash, cardReport, actualCard, receiptImage
       }).then(() => {
         alert('تم حفظ الوردية بنجاح ليومية: ' + adminTargetDateStr);
         resetDrawerForm();
@@ -1283,8 +1368,7 @@
       if (!d) return;
       const editEl = document.getElementById('editDrawerId');
       if (editEl) editEl.value = id;
-      const nameEl = document.getElementById('drawerName');
-      if (nameEl) nameEl.value = d.name || '';
+
       const totalZEl = document.getElementById('drawerTotalZ');
       if (totalZEl) totalZEl.value = d.totalZ || '';
       const actualCashEl = document.getElementById('drawerActualCash');
@@ -1314,8 +1398,6 @@
     function resetDrawerForm() {
       const editEl = document.getElementById('editDrawerId');
       if (editEl) editEl.value = '';
-      const nameEl = document.getElementById('drawerName');
-      if (nameEl) nameEl.value = '';
       const totalZEl = document.getElementById('drawerTotalZ');
       if (totalZEl) totalZEl.value = '';
       const actualCashEl = document.getElementById('drawerActualCash');
@@ -1331,7 +1413,7 @@
       const statusEl = document.getElementById('imageStatusText');
       if (statusEl) statusEl.innerText = 'لم يتم اختيار صورة';
       const fTitle = document.getElementById('drawerFormTitle');
-      if (fTitle) fTitle.innerText = '➕ إضافة / تعديل إغلاق وردية كاشير';
+      if (fTitle) fTitle.innerText = '➕ تسجيل تصفية وردية كاشير';
     }
 
     function saveBankOpening() {
