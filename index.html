@@ -75,7 +75,7 @@
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
         <div class="text-lg font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد بعد المنصرف</div>
+        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المتبقي باليد بعد خصم المنصرف</div>
       </div>
 
       <div class="bg-slate-800 p-3 rounded-2xl border border-cyan-500/40 shadow">
@@ -638,6 +638,7 @@
       });
     }
 
+    // فتح كل الاحتمالات الممكنة للأدراج والورديات دائماً
     function updateSourceDropdowns() {
       const expSelect = document.getElementById('expenseSource');
       const suppSelect = document.getElementById('suppSource');
@@ -946,8 +947,10 @@
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
-          // الكاش الفعلي بالصناديق يمثل النقد الحقيقي المسلم يداً بيد
-          const netDayActualCash = dayActualCash;
+          // خصم منصرف عهدة المحاسب من كاش اليومية في التقرير الإجمالي
+          const accountantExp = eList.filter(e => isAccountantSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+          const accountantSupp = sList.filter(s => isAccountantSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+          const netDayActualCash = dayActualCash - (accountantExp + accountantSupp);
 
           periodActualCashSum += netDayActualCash;
           periodCardSalesSum += dayCardSales;
@@ -1206,8 +1209,10 @@
       const dCount = document.getElementById('drawersCount');
       if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // الكاش الفعلي بالصناديق يمثل النقد الفعلي المسلم من الكاشيرات باليد
-      const netCashOnHand = totalActualCash;
+      // خصم منصرف عهدة المحاسب من الكاش الفعلي ليظهر الصافي المتبقي باليد بعد المنصرف
+      const accountantExp = expList.filter(e => isAccountantSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const accountantSupp = suppList.filter(s => isAccountantSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+      const netCashOnHand = totalActualCash - (accountantExp + accountantSupp);
 
       const bankExpOut = expList.filter(e => isBankSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => isBankSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
