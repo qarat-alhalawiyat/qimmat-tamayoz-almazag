@@ -75,7 +75,7 @@
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[11px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
         <div class="text-lg font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المتبقي باليد بعد خصم المنصرف</div>
+        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد في الصناديق</div>
       </div>
 
       <div class="bg-slate-800 p-3 rounded-2xl border border-cyan-500/40 shadow">
@@ -539,7 +539,6 @@
       return str.toString().trim().replace(/\s+/g, ' ');
     }
 
-    // مطابقة المصروف بالدرج المختار بالتحديد
     function isSourceMatch(sourceName, drawerName) {
       if (!sourceName || !drawerName) return false;
       const s = cleanStr(sourceName).toLowerCase();
@@ -547,10 +546,8 @@
 
       if (isAccountantSource(s) || isBankSource(s)) return false;
 
-      // التطابق المباشر والصريح
       if (s === d || s === `درج ${d}` || d === `درج ${s}`) return true;
 
-      // فحص تمييز الورديات بدقة مطلقة
       const hasShiftS = s.includes('وردية');
       const hasShiftD = d.includes('وردية');
       if (hasShiftS || hasShiftD) {
@@ -570,7 +567,6 @@
         return true;
       }
 
-      // التوافق مع الأيام القديمة (كاشير 1 و كاشير 2)
       const numS = s.match(/\d+/);
       const numD = d.match(/\d+/);
       if (numS && numD && numS[0] === numD[0]) {
@@ -638,7 +634,6 @@
       });
     }
 
-    // فتح كل الاحتمالات الممكنة للأدراج والورديات دائماً
     function updateSourceDropdowns() {
       const expSelect = document.getElementById('expenseSource');
       const suppSelect = document.getElementById('suppSource');
@@ -766,6 +761,8 @@
         if (sTitle) sTitle.innerText = "إجمالي المبيعات";
         const cTitle = document.getElementById('cardTitleCash');
         if (cTitle) cTitle.innerText = "الكاش الفعلي بالصناديق";
+        const cSub = document.getElementById('cardSubCash');
+        if (cSub) cSub.innerText = "المعدود باليد في الصناديق";
         renderDashboard();
       } else {
         if (btnPeriod) btnPeriod.className = "px-3 py-1 rounded-md bg-blue-600 text-white font-bold transition";
@@ -777,7 +774,9 @@
         const sTitle = document.getElementById('cardTitleSales');
         if (sTitle) sTitle.innerText = "إجمالي مبيعات الفترة";
         const cTitle = document.getElementById('cardTitleCash');
-        if (cTitle) cTitle.innerText = "مجموع الكاش المحقق بالفترة";
+        if (cTitle) cTitle.innerText = "صافي النقد المتبقي بالفترة";
+        const cSub = document.getElementById('cardSubCash');
+        if (cSub) cSub.innerText = "بعد خصم عهدة المحاسب والمصاريف";
         setQuickPeriod(30);
       }
     }
@@ -947,7 +946,7 @@
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
-          // خصم منصرف عهدة المحاسب من كاش اليومية في التقرير الإجمالي
+          // في التقرير المجمع: يتم خصم منصرف عهدة المحاسب من النقدية المجمعة
           const accountantExp = eList.filter(e => isAccountantSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
           const accountantSupp = sList.filter(s => isAccountantSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
           const netDayActualCash = dayActualCash - (accountantExp + accountantSupp);
@@ -1146,7 +1145,7 @@
 
             const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
-            // خصم منصرف هذه الوردية بالتحديد
+            // خصم منصرف هذه الوردية فقط
             const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
             const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
             const totalDrawerOut = drawerExp + drawerSupp;
@@ -1209,10 +1208,8 @@
       const dCount = document.getElementById('drawersCount');
       if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // خصم منصرف عهدة المحاسب من الكاش الفعلي ليظهر الصافي المتبقي باليد بعد المنصرف
-      const accountantExp = expList.filter(e => isAccountantSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const accountantSupp = suppList.filter(s => isAccountantSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-      const netCashOnHand = totalActualCash - (accountantExp + accountantSupp);
+      // في العرض اليومي: الكاش الفعلي بالصناديق يمثل نقدية الصناديق فقط دون طرح عهدة المحاسب
+      const netCashOnHand = totalActualCash;
 
       const bankExpOut = expList.filter(e => isBankSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => isBankSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
