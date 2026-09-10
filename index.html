@@ -64,48 +64,62 @@
       </div>
     </header>
 
-    <!-- البطاقات العلوية -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+    <!-- البطاقات العلوية بعد إضافة بنك هلا -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+      <!-- 1. إجمالي المبيعات -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
-        <div class="text-[11px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
-        <div class="text-lg font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1" id="salesCardSubText">شامل أجهزة الكاشير</div>
+        <div class="text-[10px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
+        <div class="text-base font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-500 mt-1" id="salesCardSubText">شامل أجهزة الكاشير</div>
       </div>
 
+      <!-- 2. الكاش الفعلي -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
-        <div class="text-[11px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
-        <div class="text-lg font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد في الصناديق</div>
+        <div class="text-[10px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
+        <div class="text-base font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد في الصناديق</div>
       </div>
 
+      <!-- 3. صافي البنك الرئيسي -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-cyan-500/40 shadow">
-        <div class="text-[11px] text-cyan-300 mb-1">🏦 صافي رصيد البنك</div>
-        <div class="text-lg font-bold text-cyan-400" id="bankBalance">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1" id="cardSubBank">شامل الافتتاحي والحوالات الصادرة</div>
+        <div class="text-[10px] text-cyan-300 mb-1">🏦 البنك الرئيسي</div>
+        <div class="text-base font-bold text-cyan-400" id="bankBalance">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-400 mt-1" id="cardSubBank">شامل الافتتاحي والحوالات</div>
       </div>
 
+      <!-- 4. صافي بنك هلا -->
+      <div class="bg-slate-800 p-3 rounded-2xl border border-teal-500/40 shadow">
+        <div class="text-[10px] text-teal-300 mb-1">💳 بنك هلا</div>
+        <div class="text-base font-bold text-teal-400" id="halaBalance">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-400 mt-1" id="cardSubHala">مبيعات مدى وحركات هلا</div>
+      </div>
+
+      <!-- 5. إجمالي المنصرف -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
-        <div class="text-[11px] text-slate-400 mb-1">إجمالي المنصرف</div>
-        <div class="text-lg font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses">0</span> | موردين: <span id="supplierPaid">0</span></div>
+        <div class="text-[10px] text-slate-400 mb-1">إجمالي المنصرف</div>
+        <div class="text-base font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses">0</span> | موردين: <span id="supplierPaid">0</span></div>
       </div>
 
+      <!-- 6. مديونية الموردين -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
-        <div class="text-[11px] text-slate-400 mb-1">إجمالي متبقي الموردين</div>
-        <div class="text-lg font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-500 mt-1">الديون المتبقية</div>
+        <div class="text-[10px] text-slate-400 mb-1">متبقي الموردين</div>
+        <div class="text-base font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-500 mt-1">الديون المتبقية</div>
       </div>
 
+      <!-- 7. العجز -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-rose-500/40 shadow">
-        <div class="text-[11px] text-rose-400 font-bold mb-1">🔻 إجمالي العجز بالصناديق</div>
-        <div class="text-lg font-bold text-rose-400" id="totalShortageCard">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1" id="shortageCountStatus">لا يوجد عجز</div>
+        <div class="text-[10px] text-rose-400 font-bold mb-1">🔻 العجز بالصناديق</div>
+        <div class="text-base font-bold text-rose-400" id="totalShortageCard">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-400 mt-1" id="shortageCountStatus">لا يوجد عجز</div>
       </div>
 
+      <!-- 8. الزيادة -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-blue-500/40 shadow">
-        <div class="text-[11px] text-blue-400 font-bold mb-1">🔺 إجمالي الزيادة بالصناديق</div>
-        <div class="text-lg font-bold text-blue-400" id="totalOverCard">0.00 <span class="text-xs">ر.س</span></div>
-        <div class="text-[10px] text-slate-400 mt-1" id="overCountStatus">لا توجد زيادة</div>
+        <div class="text-[10px] text-blue-400 font-bold mb-1">🔺 الزيادة بالصناديق</div>
+        <div class="text-base font-bold text-blue-400" id="totalOverCard">0.00 <span class="text-[10px]">ر.س</span></div>
+        <div class="text-[9px] text-slate-400 mt-1" id="overCountStatus">لا توجد زيادة</div>
       </div>
     </div>
 
@@ -127,6 +141,7 @@
               <th class="p-2.5">فارق الكاش</th>
               <th class="p-2.5">مفترض الشبكة</th>
               <th class="p-2.5">فعلي الشبكة</th>
+              <th class="p-2.5 text-center text-teal-300">وجهة الشبكة</th>
               <th class="p-2.5">فارق الشبكة</th>
               <th class="p-2.5 text-center text-cyan-300">موازنة الشبكة 📄</th>
               <th class="p-2.5 text-rose-400 font-bold">العجز (نقص) 🔴</th>
@@ -134,7 +149,7 @@
             </tr>
           </thead>
           <tbody id="drawersTableBody" class="divide-y divide-slate-700/50">
-            <tr><td colspan="12" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة لهذا التاريخ</td></tr>
+            <tr><td colspan="13" class="p-4 text-center text-slate-500">لا توجد بيانات مسجلة لهذا التاريخ</td></tr>
           </tbody>
         </table>
       </div>
@@ -249,7 +264,7 @@
 
       <div class="bg-slate-800 p-4 rounded-2xl border border-cyan-500/40 shadow">
         <h2 class="text-sm font-bold text-cyan-300 mb-3 border-b border-slate-700 pb-2 flex justify-between">
-          <span>🏦 حركات وتحويلات البنك</span>
+          <span>🏦 حركات وتحويلات البنوك</span>
           <span class="text-xs font-normal text-slate-400" id="bankTransCount">0 حركة</span>
         </h2>
         <div class="overflow-x-auto max-h-60">
@@ -257,12 +272,13 @@
             <thead class="text-slate-400 bg-slate-900/50">
               <tr>
                 <th class="p-2">البيان</th>
+                <th class="p-2">البنك</th>
                 <th class="p-2">النوع</th>
                 <th class="p-2">المبلغ</th>
               </tr>
             </thead>
             <tbody id="bankTransTableBody" class="divide-y divide-slate-700/50">
-              <tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية</td></tr>
+              <tr><td colspan="4" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية</td></tr>
             </tbody>
           </table>
         </div>
@@ -274,7 +290,7 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-700 pb-3 gap-3">
         <div>
           <h2 class="text-lg font-bold text-emerald-400">📝 لوحة تحكم المحاسب (إدخال وتعديل الورديات)</h2>
-          <p class="text-xs text-slate-400">تخصيص الموظف والوردية والجهاز بدقة لمنع أي تداخل</p>
+          <p class="text-xs text-slate-400">تخصيص الموظف والوردية والجهاز وتحديد وجهة الشبكة للبنك أو بنك هلا</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="changeAdminPassword()" class="bg-slate-700 hover:bg-slate-600 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/30">
@@ -293,13 +309,13 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- إدخال وتعديل الوردية -->
+      <!-- إدخال وتعديل الوردية مع تحديد وجهة الشبكة -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ تسجيل تصفية وردية كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
         <input type="hidden" id="drawerReceiptImage" value="">
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-2">
           <div>
             <label class="text-[10px] text-slate-400 flex justify-between">
               <span>الموظف المسلم</span>
@@ -344,7 +360,16 @@
             <input type="number" step="0.01" id="drawerActualCard" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
           </div>
 
-          <div class="sm:col-span-7 bg-slate-950 p-2.5 rounded-xl border border-dashed border-cyan-500/40 flex flex-wrap items-center justify-between gap-2 mt-1">
+          <!-- خيار تحديد وجهة الشبكة: البنك أو بنك هلا -->
+          <div>
+            <label class="text-[10px] text-teal-300 font-bold">🏦 وجهة الشبكة</label>
+            <select id="drawerCardTargetBank" class="w-full bg-slate-900 border border-teal-500/60 rounded-lg p-2 text-xs text-teal-300 font-bold">
+              <option value="main">البنك الرئيسي</option>
+              <option value="hala">بنك هلا</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-8 bg-slate-950 p-2.5 rounded-xl border border-dashed border-cyan-500/40 flex flex-wrap items-center justify-between gap-2 mt-1">
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-cyan-300">📷 إرفاق صورة موازنة الشبكة (مدى):</span>
               <input type="file" id="receiptFileInput" accept="image/*" onchange="handleImageUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-cyan-900/60 file:text-cyan-300 hover:file:bg-cyan-800">
@@ -352,7 +377,7 @@
             <div id="imageStatusText" class="text-[11px] text-slate-400 font-medium">لم يتم اختيار صورة</div>
           </div>
 
-          <div class="sm:col-span-7 flex items-end justify-end gap-2 mt-2">
+          <div class="sm:col-span-8 flex items-end justify-end gap-2 mt-2">
             <button onclick="saveDrawer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs px-6 py-2.5 shadow">💾 حفظ الوردية</button>
             <button onclick="resetDrawerForm()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs px-4 py-2.5 rounded-lg">إلغاء</button>
           </div>
@@ -366,6 +391,7 @@
                 <th class="p-2">مبيعات الجهاز</th>
                 <th class="p-2">فعلي كاش</th>
                 <th class="p-2">فعلي شبكة</th>
+                <th class="p-2 text-center text-teal-300">وجهة الشبكة</th>
                 <th class="p-2 text-center">إيصال الموازنة</th>
                 <th class="p-2 text-center">إجراءات</th>
               </tr>
@@ -375,28 +401,41 @@
         </div>
       </div>
 
-      <!-- إعدادات وحركات البنك -->
-      <div class="p-4 bg-slate-900/80 rounded-xl border border-cyan-500/40 space-y-3">
-        <h3 class="text-xs font-bold text-cyan-300">🏦 إعدادات وحركات الحساب البنكي لليومية</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+      <!-- إعدادات وحركات البنك الرئيسي وبنك هلا -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-cyan-500/40 space-y-4">
+        <h3 class="text-xs font-bold text-cyan-300">🏦 إعدادات وحركات الحسابات البنكية (البنك الرئيسي وبنك هلا)</h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
           <div>
-            <label class="text-[10px] text-slate-400">الرصيد الافتتاحي السابق في البنك</label>
+            <label class="text-[10px] text-cyan-300 font-semibold">الرصيد الافتتاحي السابق (البنك الرئيسي)</label>
             <div class="flex gap-2 mt-1">
               <input type="number" step="0.01" id="bankOpening" placeholder="0.00" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-cyan-300">
               <button onclick="saveBankOpening()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold px-3 rounded-lg text-xs">حفظ</button>
             </div>
           </div>
-          <div class="sm:col-span-3">
-            <label class="text-[10px] text-slate-400">➕ إضافة حركة بنكية مباشرة</label>
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 mt-1">
-              <input type="text" id="bankTransDesc" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-              <input type="number" step="0.01" id="bankTransAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
-              <select id="bankTransType" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                <option value="in">➕ تحويل وارد (إيداع)</option>
-                <option value="out">➖ تحويل صادر (سحب / منصرف)</option>
-              </select>
-              <button onclick="addBankTransaction()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold py-2 rounded-lg text-xs">إضافة الحركة</button>
+          <div>
+            <label class="text-[10px] text-teal-300 font-semibold">الرصيد الافتتاحي السابق (بنك هلا)</label>
+            <div class="flex gap-2 mt-1">
+              <input type="number" step="0.01" id="halaOpening" placeholder="0.00" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-teal-300">
+              <button onclick="saveHalaOpening()" class="bg-teal-600 hover:bg-teal-500 text-slate-950 font-bold px-3 rounded-lg text-xs">حفظ</button>
             </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+          <label class="text-[10px] text-slate-400 font-bold">➕ إضافة حركة بنكية مباشرة (إيداع / سحب)</label>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
+            <input type="text" id="bankTransDesc" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+            <input type="number" step="0.01" id="bankTransAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
+            <select id="bankTransTarget" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
+              <option value="main">البنك الرئيسي</option>
+              <option value="hala">بنك هلا</option>
+            </select>
+            <select id="bankTransType" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
+              <option value="in">➕ تحويل وارد (إيداع)</option>
+              <option value="out">➖ تحويل صادر (سحب / منصرف)</option>
+            </select>
+            <button onclick="addBankTransaction()" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold py-2 rounded-lg text-xs">إضافة الحركة</button>
           </div>
         </div>
 
@@ -405,6 +444,7 @@
             <thead class="text-slate-400 bg-slate-950">
               <tr>
                 <th class="p-2">البيان</th>
+                <th class="p-2">الحساب البنكي</th>
                 <th class="p-2">النوع</th>
                 <th class="p-2">المبلغ</th>
                 <th class="p-2 text-center">إجراءات</th>
@@ -423,7 +463,7 @@
           <input type="text" id="expenseName" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="expenseAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-            <!-- تتولد القائمة بكل الأدراج والورديات -->
+            <!-- تتولد القائمة بكل الأدراج والورديات وبنكي الرئيسي وهلا -->
           </select>
           <div class="flex gap-2">
             <button onclick="saveExpense()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs py-2">حفظ المصروف</button>
@@ -454,7 +494,7 @@
           <input type="text" id="suppName" placeholder="اسم المورد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="suppPaid" placeholder="المبلغ المسدد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="suppSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-            <!-- تتولد القائمة بكل الأدراج والورديات -->
+            <!-- تتولد القائمة بكل الأدراج والورديات وبنكي الرئيسي وهلا -->
           </select>
           <input type="number" step="0.01" id="suppRemaining" placeholder="إجمالي المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <div class="flex gap-2">
@@ -522,15 +562,23 @@
         .replace(/\//g, '-');
     }
 
+    function isHalaBankSource(source) {
+      if (!source) return false;
+      const s = source.toString().trim().toLowerCase();
+      return s.includes('هلا');
+    }
+
     function isBankSource(source) {
       if (!source) return false;
-      const s = source.toString().trim();
+      const s = source.toString().trim().toLowerCase();
+      // لو كان بنك هلا نعتبره حساب مستقل وليس البنك الرئيسي
+      if (isHalaBankSource(s)) return false;
       return s.includes('بنك') || s.includes('تحويل');
     }
 
     function isAccountantSource(source) {
       if (!source) return false;
-      const s = source.toString().trim();
+      const s = source.toString().trim().toLowerCase();
       return s.includes('محاسب') || s.includes('عهدة المحاسب');
     }
 
@@ -539,15 +587,18 @@
       return str.toString().trim().replace(/\s+/g, ' ');
     }
 
+    // مطابقة المصروف بالدرج المختار بالتحديد
     function isSourceMatch(sourceName, drawerName) {
       if (!sourceName || !drawerName) return false;
       const s = cleanStr(sourceName).toLowerCase();
       const d = cleanStr(drawerName).toLowerCase();
 
-      if (isAccountantSource(s) || isBankSource(s)) return false;
+      if (isAccountantSource(s) || isBankSource(s) || isHalaBankSource(s)) return false;
 
+      // التطابق المباشر والصريح
       if (s === d || s === `درج ${d}` || d === `درج ${s}`) return true;
 
+      // فحص تمييز الورديات بدقة مطلقة
       const hasShiftS = s.includes('وردية');
       const hasShiftD = d.includes('وردية');
       if (hasShiftS || hasShiftD) {
@@ -567,6 +618,7 @@
         return true;
       }
 
+      // التوافق مع الأيام القديمة (كاشير 1 و كاشير 2)
       const numS = s.match(/\d+/);
       const numD = d.match(/\d+/);
       if (numS && numD && numS[0] === numD[0]) {
@@ -594,6 +646,7 @@
       expenses: {},
       suppliers: {},
       bankOpening: 0,
+      halaOpening: 0,
       bankTransactions: {}
     };
 
@@ -621,10 +674,11 @@
             expenses: data.expenses || {},
             suppliers: data.suppliers || {},
             bankOpening: parseFloat(data.bankOpening) || 0,
+            halaOpening: parseFloat(data.halaOpening) || 0,
             bankTransactions: data.bankTransactions || {}
           };
         } else {
-          currentData = { drawers: {}, expenses: {}, suppliers: {}, bankOpening: 0, bankTransactions: {} };
+          currentData = { drawers: {}, expenses: {}, suppliers: {}, bankOpening: 0, halaOpening: 0, bankTransactions: {} };
         }
         if (viewMode === 'daily') {
           renderDashboard();
@@ -634,6 +688,7 @@
       });
     }
 
+    // فتح كل الاحتمالات الممكنة للأدراج والورديات والبنكين
     function updateSourceDropdowns() {
       const expSelect = document.getElementById('expenseSource');
       const suppSelect = document.getElementById('suppSource');
@@ -644,7 +699,8 @@
 
       let optionsHtml = `
         <option value="عهدة المحاسب">عهدة المحاسب (كاش)</option>
-        <option value="حساب البنك / تحويل">🏦 حساب البنك / تحويل بنكي</option>
+        <option value="حساب البنك / تحويل">🏦 البنك الرئيسي / تحويل بنكي</option>
+        <option value="حساب بنك هلا / تحويل">💳 بنك هلا / مدى هلا</option>
         
         <optgroup label="كاشير 1 (درج 1)">
           <option value="كاشير حسين (كاشير 1 - وردية 1)">درج كاشير 1 - حسين (وردية 1)</option>
@@ -877,9 +933,14 @@
         }).sort();
 
         let periodInitialBankOpening = 0;
+        let periodInitialHalaOpening = 0;
         if (sortedDates.length > 0) {
           periodInitialBankOpening = parseFloat(allData[sortedDates[0]]?.bankOpening) || 0;
+          periodInitialHalaOpening = parseFloat(allData[sortedDates[0]]?.halaOpening) || 0;
         }
+
+        let periodMainCardSum = 0;
+        let periodHalaCardSum = 0;
 
         sortedDates.forEach(dKey => {
           const day = allData[dKey] || {};
@@ -903,6 +964,7 @@
             const cardReport = parseFloat(dr.cardReport || 0);
             const actualCard = parseFloat(dr.actualCard || 0);
             const actualCash = parseFloat(dr.actualCash || 0);
+            const cardTarget = dr.cardTargetBank || 'main';
             
             const personName = getPersonGroupName(dr.name);
 
@@ -941,8 +1003,15 @@
             cashiersSummary[personName].totalCash += actualCash;
             cashiersSummary[personName].totalCard += (actualCard > 0 ? actualCard : cardReport);
 
+            const chosenCard = (actualCard > 0 ? actualCard : cardReport);
+            if (cardTarget === 'hala') {
+              periodHalaCardSum += chosenCard;
+            } else {
+              periodMainCardSum += chosenCard;
+            }
+
             dayActualCash += actualCash;
-            dayCardSales += (actualCard > 0 ? actualCard : cardReport);
+            dayCardSales += chosenCard;
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
@@ -1047,14 +1116,23 @@
         const sDue = document.getElementById('totalSupplierDue');
         if (sDue) sDue.innerHTML = `${periodSupplierDue.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
-        const totalBankOut = combinedExpenses.filter(e => isBankSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
-                             combinedSuppliers.filter(s => isBankSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0) +
-                             combinedBankTrans.filter(b => b.type === 'out').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-        const totalBankIn = combinedBankTrans.filter(b => b.type === 'in').reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
-        
-        const netPeriodBank = (periodInitialBankOpening + periodCardSalesSum + totalBankIn) - totalBankOut;
+        // حساب صافي رصيد البنك الرئيسي في الفترة
+        const totalMainBankOut = combinedExpenses.filter(e => isBankSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
+                                 combinedSuppliers.filter(s => isBankSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0) +
+                                 combinedBankTrans.filter(b => (b.target !== 'hala' && b.type === 'out')).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+        const totalMainBankIn = combinedBankTrans.filter(b => (b.target !== 'hala' && b.type === 'in')).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+        const netPeriodMainBank = (periodInitialBankOpening + periodMainCardSum + totalMainBankIn) - totalMainBankOut;
         const bBal = document.getElementById('bankBalance');
-        if (bBal) bBal.innerHTML = `${netPeriodBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
+        if (bBal) bBal.innerHTML = `${netPeriodMainBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
+
+        // حساب صافي رصيد بنك هلا في الفترة
+        const totalHalaBankOut = combinedExpenses.filter(e => isHalaBankSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0) +
+                                 combinedSuppliers.filter(s => isHalaBankSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0) +
+                                 combinedBankTrans.filter(b => (b.target === 'hala' && b.type === 'out')).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+        const totalHalaBankIn = combinedBankTrans.filter(b => (b.target === 'hala' && b.type === 'in')).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+        const netPeriodHalaBank = (periodInitialHalaOpening + periodHalaCardSum + totalHalaBankIn) - totalHalaBankOut;
+        const hBal = document.getElementById('halaBalance');
+        if (hBal) hBal.innerHTML = `${netPeriodHalaBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
         const tShort = document.getElementById('totalShortageCard');
         if (tShort) tShort.innerHTML = `${periodTotalShortage.toFixed(2)} <span class="text-xs">ر.س</span>`;
@@ -1098,6 +1176,7 @@
           bTransBody.innerHTML = combinedBankTrans.map(t => `
             <tr class="hover:bg-slate-700/30">
               <td class="p-2">${t.desc} <span class="text-[9px] text-slate-500">(${t.date})</span></td>
+              <td class="p-2 text-[11px] font-bold ${t.target === 'hala' ? 'text-teal-400' : 'text-cyan-400'}">${t.target === 'hala' ? 'بنك هلا' : 'البنك الرئيسي'}</td>
               <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
               <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
             </tr>
@@ -1125,6 +1204,8 @@
       let totalSales = 0;
       let totalActualCash = 0;
       let totalActualCard = 0;
+      let totalMainCard = 0;
+      let totalHalaCard = 0;
       let totalDailyShortage = 0;
       let totalDailyOver = 0;
 
@@ -1135,17 +1216,18 @@
       const body = document.getElementById('drawersTableBody');
       if (body) {
         if (drawersList.length === 0) {
-          body.innerHTML = `<tr><td colspan="12" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
+          body.innerHTML = `<tr><td colspan="13" class="p-4 text-center text-slate-500">لا توجد عهد مسجلة في هذا التاريخ</td></tr>`;
         } else {
           body.innerHTML = drawersList.map(d => {
             const zReport = parseFloat(d.totalZ || 0);
             const actualCash = parseFloat(d.actualCash || 0);
             const cardReport = parseFloat(d.cardReport || 0);
             const actualCard = parseFloat(d.actualCard || 0);
+            const cardTarget = d.cardTargetBank || 'main';
 
             const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
-            // خصم منصرف هذه الوردية فقط
+            // خصم منصرف هذه الوردية بالتحديد
             const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
             const drawerSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
             const totalDrawerOut = drawerExp + drawerSupp;
@@ -1170,6 +1252,13 @@
             totalActualCash += actualCash;
             totalActualCard += actualCard;
 
+            // توجيه الشبكة للبنك المعني
+            if (cardTarget === 'hala') {
+              totalHalaCard += actualCard;
+            } else {
+              totalMainCard += actualCard;
+            }
+
             const cashBadge = Math.abs(cashDiff) < 0.05 
               ? `<span class="text-emerald-400">مطابق</span>` 
               : (cashDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
@@ -1182,6 +1271,10 @@
               ? `<button onclick="openImageModal('${d.receiptImage}', '${d.name}')" class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold px-2 py-1 rounded text-[11px] shadow transition">📷 عرض الإيصال</button>`
               : `<span class="text-slate-600">غير مرفق</span>`;
 
+            const bankTargetBadge = (cardTarget === 'hala') 
+              ? `<span class="px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-bold border border-teal-500/40">بنك هلا</span>` 
+              : `<span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40">البنك الرئيسي</span>`;
+
             return `
               <tr class="hover:bg-slate-700/30">
                 <td class="p-2.5 font-bold text-slate-100">${d.name}</td>
@@ -1192,6 +1285,7 @@
                 <td class="p-2.5">${cashBadge}</td>
                 <td class="p-2.5 text-slate-300">${cardReport.toFixed(2)}</td>
                 <td class="p-2.5 text-blue-400 font-bold">${actualCard.toFixed(2)}</td>
+                <td class="p-2.5 text-center">${bankTargetBadge}</td>
                 <td class="p-2.5">${cardBadge}</td>
                 <td class="p-2.5 text-center">${receiptBtn}</td>
                 <td class="p-2.5 font-bold ${drawerShortage > 0.05 ? 'text-rose-400' : 'text-slate-500'}">
@@ -1208,17 +1302,26 @@
       const dCount = document.getElementById('drawersCount');
       if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // في العرض اليومي: الكاش الفعلي بالصناديق يمثل نقدية الصناديق فقط دون طرح عهدة المحاسب
+      // في اليومية: الكاش الفعلي بالصناديق يمثل النقدية الفعلية باليد في الصناديق فقط
       const netCashOnHand = totalActualCash;
 
+      // حساب رصيد البنك الرئيسي
       const bankExpOut = expList.filter(e => isBankSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
       const bankSuppOut = suppList.filter(s => isBankSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
-      const bankTransIn = bankTransList.filter(t => t.type === 'in').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-      const bankTransOut = bankTransList.filter(t => t.type === 'out').reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
-
-      const netBank = (currentData.bankOpening + totalActualCard + bankTransIn) - (bankExpOut + bankSuppOut + bankTransOut);
+      const mainBankTransIn = bankTransList.filter(t => (t.target !== 'hala' && t.type === 'in')).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const mainBankTransOut = bankTransList.filter(t => (t.target !== 'hala' && t.type === 'out')).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const netMainBank = (currentData.bankOpening + totalMainCard + mainBankTransIn) - (bankExpOut + bankSuppOut + mainBankTransOut);
       const bBal = document.getElementById('bankBalance');
-      if (bBal) bBal.innerHTML = `${netBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
+      if (bBal) bBal.innerHTML = `${netMainBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
+
+      // حساب رصيد بنك هلا
+      const halaExpOut = expList.filter(e => isHalaBankSource(e.source)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const halaSuppOut = suppList.filter(s => isHalaBankSource(s.source)).reduce((acc, curr) => acc + (parseFloat(curr.paid) || 0), 0);
+      const halaTransIn = bankTransList.filter(t => (t.target === 'hala' && t.type === 'in')).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const halaTransOut = bankTransList.filter(t => (t.target === 'hala' && t.type === 'out')).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+      const netHalaBank = (currentData.halaOpening + totalHalaCard + halaTransIn) - (halaExpOut + halaSuppOut + halaTransOut);
+      const hBal = document.getElementById('halaBalance');
+      if (hBal) hBal.innerHTML = `${netHalaBank.toFixed(2)} <span class="text-xs">ر.س</span>`;
 
       const sSales = document.getElementById('totalSystemSales');
       if (sSales) sSales.innerHTML = `${totalSales.toFixed(2)} <span class="text-xs">ر.س</span>`;
@@ -1274,17 +1377,18 @@
               <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
             </tr>
           `).join('');
-      }
+        }
       const suppCount = document.getElementById('suppliersCount');
       if (suppCount) suppCount.innerText = `${suppList.length} مورد`;
 
       const bTransBody = document.getElementById('bankTransTableBody');
       if (bTransBody) {
         bTransBody.innerHTML = bankTransList.length === 0 
-          ? `<tr><td colspan="3" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية اليوم</td></tr>`
+          ? `<tr><td colspan="4" class="p-3 text-center text-slate-500">لا توجد حركات بنكية إضافية اليوم</td></tr>`
           : bankTransList.map(t => `
             <tr class="hover:bg-slate-700/30">
               <td class="p-2">${t.desc}</td>
+              <td class="p-2 text-[11px] font-bold ${t.target === 'hala' ? 'text-teal-400' : 'text-cyan-400'}">${t.target === 'hala' ? 'بنك هلا' : 'البنك الرئيسي'}</td>
               <td class="p-2 text-[11px] ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد ➕' : 'صادر ➖'}</td>
               <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)} ر.س</td>
             </tr>
@@ -1304,6 +1408,9 @@
             <td class="p-2">${parseFloat(d.totalZ || 0).toFixed(2)}</td>
             <td class="p-2 text-emerald-400">${parseFloat(d.actualCash || 0).toFixed(2)}</td>
             <td class="p-2 text-blue-400">${parseFloat(d.actualCard || 0).toFixed(2)}</td>
+            <td class="p-2 text-center text-[11px] font-bold ${d.cardTargetBank === 'hala' ? 'text-teal-400' : 'text-cyan-400'}">
+              ${d.cardTargetBank === 'hala' ? 'بنك هلا' : 'البنك الرئيسي'}
+            </td>
             <td class="p-2 text-center">
               ${d.receiptImage ? `<button onclick="openImageModal('${d.receiptImage}', '${d.name}')" class="text-cyan-400 underline text-[11px]">معاينة 👁️</button>` : `<span class="text-slate-600">لا يوجد</span>`}
             </td>
@@ -1317,6 +1424,9 @@
 
       const bOpening = document.getElementById('bankOpening');
       if (bOpening) bOpening.value = currentData.bankOpening || '';
+
+      const hOpening = document.getElementById('halaOpening');
+      if (hOpening) hOpening.value = currentData.halaOpening || '';
       
       const bList = Object.entries(currentData.bankTransactions).map(([k, v]) => ({ id: k, ...v }));
       const aBank = document.getElementById('adminBankTransList');
@@ -1324,6 +1434,7 @@
         aBank.innerHTML = bList.map(t => `
           <tr>
             <td class="p-2">${t.desc}</td>
+            <td class="p-2 text-[11px] font-bold ${t.target === 'hala' ? 'text-teal-400' : 'text-cyan-400'}">${t.target === 'hala' ? 'بنك هلا' : 'البنك الرئيسي'}</td>
             <td class="p-2 ${t.type === 'in' ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${t.type === 'in' ? 'وارد' : 'صادر'}</td>
             <td class="p-2 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
             <td class="p-2 text-center">
@@ -1377,13 +1488,14 @@
       const actualCash = parseFloat(document.getElementById('drawerActualCash')?.value) || 0;
       const cardReport = parseFloat(document.getElementById('drawerCardReport')?.value) || 0;
       const actualCard = parseFloat(document.getElementById('drawerActualCard')?.value) || 0;
+      const cardTargetBank = document.getElementById('drawerCardTargetBank')?.value || 'main';
       const receiptImage = document.getElementById('drawerReceiptImage')?.value || "";
 
       const fullName = `كاشير ${staff} (${device} - ${shift})`;
 
       const id = editId ? editId : 'shift_' + Date.now();
       db.ref('daily_reports/' + adminTargetDateStr + '/drawers/' + id).set({
-        name: fullName, totalZ, actualCash, cardReport, actualCard, receiptImage
+        name: fullName, totalZ, actualCash, cardReport, actualCard, cardTargetBank, receiptImage
       }).then(() => {
         alert('تم حفظ الوردية بنجاح ليومية: ' + adminTargetDateStr);
         resetDrawerForm();
@@ -1405,6 +1517,9 @@
       const actualCardEl = document.getElementById('drawerActualCard');
       if (actualCardEl) actualCardEl.value = d.actualCard || '';
       
+      const targetEl = document.getElementById('drawerCardTargetBank');
+      if (targetEl) targetEl.value = d.cardTargetBank || 'main';
+
       const imgEl = document.getElementById('drawerReceiptImage');
       if (imgEl) imgEl.value = d.receiptImage || '';
       const statusEl = document.getElementById('imageStatusText');
@@ -1433,6 +1548,8 @@
       if (cardReportEl) cardReportEl.value = '';
       const actualCardEl = document.getElementById('drawerActualCard');
       if (actualCardEl) actualCardEl.value = '';
+      const targetEl = document.getElementById('drawerCardTargetBank');
+      if (targetEl) targetEl.value = 'main';
       const imgEl = document.getElementById('drawerReceiptImage');
       if (imgEl) imgEl.value = '';
       const fInput = document.getElementById('receiptFileInput');
@@ -1447,7 +1564,18 @@
       const val = parseFloat(document.getElementById('bankOpening')?.value) || 0;
       db.ref('daily_reports/' + adminTargetDateStr + '/bankOpening').set(val).then(() => {
         currentData.bankOpening = val;
-        alert('تم حفظ رصيد البنك الافتتاحي ليومية ' + adminTargetDateStr);
+        alert('تم حفظ رصيد البنك الرئيسي الافتتاحي ليومية ' + adminTargetDateStr);
+        if (viewMode === 'daily') {
+          renderDashboard();
+        }
+      });
+    }
+
+    function saveHalaOpening() {
+      const val = parseFloat(document.getElementById('halaOpening')?.value) || 0;
+      db.ref('daily_reports/' + adminTargetDateStr + '/halaOpening').set(val).then(() => {
+        currentData.halaOpening = val;
+        alert('تم حفظ رصيد بنك هلا الافتتاحي ليومية ' + adminTargetDateStr);
         if (viewMode === 'daily') {
           renderDashboard();
         }
@@ -1457,10 +1585,11 @@
     function addBankTransaction() {
       const desc = document.getElementById('bankTransDesc')?.value.trim();
       const amount = parseFloat(document.getElementById('bankTransAmount')?.value);
+      const target = document.getElementById('bankTransTarget')?.value || 'main';
       const type = document.getElementById('bankTransType')?.value;
       if (!desc || isNaN(amount)) return alert('يرجى إدخال بيان الحركة البنكية والمبلغ');
 
-      db.ref('daily_reports/' + adminTargetDateStr + '/bankTransactions').push({ desc, amount, type }).then(() => {
+      db.ref('daily_reports/' + adminTargetDateStr + '/bankTransactions').push({ desc, amount, target, type }).then(() => {
         const descEl = document.getElementById('bankTransDesc');
         if (descEl) descEl.value = '';
         const amtEl = document.getElementById('bankTransAmount');
@@ -1598,7 +1727,8 @@
       
       const totalSales = (parseFloat(document.getElementById('totalSystemSales')?.innerText) || 0).toFixed(2);
       const totalCash = (parseFloat(document.getElementById('totalActualCash')?.innerText) || 0).toFixed(2);
-      const bankBal = (parseFloat(document.getElementById('bankBalance')?.innerText) || 0).toFixed(2);
+      const mainBank = (parseFloat(document.getElementById('bankBalance')?.innerText) || 0).toFixed(2);
+      const halaBank = (parseFloat(document.getElementById('halaBalance')?.innerText) || 0).toFixed(2);
       const totalExp = (parseFloat(document.getElementById('totalExpenses')?.innerText) || 0).toFixed(2);
       const totalSuppDue = (parseFloat(document.getElementById('totalSupplierDue')?.innerText) || 0).toFixed(2);
       const shortage = (parseFloat(document.getElementById('totalShortageCard')?.innerText) || 0).toFixed(2);
@@ -1608,7 +1738,8 @@
                   `-----------------------------------%0A` +
                   `💳 *إجمالي المبيعات:* ${totalSales} ر.س%0A` +
                   `💵 *الكاش الفعلي بالصناديق:* ${totalCash} ر.س%0A` +
-                  `🏦 *صافي رصيد البنك:* ${bankBal} ر.س%0A` +
+                  `🏦 *رصيد البنك الرئيسي:* ${mainBank} ر.س%0A` +
+                  `💳 *رصيد بنك هلا:* ${halaBank} ر.س%0A` +
                   `📉 *إجمالي المنصرف:* ${totalExp} ر.س%0A` +
                   `🚚 *مديونية الموردين:* ${totalSuppDue} ر.س%0A` +
                   `🔴 *إجمالي العجز:* ${shortage} ر.س%0A` +
