@@ -64,58 +64,50 @@
       </div>
     </header>
 
-    <!-- البطاقات العلوية بعد إضافة بنك هلا -->
+    <!-- البطاقات العلوية -->
     <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
-      <!-- 1. إجمالي المبيعات -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[10px] text-slate-400 mb-1" id="cardTitleSales">إجمالي المبيعات</div>
         <div class="text-base font-bold text-blue-400" id="totalSystemSales">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-500 mt-1" id="salesCardSubText">شامل أجهزة الكاشير</div>
       </div>
 
-      <!-- 2. الكاش الفعلي -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[10px] text-slate-400 mb-1" id="cardTitleCash">الكاش الفعلي بالصناديق</div>
         <div class="text-base font-bold text-emerald-400" id="totalActualCash">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-500 mt-1" id="cardSubCash">المعدود باليد في الصناديق</div>
       </div>
 
-      <!-- 3. صافي البنك الرئيسي -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-cyan-500/40 shadow">
         <div class="text-[10px] text-cyan-300 mb-1">🏦 البنك الرئيسي</div>
         <div class="text-base font-bold text-cyan-400" id="bankBalance">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-400 mt-1" id="cardSubBank">شامل الافتتاحي والحوالات</div>
       </div>
 
-      <!-- 4. صافي بنك هلا -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-teal-500/40 shadow">
         <div class="text-[10px] text-teal-300 mb-1">💳 بنك هلا</div>
         <div class="text-base font-bold text-teal-400" id="halaBalance">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-400 mt-1" id="cardSubHala">مبيعات مدى وحركات هلا</div>
       </div>
 
-      <!-- 5. إجمالي المنصرف -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[10px] text-slate-400 mb-1">إجمالي المنصرف</div>
         <div class="text-base font-bold text-rose-400" id="totalExpenses">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-400 mt-1">مصاريف: <span id="pettyExpenses">0</span> | موردين: <span id="supplierPaid">0</span></div>
       </div>
 
-      <!-- 6. مديونية الموردين -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-slate-700 shadow">
         <div class="text-[10px] text-slate-400 mb-1">متبقي الموردين</div>
         <div class="text-base font-bold text-amber-400" id="totalSupplierDue">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-500 mt-1">الديون المتبقية</div>
       </div>
 
-      <!-- 7. العجز -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-rose-500/40 shadow">
         <div class="text-[10px] text-rose-400 font-bold mb-1">🔻 العجز بالصناديق</div>
         <div class="text-base font-bold text-rose-400" id="totalShortageCard">0.00 <span class="text-[10px]">ر.س</span></div>
         <div class="text-[9px] text-slate-400 mt-1" id="shortageCountStatus">لا يوجد عجز</div>
       </div>
 
-      <!-- 8. الزيادة -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-blue-500/40 shadow">
         <div class="text-[10px] text-blue-400 font-bold mb-1">🔺 الزيادة بالصناديق</div>
         <div class="text-base font-bold text-blue-400" id="totalOverCard">0.00 <span class="text-[10px]">ر.س</span></div>
@@ -309,7 +301,7 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- إدخال وتعديل الوردية مع تحديد وجهة الشبكة -->
+      <!-- إدخال وتعديل الوردية مع خيار الجملة -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ تسجيل تصفية وردية كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
@@ -324,6 +316,7 @@
             <select id="staffSelect" class="w-full bg-slate-900 border border-emerald-500/50 rounded-lg p-2 text-xs text-white font-bold">
               <option value="حسين">حسين</option>
               <option value="سامر">سامر</option>
+              <option value="الجملة">الجملة</option>
             </select>
           </div>
 
@@ -360,7 +353,6 @@
             <input type="number" step="0.01" id="drawerActualCard" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-blue-300 font-bold">
           </div>
 
-          <!-- خيار تحديد وجهة الشبكة: البنك أو بنك هلا -->
           <div>
             <label class="text-[10px] text-teal-300 font-bold">🏦 وجهة الشبكة</label>
             <select id="drawerCardTargetBank" class="w-full bg-slate-900 border border-teal-500/60 rounded-lg p-2 text-xs text-teal-300 font-bold">
@@ -463,7 +455,7 @@
           <input type="text" id="expenseName" placeholder="البيان" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="expenseAmount" placeholder="المبلغ" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="expenseSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-            <!-- تتولد القائمة بكل الأدراج والورديات وبنكي الرئيسي وهلا -->
+            <!-- تتولد القائمة بكل الأدراج والورديات -->
           </select>
           <div class="flex gap-2">
             <button onclick="saveExpense()" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg text-xs py-2">حفظ المصروف</button>
@@ -494,7 +486,7 @@
           <input type="text" id="suppName" placeholder="اسم المورد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <input type="number" step="0.01" id="suppPaid" placeholder="المبلغ المسدد" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <select id="suppSource" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-            <!-- تتولد القائمة بكل الأدراج والورديات وبنكي الرئيسي وهلا -->
+            <!-- تتولد القائمة بكل الأدراج والورديات -->
           </select>
           <input type="number" step="0.01" id="suppRemaining" placeholder="إجمالي المتبقي له" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs">
           <div class="flex gap-2">
@@ -571,7 +563,6 @@
     function isBankSource(source) {
       if (!source) return false;
       const s = source.toString().trim().toLowerCase();
-      // لو كان بنك هلا نعتبره حساب مستقل وليس البنك الرئيسي
       if (isHalaBankSource(s)) return false;
       return s.includes('بنك') || s.includes('تحويل');
     }
@@ -587,7 +578,7 @@
       return str.toString().trim().replace(/\s+/g, ' ');
     }
 
-    // مطابقة المصروف بالدرج المختار بالتحديد
+    // مطابقة المصروف بالدرج المختار بالتحديد مع دعم "الجملة"
     function isSourceMatch(sourceName, drawerName) {
       if (!sourceName || !drawerName) return false;
       const s = cleanStr(sourceName).toLowerCase();
@@ -610,6 +601,7 @@
 
         if (s.includes('حسين') && !d.includes('حسين')) return false;
         if (s.includes('سامر') && !d.includes('سامر')) return false;
+        if (s.includes('الجملة') && !d.includes('الجملة')) return false;
 
         const devNumS = s.match(/كاشير\s*(\d+)/);
         const devNumD = d.match(/كاشير\s*(\d+)/);
@@ -618,12 +610,13 @@
         return true;
       }
 
-      // التوافق مع الأيام القديمة (كاشير 1 و كاشير 2)
+      // التوافق مع الأيام القديمة
       const numS = s.match(/\d+/);
       const numD = d.match(/\d+/);
       if (numS && numD && numS[0] === numD[0]) {
         if (s.includes('حسين') && !d.includes('حسين')) return false;
         if (s.includes('سامر') && !d.includes('سامر')) return false;
+        if (s.includes('الجملة') && !d.includes('الجملة')) return false;
         return true;
       }
 
@@ -635,6 +628,7 @@
       const n = cleanStr(name);
       if (n.includes('حسين')) return 'كاشير حسين';
       if (n.includes('سامر')) return 'كاشير سامر';
+      if (n.includes('الجملة')) return 'كاشير الجملة';
       return n;
     }
 
@@ -688,7 +682,7 @@
       });
     }
 
-    // فتح كل الاحتمالات الممكنة للأدراج والورديات والبنكين
+    // فتح كل الاحتمالات الممكنة للأدراج والورديات متضمنة كاشير الجملة
     function updateSourceDropdowns() {
       const expSelect = document.getElementById('expenseSource');
       const suppSelect = document.getElementById('suppSource');
@@ -707,6 +701,8 @@
           <option value="كاشير حسين (كاشير 1 - وردية 2)">درج كاشير 1 - حسين (وردية 2)</option>
           <option value="كاشير سامر (كاشير 1 - وردية 1)">درج كاشير 1 - سامر (وردية 1)</option>
           <option value="كاشير سامر (كاشير 1 - وردية 2)">درج كاشير 1 - سامر (وردية 2)</option>
+          <option value="كاشير الجملة (كاشير 1 - وردية 1)">درج كاشير 1 - الجملة (وردية 1)</option>
+          <option value="كاشير الجملة (كاشير 1 - وردية 2)">درج كاشير 1 - الجملة (وردية 2)</option>
         </optgroup>
 
         <optgroup label="كاشير 2 (درج 2)">
@@ -714,14 +710,18 @@
           <option value="كاشير حسين (كاشير 2 - وردية 2)">درج كاشير 2 - حسين (وردية 2)</option>
           <option value="كاشير سامر (كاشير 2 - وردية 1)">درج كاشير 2 - سامر (وردية 1)</option>
           <option value="كاشير سامر (كاشير 2 - وردية 2)">درج كاشير 2 - سامر (وردية 2)</option>
+          <option value="كاشير الجملة (كاشير 2 - وردية 1)">درج كاشير 2 - الجملة (وردية 1)</option>
+          <option value="كاشير الجملة (كاشير 2 - وردية 2)">درج كاشير 2 - الجملة (وردية 2)</option>
         </optgroup>
       `;
 
       const standardList = [
         "كاشير حسين (كاشير 1 - وردية 1)", "كاشير حسين (كاشير 1 - وردية 2)",
         "كاشير سامر (كاشير 1 - وردية 1)", "كاشير سامر (كاشير 1 - وردية 2)",
+        "كاشير الجملة (كاشير 1 - وردية 1)", "كاشير الجملة (كاشير 1 - وردية 2)",
         "كاشير حسين (كاشير 2 - وردية 1)", "كاشير حسين (كاشير 2 - وردية 2)",
-        "كاشير سامر (كاشير 2 - وردية 1)", "كاشير سامر (كاشير 2 - وردية 2)"
+        "كاشير سامر (كاشير 2 - وردية 1)", "كاشير سامر (كاشير 2 - وردية 2)",
+        "كاشير الجملة (كاشير 2 - وردية 1)", "كاشير الجملة (كاشير 2 - وردية 2)"
       ];
 
       Object.values(currentData.drawers).forEach(d => {
@@ -1252,7 +1252,6 @@
             totalActualCash += actualCash;
             totalActualCard += actualCard;
 
-            // توجيه الشبكة للبنك المعني
             if (cardTarget === 'hala') {
               totalHalaCard += actualCard;
             } else {
@@ -1377,7 +1376,7 @@
               <td class="p-2 font-bold text-amber-400">${parseFloat(s.remaining || 0).toFixed(2)}</td>
             </tr>
           `).join('');
-        }
+      }
       const suppCount = document.getElementById('suppliersCount');
       if (suppCount) suppCount.innerText = `${suppList.length} مورد`;
 
