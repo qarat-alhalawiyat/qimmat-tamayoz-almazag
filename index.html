@@ -301,7 +301,7 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- إدخال وتعديل الوردية مع خيار جهاز كاشير الجملة -->
+      <!-- إدخال وتعديل الوردية -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ تسجيل تصفية وردية كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
@@ -587,24 +587,18 @@
 
       if (isAccountantSource(s) || isBankSource(s) || isHalaBankSource(s)) return false;
 
-      // التطابق المباشر والصريح
       if (s === d || s === `درج ${d}` || d === `درج ${s}`) return true;
 
-      // إذا كان كاشير الجملة
       const isJumlaS = s.includes('جملة') || s.includes('الجملة');
       const isJumlaD = d.includes('جملة') || d.includes('الجملة');
       if (isJumlaS || isJumlaD) {
         if (!isJumlaS || !isJumlaD) return false;
-        
-        // التحقق من رقم الوردية
         const shiftNumS = s.match(/وردية\s*(\d+)/);
         const shiftNumD = d.match(/وردية\s*(\d+)/);
         if (shiftNumS && shiftNumD && shiftNumS[1] !== shiftNumD[1]) return false;
-
         return true;
       }
 
-      // فحص تمييز الورديات بدقة مطلقة
       const hasShiftS = s.includes('وردية');
       const hasShiftD = d.includes('وردية');
       if (hasShiftS || hasShiftD) {
@@ -624,7 +618,6 @@
         return true;
       }
 
-      // التوافق مع الأيام القديمة (كاشير 1 و كاشير 2)
       const numS = s.match(/\d+/);
       const numD = d.match(/\d+/);
       if (numS && numD && numS[0] === numD[0]) {
@@ -695,7 +688,6 @@
       });
     }
 
-    // فتح كل الاحتمالات الممكنة للأدراج والورديات متضمنة جهاز كاشير الجملة
     function updateSourceDropdowns() {
       const expSelect = document.getElementById('expenseSource');
       const suppSelect = document.getElementById('suppSource');
@@ -992,7 +984,8 @@
               };
             }
 
-            const calcCash = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
+            // التصحيح المحاسبي الدقيق لمفترض الكاش
+            const calcCash = zReport > 0 ? (zReport - cardReport) : (parseFloat(dr.cashReport) || 0);
             
             const drExp = eList.filter(e => isSourceMatch(e.source, dr.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
             const drSupp = sList.filter(s => isSourceMatch(s.source, dr.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
@@ -1028,7 +1021,6 @@
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
-          // في التقرير المجمع: يتم خصم منصرف عهدة المحاسب من النقدية المجمعة
           const accountantExp = eList.filter(e => isAccountantSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
           const accountantSupp = sList.filter(s => isAccountantSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
           const netDayActualCash = dayActualCash - (accountantExp + accountantSupp);
@@ -1238,7 +1230,8 @@
             const actualCard = parseFloat(d.actualCard || 0);
             const cardTarget = d.cardTargetBank || 'main';
 
-            const calculatedCashSales = (zReport > 0 && cardReport > 0) ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
+            // التصحيح المحاسبي الدقيق لمفترض الكاش: يطرح الشبكة مباشرة من مبيعات الجهاز حتى لو كانت الشبكة صفراً
+            const calculatedCashSales = zReport > 0 ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
 
             // خصم منصرف هذه الوردية بالتحديد
             const drawerExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
@@ -1272,11 +1265,11 @@
             }
 
             const cashBadge = Math.abs(cashDiff) < 0.05 
-              ? `<span class="text-emerald-400">مطابق</span>` 
+              ? `<span class="text-emerald-400 font-bold">مطابق</span>` 
               : (cashDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cashDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cashDiff.toFixed(2)}</span>`);
 
             const cardBadge = Math.abs(cardDiff) < 0.05 
-              ? `<span class="text-emerald-400">مطابق</span>` 
+              ? `<span class="text-emerald-400 font-bold">مطابق</span>` 
               : (cardDiff < -0.05 ? `<span class="text-rose-400 font-bold">عجز (${Math.abs(cardDiff).toFixed(2)})</span>` : `<span class="text-blue-400 font-bold">+${cardDiff.toFixed(2)}</span>`);
 
             const receiptBtn = d.receiptImage 
