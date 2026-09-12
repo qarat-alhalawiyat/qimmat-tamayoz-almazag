@@ -301,7 +301,7 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- إدخال وتعديل الوردية مع خيار الجملة -->
+      <!-- إدخال وتعديل الوردية مع خيار جهاز كاشير الجملة -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="drawerFormTitle">➕ تسجيل تصفية وردية كاشير</h3>
         <input type="hidden" id="editDrawerId" value="">
@@ -325,6 +325,7 @@
             <select id="deviceSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white font-bold">
               <option value="كاشير 1">كاشير 1</option>
               <option value="كاشير 2">كاشير 2</option>
+              <option value="كاشير الجملة">كاشير الجملة</option>
             </select>
           </div>
 
@@ -578,7 +579,7 @@
       return str.toString().trim().replace(/\s+/g, ' ');
     }
 
-    // مطابقة المصروف بالدرج المختار بالتحديد مع دعم "الجملة"
+    // مطابقة المصروف بالدرج المختار بالتحديد مع دعم جهاز كاشير الجملة
     function isSourceMatch(sourceName, drawerName) {
       if (!sourceName || !drawerName) return false;
       const s = cleanStr(sourceName).toLowerCase();
@@ -588,6 +589,20 @@
 
       // التطابق المباشر والصريح
       if (s === d || s === `درج ${d}` || d === `درج ${s}`) return true;
+
+      // إذا كان كاشير الجملة
+      const isJumlaS = s.includes('جملة') || s.includes('الجملة');
+      const isJumlaD = d.includes('جملة') || d.includes('الجملة');
+      if (isJumlaS || isJumlaD) {
+        if (!isJumlaS || !isJumlaD) return false;
+        
+        // التحقق من رقم الوردية
+        const shiftNumS = s.match(/وردية\s*(\d+)/);
+        const shiftNumD = d.match(/وردية\s*(\d+)/);
+        if (shiftNumS && shiftNumD && shiftNumS[1] !== shiftNumD[1]) return false;
+
+        return true;
+      }
 
       // فحص تمييز الورديات بدقة مطلقة
       const hasShiftS = s.includes('وردية');
@@ -601,7 +616,6 @@
 
         if (s.includes('حسين') && !d.includes('حسين')) return false;
         if (s.includes('سامر') && !d.includes('سامر')) return false;
-        if (s.includes('الجملة') && !d.includes('الجملة')) return false;
 
         const devNumS = s.match(/كاشير\s*(\d+)/);
         const devNumD = d.match(/كاشير\s*(\d+)/);
@@ -610,13 +624,12 @@
         return true;
       }
 
-      // التوافق مع الأيام القديمة
+      // التوافق مع الأيام القديمة (كاشير 1 و كاشير 2)
       const numS = s.match(/\d+/);
       const numD = d.match(/\d+/);
       if (numS && numD && numS[0] === numD[0]) {
         if (s.includes('حسين') && !d.includes('حسين')) return false;
         if (s.includes('سامر') && !d.includes('سامر')) return false;
-        if (s.includes('الجملة') && !d.includes('الجملة')) return false;
         return true;
       }
 
@@ -628,7 +641,7 @@
       const n = cleanStr(name);
       if (n.includes('حسين')) return 'كاشير حسين';
       if (n.includes('سامر')) return 'كاشير سامر';
-      if (n.includes('الجملة')) return 'كاشير الجملة';
+      if (n.includes('جملة') || n.includes('الجملة')) return 'كاشير الجملة';
       return n;
     }
 
@@ -682,7 +695,7 @@
       });
     }
 
-    // فتح كل الاحتمالات الممكنة للأدراج والورديات متضمنة كاشير الجملة
+    // فتح كل الاحتمالات الممكنة للأدراج والورديات متضمنة جهاز كاشير الجملة
     function updateSourceDropdowns() {
       const expSelect = document.getElementById('expenseSource');
       const suppSelect = document.getElementById('suppSource');
@@ -701,8 +714,6 @@
           <option value="كاشير حسين (كاشير 1 - وردية 2)">درج كاشير 1 - حسين (وردية 2)</option>
           <option value="كاشير سامر (كاشير 1 - وردية 1)">درج كاشير 1 - سامر (وردية 1)</option>
           <option value="كاشير سامر (كاشير 1 - وردية 2)">درج كاشير 1 - سامر (وردية 2)</option>
-          <option value="كاشير الجملة (كاشير 1 - وردية 1)">درج كاشير 1 - الجملة (وردية 1)</option>
-          <option value="كاشير الجملة (كاشير 1 - وردية 2)">درج كاشير 1 - الجملة (وردية 2)</option>
         </optgroup>
 
         <optgroup label="كاشير 2 (درج 2)">
@@ -710,18 +721,20 @@
           <option value="كاشير حسين (كاشير 2 - وردية 2)">درج كاشير 2 - حسين (وردية 2)</option>
           <option value="كاشير سامر (كاشير 2 - وردية 1)">درج كاشير 2 - سامر (وردية 1)</option>
           <option value="كاشير سامر (كاشير 2 - وردية 2)">درج كاشير 2 - سامر (وردية 2)</option>
-          <option value="كاشير الجملة (كاشير 2 - وردية 1)">درج كاشير 2 - الجملة (وردية 1)</option>
-          <option value="كاشير الجملة (كاشير 2 - وردية 2)">درج كاشير 2 - الجملة (وردية 2)</option>
+        </optgroup>
+
+        <optgroup label="كاشير الجملة">
+          <option value="كاشير الجملة (كاشير الجملة - وردية 1)">درج كاشير الجملة (وردية 1)</option>
+          <option value="كاشير الجملة (كاشير الجملة - وردية 2)">درج كاشير الجملة (وردية 2)</option>
         </optgroup>
       `;
 
       const standardList = [
         "كاشير حسين (كاشير 1 - وردية 1)", "كاشير حسين (كاشير 1 - وردية 2)",
         "كاشير سامر (كاشير 1 - وردية 1)", "كاشير سامر (كاشير 1 - وردية 2)",
-        "كاشير الجملة (كاشير 1 - وردية 1)", "كاشير الجملة (كاشير 1 - وردية 2)",
         "كاشير حسين (كاشير 2 - وردية 1)", "كاشير حسين (كاشير 2 - وردية 2)",
         "كاشير سامر (كاشير 2 - وردية 1)", "كاشير سامر (كاشير 2 - وردية 2)",
-        "كاشير الجملة (كاشير 2 - وردية 1)", "كاشير الجملة (كاشير 2 - وردية 2)"
+        "كاشير الجملة (كاشير الجملة - وردية 1)", "كاشير الجملة (كاشير الجملة - وردية 2)"
       ];
 
       Object.values(currentData.drawers).forEach(d => {
@@ -1301,7 +1314,6 @@
       const dCount = document.getElementById('drawersCount');
       if (dCount) dCount.innerText = `${drawersList.length} كاشير / صندوق`;
 
-      // في اليومية: الكاش الفعلي بالصناديق يمثل النقدية الفعلية باليد في الصناديق فقط
       const netCashOnHand = totalActualCash;
 
       // حساب رصيد البنك الرئيسي
