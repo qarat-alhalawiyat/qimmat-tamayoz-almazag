@@ -3,13 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام الإغلاق المالي الشامل والتقارير - قمة تميز المذاق</title>
+  <title>نظام الإغلاق المالي الشامل والتقارير - شركة قمة تميز المذاق الحديثة</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     body { font-family: 'Tajawal', sans-serif; }
+    @media print {
+      body * { visibility: hidden; }
+      #printReportArea, #printReportArea * { visibility: visible; }
+      #printReportArea { position: absolute; left: 0; top: 0; width: 100%; }
+    }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-3 md:p-6">
@@ -72,7 +77,6 @@
         <div class="text-[9px] text-slate-500 mt-1" id="salesCardSubText">أجهزة الكاشير</div>
       </div>
 
-      <!-- بطاقة الإيرادات الخارجية المضافة -->
       <div class="bg-slate-800 p-3 rounded-2xl border border-emerald-500/50 shadow">
         <div class="text-[10px] text-emerald-300 font-bold mb-1">💰 إيرادات خارجية</div>
         <div class="text-base font-bold text-emerald-400" id="totalExternalIncomes">0.00 <span class="text-[10px]">ر.س</span></div>
@@ -210,16 +214,18 @@
       </div>
     </div>
 
-    <!-- زر واتساب -->
-    <div class="flex justify-end">
+    <!-- أزرار التصدير: طباعة PDF وواتساب -->
+    <div class="flex flex-wrap items-center justify-end gap-3">
+      <button onclick="printDetailedPDF()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 shadow-md transition">
+        <span>📄 طباعة وتحميل تقرير اليومية المفصل (PDF)</span>
+      </button>
       <button onclick="sendWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 shadow-md transition">
-        <span>📲 نسخ وإرسال التقرير المالي الحالي عبر واتساب</span>
+        <span>📲 نسخ ملخص التقرير المالي عبر واتساب</span>
       </button>
     </div>
 
     <!-- تفاصيل المصاريف والموردين والإيرادات والبنك -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-      <!-- بيان الإيرادات الخارجية -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-emerald-500/40 shadow">
         <h2 class="text-sm font-bold text-emerald-300 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>💰 الإيرادات الخارجية</span>
@@ -240,7 +246,6 @@
         </div>
       </div>
 
-      <!-- بيان المصاريف -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-sm font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>📋 بيان المصاريف</span>
@@ -262,7 +267,6 @@
         </div>
       </div>
 
-      <!-- سجل الموردين -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow">
         <h2 class="text-sm font-bold text-slate-200 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>🚚 سجل الموردين</span>
@@ -285,7 +289,6 @@
         </div>
       </div>
 
-      <!-- حركات البنوك -->
       <div class="bg-slate-800 p-4 rounded-2xl border border-cyan-500/40 shadow">
         <h2 class="text-sm font-bold text-cyan-300 mb-3 border-b border-slate-700 pb-2 flex justify-between">
           <span>🏦 حركات البنوك</span>
@@ -333,7 +336,7 @@
         <div class="text-[11px] text-slate-400" id="adminActiveDateNotice">جاري التعديل على يومية: ...</div>
       </div>
 
-      <!-- قسم إدخال الإيرادات الخارجية المضاف حديثاً -->
+      <!-- إدخال الإيرادات الخارجية -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-emerald-500/50 space-y-3">
         <h3 class="text-xs font-bold text-emerald-300" id="incomeFormTitle">💰 إضافة / تعديل إيراد خارجي (يضاف لعهدة المحاسب / كاش المؤسسة)</h3>
         <input type="hidden" id="editIncomeId" value="">
@@ -454,7 +457,7 @@
         </div>
       </div>
 
-      <!-- إعدادات وحركات البنك الرئيسي وبنك هلا -->
+      <!-- إعدادات وحركات البنوك -->
       <div class="p-4 bg-slate-900/80 rounded-xl border border-cyan-500/40 space-y-4">
         <h3 class="text-xs font-bold text-cyan-300">🏦 إعدادات وحركات الحسابات البنكية (البنك الرئيسي وبنك هلا)</h3>
         
@@ -573,6 +576,133 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- حاوية التقرير المفصل المعد للطباعة والحفظ PDF -->
+  <div id="printReportArea" class="hidden bg-white text-slate-900 p-8 space-y-6 text-xs">
+    <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-bold text-slate-900">شركة قمة تميز المذاق الحديثة</h1>
+        <p class="text-xs text-slate-600 mt-1 font-semibold">تقرير الإغلاق المالي واليومية المفصلة</p>
+      </div>
+      <div class="text-left">
+        <p class="font-bold text-sm" id="pdfReportDate">التاريخ: 2026-09-17</p>
+        <p class="text-[10px] text-slate-500">وقت الطباعة: <span id="pdfPrintTime"></span></p>
+      </div>
+    </div>
+
+    <!-- ملخص الأرقام العامة في الـ PDF -->
+    <div class="grid grid-cols-4 gap-2 border border-slate-300 p-3 rounded-lg bg-slate-50 font-medium">
+      <div>إجمالي المبيعات: <span class="font-bold text-blue-700" id="pdfTotalSales">0.00</span> ر.س</div>
+      <div>إيرادات خارجية: <span class="font-bold text-emerald-700" id="pdfTotalIncomes">0.00</span> ر.س</div>
+      <div>الكاش الفعلي: <span class="font-bold text-emerald-700" id="pdfTotalCash">0.00</span> ر.س</div>
+      <div>إجمالي المنصرف: <span class="font-bold text-rose-700" id="pdfTotalExpenses">0.00</span> ر.س</div>
+      <div>البنك الرئيسي: <span class="font-bold text-cyan-700" id="pdfBankBalance">0.00</span> ر.س</div>
+      <div>بنك هلا: <span class="font-bold text-teal-700" id="pdfHalaBalance">0.00</span> ر.س</div>
+      <div>العجز بالصناديق: <span class="font-bold text-rose-700" id="pdfShortage">0.00</span> ر.س</div>
+      <div>الزيادة بالصناديق: <span class="font-bold text-blue-700" id="pdfOver">0.00</span> ر.س</div>
+    </div>
+
+    <!-- جدول الورديات المفصل للـ PDF -->
+    <div class="space-y-2">
+      <h2 class="font-bold text-sm border-r-4 border-slate-900 pr-2">1. بيان تفصيلي لمطابقة أجهزة الكاشير والورديات</h2>
+      <table class="w-full border-collapse border border-slate-300 text-[11px] text-right">
+        <thead class="bg-slate-200">
+          <tr>
+            <th class="border border-slate-300 p-1.5">الكاشير / الوردية</th>
+            <th class="border border-slate-300 p-1.5">مبيعات الجهاز</th>
+            <th class="border border-slate-300 p-1.5">منصرف الدرج</th>
+            <th class="border border-slate-300 p-1.5">مفترض الكاش</th>
+            <th class="border border-slate-300 p-1.5">فعلي الكاش</th>
+            <th class="border border-slate-300 p-1.5">فارق الكاش</th>
+            <th class="border border-slate-300 p-1.5">مبيعات الشبكة</th>
+            <th class="border border-slate-300 p-1.5">الوجهة</th>
+            <th class="border border-slate-300 p-1.5">العجز</th>
+            <th class="border border-slate-300 p-1.5">الزيادة</th>
+          </tr>
+        </thead>
+        <tbody id="pdfDrawersTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- جدول المصاريف والإيرادات للـ PDF -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <h2 class="font-bold text-sm border-r-4 border-rose-700 pr-2">2. بيان المصاريف بالتفصيل</h2>
+        <table class="w-full border-collapse border border-slate-300 text-[11px] text-right">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="border border-slate-300 p-1.5">بيان المصروف</th>
+              <th class="border border-slate-300 p-1.5">طريقة / مصدر الصرف</th>
+              <th class="border border-slate-300 p-1.5">المبلغ</th>
+            </tr>
+          </thead>
+          <tbody id="pdfExpensesTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="space-y-2">
+        <h2 class="font-bold text-sm border-r-4 border-emerald-700 pr-2">3. بيان الإيرادات الخارجية والأخرى</h2>
+        <table class="w-full border-collapse border border-slate-300 text-[11px] text-right">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="border border-slate-300 p-1.5">بيان الإيراد ومصدره</th>
+              <th class="border border-slate-300 p-1.5">المبلغ</th>
+            </tr>
+          </thead>
+          <tbody id="pdfIncomesTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- جدول الموردين وحركات البنوك للـ PDF -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <h2 class="font-bold text-sm border-r-4 border-amber-600 pr-2">4. سجل حركات وسداد الموردين</h2>
+        <table class="w-full border-collapse border border-slate-300 text-[11px] text-right">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="border border-slate-300 p-1.5">المورد</th>
+              <th class="border border-slate-300 p-1.5">المسدد</th>
+              <th class="border border-slate-300 p-1.5">طريقة السداد</th>
+              <th class="border border-slate-300 p-1.5">المتبقي له</th>
+            </tr>
+          </thead>
+          <tbody id="pdfSuppliersTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="space-y-2">
+        <h2 class="font-bold text-sm border-r-4 border-cyan-700 pr-2">5. حركات وتحويلات الحسابات البنكية</h2>
+        <table class="w-full border-collapse border border-slate-300 text-[11px] text-right">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="border border-slate-300 p-1.5">البيان</th>
+              <th class="border border-slate-300 p-1.5">البنك</th>
+              <th class="border border-slate-300 p-1.5">النوع</th>
+              <th class="border border-slate-300 p-1.5">المبلغ</th>
+            </tr>
+          </thead>
+          <tbody id="pdfBankTransTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- التوقيعات -->
+    <div class="pt-8 border-t border-slate-400 flex justify-between items-center text-center font-bold px-6">
+      <div>
+        <p>مسؤول الصندوق / الكاشير</p>
+        <p class="mt-8 text-slate-400">............................</p>
+      </div>
+      <div>
+        <p>المحاسب المسؤول</p>
+        <p class="mt-8 text-slate-400">............................</p>
+      </div>
+      <div>
+        <p>اعتماد الإدارة العامة</p>
+        <p class="mt-8 text-slate-400">............................</p>
+      </div>
+    </div>
   </div>
 
   <div id="imageModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onclick="closeImageModal()">
@@ -1092,7 +1222,6 @@
             daySalesTotal += (zReport > 0 ? zReport : (calcCash + cardReport));
           });
 
-          // في التقرير المجمع: النقد الصافي = الكاش الفعلي + الإيرادات الخارجية - منصرف عهدة المحاسب
           const accountantExp = eList.filter(e => isAccountantSource(e.source)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
           const accountantSupp = sList.filter(s => isAccountantSource(s.source)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
           const netDayActualCash = (dayActualCash + dayIncomesAmount) - (accountantExp + accountantSupp);
@@ -1224,18 +1353,6 @@
         if (tOver) tOver.innerHTML = `${periodTotalOver.toFixed(2)} <span class="text-xs">ر.س</span>`;
         const oStat = document.getElementById('overCountStatus');
         if (oStat) oStat.innerText = periodTotalOver > 0.05 ? `إجمالي زيادة الفترة` : `لا توجد زيادة`;
-
-        const incomesBody = document.getElementById('incomesTableBody');
-        if (incomesBody) {
-          incomesBody.innerHTML = combinedIncomes.map(i => `
-            <tr class="hover:bg-slate-700/30">
-              <td class="p-2">${i.desc} <span class="text-[9px] text-slate-500">(${i.date})</span></td>
-              <td class="p-2 font-bold text-emerald-400">${parseFloat(i.amount).toFixed(2)} ر.س</td>
-            </tr>
-          `).join('');
-        }
-        const incCount = document.getElementById('incomesCount');
-        if (incCount) incCount.innerText = `${combinedIncomes.length} بند`;
 
         const expBody = document.getElementById('expensesTableBody');
         if (expBody) {
@@ -1510,7 +1627,6 @@
     }
 
     function renderAdminLists() {
-      // قائمة الإيرادات بلوحة المحاسب
       const iList = Object.entries(currentData.incomes || {}).map(([k, v]) => ({ id: k, ...v }));
       const aIncomes = document.getElementById('adminIncomesList');
       if (aIncomes) {
@@ -1606,7 +1722,6 @@
       }
     }
 
-    // حفظ وتعديل الإيرادات الخارجية
     function saveIncome() {
       const editId = document.getElementById('editIncomeId')?.value;
       const desc = document.getElementById('incomeDesc')?.value.trim();
@@ -1892,6 +2007,117 @@
       const newPin = prompt("أدخل الرمز السري الجديد:");
       if (!newPin || newPin.trim().length < 4) return alert("يجب أن يتكون الرمز الجديد من 4 أرقام/أحرف على الأقل!");
       db.ref('settings/adminPin').set(newPin.trim()).then(() => alert("تم تغيير الرمز السري بنجاح!"));
+    }
+
+    // دالة إنشاء وتجهيز وطباعة تقرير الـ PDF المفصل لليومية
+    function printDetailedPDF() {
+      const drawersList = Object.values(currentData.drawers || {});
+      const expList = Object.values(currentData.expenses || {});
+      const suppList = Object.values(currentData.suppliers || {});
+      const incList = Object.values(currentData.incomes || {});
+      const bTransList = Object.values(currentData.bankTransactions || {});
+
+      // ملء بيانات رأس التقرير والأرقام
+      document.getElementById('pdfReportDate').innerText = "التاريخ: " + currentDateStr;
+      document.getElementById('pdfPrintTime').innerText = new Date().toLocaleTimeString('ar-SA');
+      document.getElementById('pdfTotalSales').innerText = (parseFloat(document.getElementById('totalSystemSales')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfTotalIncomes').innerText = (parseFloat(document.getElementById('totalExternalIncomes')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfTotalCash').innerText = (parseFloat(document.getElementById('totalActualCash')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfTotalExpenses').innerText = (parseFloat(document.getElementById('totalExpenses')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfBankBalance').innerText = (parseFloat(document.getElementById('bankBalance')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfHalaBalance').innerText = (parseFloat(document.getElementById('halaBalance')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfShortage').innerText = (parseFloat(document.getElementById('totalShortageCard')?.innerText) || 0).toFixed(2);
+      document.getElementById('pdfOver').innerText = (parseFloat(document.getElementById('totalOverCard')?.innerText) || 0).toFixed(2);
+
+      // 1. جدول الورديات المفصل
+      const pdfDrawers = document.getElementById('pdfDrawersTableBody');
+      if (drawersList.length === 0) {
+        pdfDrawers.innerHTML = `<tr><td colspan="10" class="border p-2 text-center text-slate-500">لا توجد ورديات مسجلة لهذا اليوم</td></tr>`;
+      } else {
+        pdfDrawers.innerHTML = drawersList.map(d => {
+          const zReport = parseFloat(d.totalZ || 0);
+          const actualCash = parseFloat(d.actualCash || 0);
+          const cardReport = parseFloat(d.cardReport || 0);
+          const actualCard = (d.actualCard !== undefined && d.actualCard !== "" && !isNaN(parseFloat(d.actualCard))) ? parseFloat(d.actualCard) : cardReport;
+          const calcCash = zReport > 0 ? (zReport - cardReport) : (parseFloat(d.cashReport) || 0);
+          const drExp = expList.filter(e => isSourceMatch(e.source, d.name)).reduce((a, c) => a + (parseFloat(c.amount) || 0), 0);
+          const drSupp = suppList.filter(s => isSourceMatch(s.source, d.name)).reduce((a, c) => a + (parseFloat(c.paid) || 0), 0);
+          const expCash = calcCash - (drExp + drSupp);
+          const cashDiff = actualCash - expCash;
+          const cardDiff = actualCard - cardReport;
+          const netDrawerDiff = cashDiff + cardDiff;
+
+          return `
+            <tr>
+              <td class="border border-slate-300 p-1.5 font-bold">${d.name}</td>
+              <td class="border border-slate-300 p-1.5">${zReport.toFixed(2)}</td>
+              <td class="border border-slate-300 p-1.5 text-rose-700 font-bold">${(drExp + drSupp).toFixed(2)}</td>
+              <td class="border border-slate-300 p-1.5">${expCash.toFixed(2)}</td>
+              <td class="border border-slate-300 p-1.5 font-bold">${actualCash.toFixed(2)}</td>
+              <td class="border border-slate-300 p-1.5">${Math.abs(cashDiff) < 0.05 ? 'مطابق' : (cashDiff < 0 ? `عجز (${Math.abs(cashDiff).toFixed(2)})` : `+${cashDiff.toFixed(2)}`)}</td>
+              <td class="border border-slate-300 p-1.5">${actualCard.toFixed(2)}</td>
+              <td class="border border-slate-300 p-1.5">${d.cardTargetBank === 'hala' ? 'بنك هلا' : 'البنك الرئيسي'}</td>
+              <td class="border border-slate-300 p-1.5 text-rose-700 font-bold">${netDrawerDiff < -0.05 ? Math.abs(netDrawerDiff).toFixed(2) : '0.00'}</td>
+              <td class="border border-slate-300 p-1.5 text-blue-700 font-bold">${netDrawerDiff > 0.05 ? netDrawerDiff.toFixed(2) : '0.00'}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // 2. جدول المصاريف
+      const pdfExpenses = document.getElementById('pdfExpensesTableBody');
+      pdfExpenses.innerHTML = expList.length === 0
+        ? `<tr><td colspan="3" class="border p-2 text-center text-slate-500">لا توجد مصاريف مسجلة</td></tr>`
+        : expList.map(e => `
+          <tr>
+            <td class="border border-slate-300 p-1.5">${e.name}</td>
+            <td class="border border-slate-300 p-1.5 text-slate-600">${e.source}</td>
+            <td class="border border-slate-300 p-1.5 font-bold text-rose-700">${parseFloat(e.amount).toFixed(2)} ر.س</td>
+          </tr>
+        `).join('');
+
+      // 3. جدول الإيرادات الخارجية
+      const pdfIncomes = document.getElementById('pdfIncomesTableBody');
+      pdfIncomes.innerHTML = incList.length === 0
+        ? `<tr><td colspan="2" class="border p-2 text-center text-slate-500">لا توجد إيرادات خارجية</td></tr>`
+        : incList.map(i => `
+          <tr>
+            <td class="border border-slate-300 p-1.5">${i.desc}</td>
+            <td class="border border-slate-300 p-1.5 font-bold text-emerald-700">${parseFloat(i.amount).toFixed(2)} ر.س</td>
+          </tr>
+        `).join('');
+
+      // 4. جدول الموردين
+      const pdfSuppliers = document.getElementById('pdfSuppliersTableBody');
+      pdfSuppliers.innerHTML = suppList.length === 0
+        ? `<tr><td colspan="4" class="border p-2 text-center text-slate-500">لا توجد حركات موردين</td></tr>`
+        : suppList.map(s => `
+          <tr>
+            <td class="border border-slate-300 p-1.5 font-medium">${s.name}</td>
+            <td class="border border-slate-300 p-1.5 text-emerald-700 font-bold">${parseFloat(s.paid || 0).toFixed(2)}</td>
+            <td class="border border-slate-300 p-1.5">${s.source || 'عهدة'}</td>
+            <td class="border border-slate-300 p-1.5 text-amber-700 font-bold">${parseFloat(s.remaining || 0).toFixed(2)}</td>
+          </tr>
+        `).join('');
+
+      // 5. جدول حركات البنوك
+      const pdfBankTrans = document.getElementById('pdfBankTransTableBody');
+      pdfBankTrans.innerHTML = bTransList.length === 0
+        ? `<tr><td colspan="4" class="border p-2 text-center text-slate-500">لا توجد حركات بنكية إضافية</td></tr>`
+        : bTransList.map(t => `
+          <tr>
+            <td class="border border-slate-300 p-1.5">${t.desc}</td>
+            <td class="border border-slate-300 p-1.5 font-semibold">${t.target === 'hala' ? 'بنك هلا' : 'البنك الرئيسي'}</td>
+            <td class="border border-slate-300 p-1.5 ${t.type === 'in' ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold'}">${t.type === 'in' ? 'وارد' : 'صادر'}</td>
+            <td class="border border-slate-300 p-1.5 font-bold">${parseFloat(t.amount).toFixed(2)}</td>
+          </tr>
+        `).join('');
+
+      // إظهار قسم الطباعة واستدعاء أمر الطباعة المباشر لحفظه PDF
+      const printArea = document.getElementById('printReportArea');
+      printArea.classList.remove('hidden');
+      window.print();
+      printArea.classList.add('hidden');
     }
 
     function sendWhatsApp() {
